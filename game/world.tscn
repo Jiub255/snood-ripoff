@@ -1,16 +1,32 @@
-[gd_scene load_steps=13 format=4 uid="uid://bphb4un0sh380"]
+[gd_scene load_steps=15 format=4 uid="uid://bphb4un0sh380"]
 
-[ext_resource type="Script" path="res://World.cs" id="1_cvlql"]
-[ext_resource type="Texture2D" uid="uid://ctjouhljf1o1w" path="res://icon.svg" id="2_goc08"]
-[ext_resource type="PackedScene" uid="uid://cdfphtknkrcwg" path="res://snood_tile.tscn" id="2_j2u1f"]
-[ext_resource type="Script" path="res://SnoodBoard.cs" id="3_q4rjp"]
-[ext_resource type="Script" path="res://StickyStaticBody.cs" id="4_ik2gj"]
-[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://snood-gun.png" id="5_s28po"]
-[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://bouncy.tres" id="6_7tya6"]
-[ext_resource type="Script" path="res://Launcher.cs" id="6_a20mg"]
+[ext_resource type="Texture2D" uid="uid://ctjouhljf1o1w" path="res://assets/icon.svg" id="2_goc08"]
+[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="3_q4rjp"]
+[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://game/snood_sprite_frames.tres" id="3_yeieq"]
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="4_ik2gj"]
+[ext_resource type="Script" path="res://game/SnoodSprite.cs" id="4_qxjle"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="5_s28po"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="6_7tya6"]
+[ext_resource type="Script" path="res://game/Launcher.cs" id="6_a20mg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
+radius = 28.0
+
+[sub_resource type="PackedScene" id="PackedScene_vv5mm"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("SnoodTile", "StaticBody2D", "script", "AnimatedSprite2D", "AnimatedSprite2D", "self_modulate", "sprite_frames", "script", "CollisionShape2D", "CollisionShape2D", "shape"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 1, 2, 0, 0, 1073741824, 0, 4, 3, -1, 3, 5, 1, 6, 2, 7, 3, 0, 1073741825, 0, 9, 8, -1, 1, 10, 4, 0),
+"variants": [ExtResource("4_ik2gj"), Color(0.835294, 0.780392, 0.0784314, 1), ExtResource("3_yeieq"), ExtResource("4_qxjle"), SubResource("CircleShape2D_ya6h5")],
+"version": 3
+}
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
-scenes/0/scene = ExtResource("2_j2u1f")
+scenes/0/scene = SubResource("PackedScene_vv5mm")
 
 [sub_resource type="TileSet" id="TileSet_8g4ad"]
 tile_shape = 2
@@ -32,13 +48,12 @@ animations = [{
 }]
 
 [node name="World" type="Node2D"]
-script = ExtResource("1_cvlql")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
 
 [node name="SnoodBoard" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAFAAQAAAAAAAAAAAAFAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAAAAEAAAAAAAAAAAAHAAIAAAAAAAAAAAAQAAIAAAAAAAAAAAAQAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAPAAIAAAAAAAAAAAAPAAMAAAAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAAQAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAACAAIAAAAAAAAAAAA=")
 tile_set = SubResource("TileSet_8g4ad")
 script = ExtResource("3_q4rjp")
 

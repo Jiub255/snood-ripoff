@@ -1,0 +1,53 @@
+[gd_resource type="SpriteFrames" load_steps=8 format=3 uid="uid://bkjp46mhh1paa"]
+
+[ext_resource type="Texture2D" uid="uid://phm30s3f7383" path="res://assets/snood-spritesheet.png" id="1_ehvuj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aepkq"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tgmak"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2iy0o"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gbavl"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_34pdk"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_co2bv"]
+atlas = ExtResource("1_ehvuj")
+region = Rect2(128, 64, 64, 64)
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aepkq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tgmak")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2iy0o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gbavl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_34pdk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_co2bv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]

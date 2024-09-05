@@ -6,7 +6,7 @@ public partial class Launcher : Node2D
 	// TODO: Pass int id to know which snood to instantiate on the tilemap.
 	public event Action<Vector2> OnSnoodHit;
 	
-	private PackedScene SnoodScene { get; } = GD.Load<PackedScene>("res://snood.tscn");
+	private PackedScene SnoodScene { get; } = GD.Load<PackedScene>("res://snoods/snood.tscn");
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
@@ -14,6 +14,7 @@ public partial class Launcher : Node2D
 	private bool Reloading { get; set; }
 	private float ReloadTimer { get; set; }
 	private float ReloadDuration { get; } = 1f;
+	private bool SnoodLanded { get; set; } = true;
 	public Node Parent { get; set; }
 	private AnimatedSprite2D Sprite { get; set; }
 
@@ -51,7 +52,10 @@ public partial class Launcher : Node2D
 			{
 				ReloadTimer = ReloadDuration;
 				Reloading = false;
-				LoadSnood();
+				if (SnoodLanded)
+				{
+					LoadSnood();
+				}
 			}
 		}
 	}
@@ -59,18 +63,20 @@ public partial class Launcher : Node2D
 	private void LoadSnood()
 	{
 		LoadedSnood = (Snood)SnoodScene.Instantiate();
-		Parent.AddChild(LoadedSnood);
+		//Parent.AddChild(LoadedSnood);
+		Parent.CallDeferred(MethodName.AddChild, LoadedSnood);
 		LoadedSnood.Position = Position;
 		LoadedSnood.OnHitStickyThing += NotifyTilesetAboutSnoodHit;
 	}
 
 	public void Shoot()
 	{
-		if (!Reloading)
+		if (!Reloading && SnoodLanded)
 		{
 			FlyingSnood = LoadedSnood;
 			FlyingSnood.LinearVelocity = AimDirection * Speed;
 			Reloading = true;
+			SnoodLanded = false;
 		}
 	}
 
@@ -83,8 +89,13 @@ public partial class Launcher : Node2D
 	private void NotifyTilesetAboutSnoodHit(Vector2 cooordinates)
 	{
 		FlyingSnood.OnHitStickyThing -= NotifyTilesetAboutSnoodHit;
-		OnSnoodHit?.Invoke(cooordinates);
 		FlyingSnood.QueueFree();
+		OnSnoodHit?.Invoke(cooordinates);
+		SnoodLanded = true;
+		if (!Reloading)
+		{
+			LoadSnood();
+		}
 		GD.Print("Notify tileset");
 	}
 }

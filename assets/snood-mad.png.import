@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5o1e4xlgix88"
-path="res://.godot/imported/snood-gun.png-bf04b3b20629938011ab3093c292bf4e.ctex"
+uid="uid://cpfr7kv5o360q"
+path="res://.godot/imported/snood-mad.png-2651954f5037fd97e149e885770e4360.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://snood-gun.png"
-dest_files=["res://.godot/imported/snood-gun.png-bf04b3b20629938011ab3093c292bf4e.ctex"]
+source_file="res://assets/snood-mad.png"
+dest_files=["res://.godot/imported/snood-mad.png-2651954f5037fd97e149e885770e4360.ctex"]
 
 [params]
 

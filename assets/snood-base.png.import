@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b08p851yvklvu"
-path="res://.godot/imported/snood-base.png-f54a51108226b36bd7ac23106aa1f735.ctex"
+path="res://.godot/imported/snood-base.png-2cc5388d591a777c85821ee12e290c70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://snood-base.png"
-dest_files=["res://.godot/imported/snood-base.png-f54a51108226b36bd7ac23106aa1f735.ctex"]
+source_file="res://assets/snood-base.png"
+dest_files=["res://.godot/imported/snood-base.png-2cc5388d591a777c85821ee12e290c70.ctex"]
 
 [params]
 
