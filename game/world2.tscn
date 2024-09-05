@@ -1,0 +1,94 @@
+[gd_scene load_steps=15 format=4 uid="uid://bl77ssdu218oj"]
+
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="1_860k5"]
+[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://game/snood_sprite_frames.tres" id="2_0r55p"]
+[ext_resource type="Script" path="res://game/SnoodSprite.cs" id="3_mximo"]
+[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="4_fbrgd"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="6_rju5m"]
+[ext_resource type="Script" path="res://game/Launcher.cs" id="7_vvc42"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="8_rb2yf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
+radius = 28.0
+
+[sub_resource type="PackedScene" id="PackedScene_vv5mm"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("SnoodTile", "StaticBody2D", "script", "AnimatedSprite2D", "AnimatedSprite2D", "self_modulate", "sprite_frames", "script", "CollisionShape2D", "CollisionShape2D", "shape"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 1, 2, 0, 0, 1073741824, 0, 4, 3, -1, 3, 5, 1, 6, 2, 7, 3, 0, 1073741825, 0, 9, 8, -1, 1, 10, 4, 0),
+"variants": [ExtResource("1_860k5"), Color(0.835294, 0.780392, 0.0784314, 1), ExtResource("2_0r55p"), ExtResource("3_mximo"), SubResource("CircleShape2D_ya6h5")],
+"version": 3
+}
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
+scenes/0/scene = SubResource("PackedScene_vv5mm")
+
+[sub_resource type="TileSet" id="TileSet_8g4ad"]
+tile_shape = 2
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetScenesCollectionSource_mouri")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
+size = Vector2(100, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
+size = Vector2(1, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_rb2yf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="World" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+
+[node name="SnoodBoard" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAJAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAA=")
+tile_set = SubResource("TileSet_8g4ad")
+script = ExtResource("4_fbrgd")
+
+[node name="Ceiling" type="StaticBody2D" parent="SnoodBoard"]
+position = Vector2(574, 0)
+scale = Vector2(12, 1)
+script = ExtResource("1_860k5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SnoodBoard/Ceiling"]
+shape = SubResource("RectangleShape2D_b888v")
+
+[node name="WallRight" type="StaticBody2D" parent="SnoodBoard"]
+position = Vector2(0, 359)
+scale = Vector2(0.5, 8)
+physics_material_override = ExtResource("6_rju5m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SnoodBoard/WallRight"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="WallLeft" type="StaticBody2D" parent="SnoodBoard"]
+position = Vector2(1152, 359)
+scale = Vector2(0.5, 8)
+physics_material_override = ExtResource("6_rju5m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SnoodBoard/WallLeft"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="Launcher" type="Node2D" parent="SnoodBoard"]
+unique_name_in_owner = true
+position = Vector2(577, 599)
+script = ExtResource("7_vvc42")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="SnoodBoard/Launcher"]
+self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
+sprite_frames = SubResource("SpriteFrames_b6yik")
+offset = Vector2(0, -48)

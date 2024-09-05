@@ -1,7 +1,19 @@
-[gd_scene format=3 uid="uid://bkmv4fysiwn2o"]
+[gd_scene load_steps=5 format=3 uid="uid://bkmv4fysiwn2o"]
 
-[node name="GameScreen" type="Control"]
-layout_mode = 3
+[ext_resource type="Texture2D" uid="uid://b6hwtb8ojjl4m" path="res://assets/snood-background.png" id="1_ir8px"]
+[ext_resource type="Texture2D" uid="uid://5tgxlmu2if0o" path="res://assets/danger-bar-background.png" id="2_s1hki"]
+[ext_resource type="Texture2D" uid="uid://bhseo8iog47py" path="res://assets/danger-bar-fill.png" id="3_pmdt8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v1ah"]
+bg_color = Color(0.76662, 0.76662, 0.766619, 1)
+border_width_left = 12
+border_width_top = 12
+border_width_right = 12
+border_width_bottom = 12
+border_color = Color(0.388837, 0.509837, 0.541077, 1)
+
+[node name="GameScreen" type="TextureRect"]
+self_modulate = Color(0.662452, 0.662452, 0.662452, 1)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -9,3 +21,122 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("1_ir8px")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="GameControl" type="Control" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/GameControl"]
+custom_minimum_size = Vector2(800, 1000)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2v1ah")
+
+[node name="DangerBarControl" type="Control" parent="HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/DangerBarControl"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/DangerBarControl/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+
+[node name="Label" type="Label" parent="HBoxContainer/DangerBarControl/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.808642, 0.716802, 0.0122418, 1)
+theme_override_font_sizes/font_size = 32
+text = "Snoods Used: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="HBoxContainer/DangerBarControl/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.664988, 0.798195, 1)
+theme_override_font_sizes/font_size = 32
+text = "23"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="HBoxContainer/DangerBarControl/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.814445, 0.024614, 0.151264, 1)
+theme_override_font_sizes/font_size = 48
+text = "DANGER!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/DangerBarControl/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("2_s1hki")
+stretch_mode = 3
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="HBoxContainer/DangerBarControl/VBoxContainer/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -33.5
+offset_top = -333.5
+offset_right = 33.5
+offset_bottom = 333.5
+grow_horizontal = 2
+grow_vertical = 2
+value = 62.0
+fill_mode = 3
+texture_under = ExtResource("3_pmdt8")
+texture_progress = ExtResource("3_pmdt8")
+tint_under = Color(0.725182, 0, 0.0561627, 1)
+tint_progress = Color(0.698105, 0.561006, 0, 1)
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/DangerBarControl/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 2
+
+[node name="Label" type="Label" parent="HBoxContainer/DangerBarControl/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.808642, 0.716802, 0.0122418, 1)
+theme_override_font_sizes/font_size = 32
+text = "Score: "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="HBoxContainer/DangerBarControl/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.733028, 0.299121, 1)
+theme_override_font_sizes/font_size = 32
+text = "0000030"
+horizontal_alignment = 1
+vertical_alignment = 1

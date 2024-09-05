@@ -3,6 +3,8 @@ using System;
 
 public partial class Launcher : Node2D
 {
+	private const float MIN_ANGLE = 15;
+	
 	// TODO: Pass int id to know which snood to instantiate on the tilemap.
 	public event Action<Vector2> OnSnoodHit;
 	
@@ -83,7 +85,16 @@ public partial class Launcher : Node2D
 	private void Rotate()
 	{
 		AimDirection = (GetGlobalMousePosition() - Position).Normalized();
-		Sprite.Rotation = AimDirection.Angle() + (Mathf.Pi / 2);
+		float angle = AimDirection.Angle() + (Mathf.Pi / 2);
+		if (angle > Mathf.Pi)
+		{
+			angle -= 2 * Mathf.Pi;
+		}
+		Sprite.Rotation = Mathf.Clamp(
+			angle,
+			(-Mathf.Pi / 2) + Mathf.DegToRad(MIN_ANGLE),
+			(Mathf.Pi / 2) - Mathf.DegToRad(MIN_ANGLE));
+		GD.Print($"Rotation: {Sprite.Rotation}");
 	}
 	
 	private void NotifyTilesetAboutSnoodHit(Vector2 cooordinates)
