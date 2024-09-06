@@ -1,0 +1,74 @@
+[gd_scene load_steps=14 format=4 uid="uid://duir3xx8lwo33"]
+
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="1_lagia"]
+[ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://tiles/tile_yellow.tscn" id="1_mgxs6"]
+[ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_8lpga"]
+[ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://tiles/tile_dark_blue.tscn" id="3_yggro"]
+[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="4_ffkal"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="5_y5hd3"]
+[ext_resource type="Script" path="res://game/Launcher.cs" id="6_lyqr3"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="7_cqe6a"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
+scenes/0/scene = ExtResource("1_mgxs6")
+scenes/1/scene = ExtResource("2_8lpga")
+scenes/2/scene = ExtResource("3_yggro")
+
+[sub_resource type="TileSet" id="TileSet_8g4ad"]
+tile_shape = 2
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetScenesCollectionSource_mouri")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
+size = Vector2(1920, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
+size = Vector2(1, 1080)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_cqe6a")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="SnoodBoard" type="TileMapLayer"]
+tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAGAAEAAAAAAAAAAgAHAAIAAAAAAAAAAAABAAEAAAAAAAAAAQACAAAAAAAAAAAAAgACAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQAJAAAAAAAAAAAAAgAIAAAAAAAAAAAAAQAAAAEAAAAAAAAAAQABAAAAAAAAAAAAAQAMAAAAAAAAAAAAAQALAAEAAAAAAAAAAQACAAIAAAAAAAAAAgABAAIAAAAAAAAAAgADAAIAAAAAAAAAAgAHAAMAAAAAAAAAAgA=")
+tile_set = SubResource("TileSet_8g4ad")
+script = ExtResource("4_ffkal")
+
+[node name="Ceiling" type="StaticBody2D" parent="."]
+position = Vector2(960, 0)
+script = ExtResource("1_lagia")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+shape = SubResource("RectangleShape2D_b888v")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(0, 540)
+physics_material_override = ExtResource("5_y5hd3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(1152, 540)
+physics_material_override = ExtResource("5_y5hd3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="Launcher" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(577, 900)
+script = ExtResource("6_lyqr3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
+self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
+sprite_frames = SubResource("SpriteFrames_b6yik")
+offset = Vector2(0, -48)

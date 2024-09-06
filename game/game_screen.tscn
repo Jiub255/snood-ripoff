@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://bkmv4fysiwn2o"]
+[gd_scene load_steps=6 format=3 uid="uid://bkmv4fysiwn2o"]
 
 [ext_resource type="Texture2D" uid="uid://b6hwtb8ojjl4m" path="res://assets/snood-background.png" id="1_ir8px"]
+[ext_resource type="Script" path="res://game/GameScreen.cs" id="2_dqpq1"]
 [ext_resource type="Texture2D" uid="uid://5tgxlmu2if0o" path="res://assets/danger-bar-background.png" id="2_s1hki"]
 [ext_resource type="Texture2D" uid="uid://bhseo8iog47py" path="res://assets/danger-bar-fill.png" id="3_pmdt8"]
 
@@ -11,6 +12,10 @@ border_width_top = 12
 border_width_right = 12
 border_width_bottom = 12
 border_color = Color(0.388837, 0.509837, 0.541077, 1)
+expand_margin_left = 12.0
+expand_margin_top = 12.0
+expand_margin_right = 12.0
+expand_margin_bottom = 12.0
 
 [node name="GameScreen" type="TextureRect"]
 self_modulate = Color(0.662452, 0.662452, 0.662452, 1)
@@ -23,6 +28,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 2
 texture = ExtResource("1_ir8px")
+script = ExtResource("2_dqpq1")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -37,7 +43,8 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/GameControl"]
+[node name="GameHolder" type="PanelContainer" parent="HBoxContainer/GameControl"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(800, 1000)
 layout_mode = 1
 anchors_preset = 8
