@@ -12,28 +12,28 @@ public partial class Launcher : Node2D
 	
 	public Dictionary<int, PackedScene> Snoods { get; } = new()
 	{
-		{ 0, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") },
 		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
-		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") }
+		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
+		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") }
 	};
 	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new()
 	{
-		{ 0, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") },
 		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
-		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") }
+		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
+		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") }
 	};
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
+	public Node Parent { get; set; }
 	
-	private RandomNumberGenerator RNG { get; set; } = new();
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
 	private float Speed { get; set; } = 1500f;
 	private bool Reloading { get; set; }
 	private float ReloadTimer { get; set; }
-	private float ReloadDuration { get; } = 1f;
 	private bool SnoodLanded { get; set; } = true;
-	public Node Parent { get; set; }
 	private AnimatedSprite2D Sprite { get; set; }
+	private Random RNG { get; } = new();
+	private float ReloadDuration { get; } = 1f;
 
 	public override void _Ready()
 	{
@@ -83,7 +83,7 @@ public partial class Launcher : Node2D
 		{
 			return;
 		}
-		int randomIndex = RNG.RandiRange(0, SnoodsInUse.Count - 1);
+		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
 		PackedScene snoodScene = SnoodsInUse.ElementAt(randomIndex).Value;
 		LoadedSnood = (Snood)snoodScene.Instantiate();
 		Parent.CallDeferred(MethodName.AddChild, LoadedSnood);

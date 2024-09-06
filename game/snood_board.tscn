@@ -1,18 +1,21 @@
-[gd_scene load_steps=14 format=4 uid="uid://duir3xx8lwo33"]
+[gd_scene load_steps=17 format=4 uid="uid://duir3xx8lwo33"]
 
 [ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="1_lagia"]
 [ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://tiles/tile_yellow.tscn" id="1_mgxs6"]
+[ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://tiles/ceiling_tile.tscn" id="1_o727y"]
 [ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_8lpga"]
 [ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://tiles/tile_dark_blue.tscn" id="3_yggro"]
 [ext_resource type="Script" path="res://game/SnoodBoard.cs" id="4_ffkal"]
 [ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="5_y5hd3"]
 [ext_resource type="Script" path="res://game/Launcher.cs" id="6_lyqr3"]
 [ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="7_cqe6a"]
+[ext_resource type="Script" path="res://game/DeadSnoodDestroyer.cs" id="8_cbr5d"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
-scenes/0/scene = ExtResource("1_mgxs6")
+scenes/0/scene = ExtResource("1_o727y")
 scenes/1/scene = ExtResource("2_8lpga")
 scenes/2/scene = ExtResource("3_yggro")
+scenes/3/scene = ExtResource("1_mgxs6")
 
 [sub_resource type="TileSet" id="TileSet_8g4ad"]
 tile_shape = 2
@@ -24,6 +27,9 @@ size = Vector2(1920, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
 size = Vector2(1, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
+size = Vector2(4000, 200)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
 animations = [{
@@ -37,7 +43,7 @@ animations = [{
 }]
 
 [node name="SnoodBoard" type="TileMapLayer"]
-tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAHAAAAAAAAAAAAAAAGAAEAAAAAAAAAAgAHAAIAAAAAAAAAAAABAAEAAAAAAAAAAQACAAAAAAAAAAAAAgACAAEAAAAAAAAAAQAHAAEAAAAAAAAAAQAIAAEAAAAAAAAAAQAJAAAAAAAAAAAAAgAIAAAAAAAAAAAAAQAAAAEAAAAAAAAAAQABAAAAAAAAAAAAAQAMAAAAAAAAAAAAAQALAAEAAAAAAAAAAQACAAIAAAAAAAAAAgABAAIAAAAAAAAAAgADAAIAAAAAAAAAAgAHAAMAAAAAAAAAAgA=")
+tile_map_data = PackedByteArray("AAD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAADAP//AAAAAAAAAAAEAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAAAAAAAAAAAAAAAQABAAAAAAAAAAAAAQACAAAAAAAAAAAAAQABAAEAAAAAAAAAAQAAAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAAAAAAAAAAAAQAEAAAAAAAAAAAAAQADAAEAAAAAAAAAAQAEAAEAAAAAAAAAAQAFAAAAAAAAAAAAAQAHAAAAAAAAAAAAAgAHAAEAAAAAAAAAAgAIAAAAAAAAAAAAAgAIAAEAAAAAAAAAAgAJAAAAAAAAAAAAAgAJAAEAAAAAAAAAAgAKAAAAAAAAAAAAAgAKAAEAAAAAAAAAAgALAAAAAAAAAAAAAgANAAAAAAAAAAAAAwAOAAAAAAAAAAAAAwAPAAAAAAAAAAAAAwAQAAAAAAAAAAAAAwARAAAAAAAAAAAAAwAQAAEAAAAAAAAAAwAPAAEAAAAAAAAAAwAOAAEAAAAAAAAAAwANAAEAAAAAAAAAAwAJAAIAAAAAAAAAAwAIAAMAAAAAAAAAAQAJAAMAAAAAAAAAAgACAAIAAAAAAAAAAwABAAMAAAAAAAAAAgACAAMAAAAAAAAAAQAPAAIAAAAAAAAAAQAOAAMAAAAAAAAAAwAPAAMAAAAAAAAAAgA=")
 tile_set = SubResource("TileSet_8g4ad")
 script = ExtResource("4_ffkal")
 
@@ -62,6 +68,15 @@ physics_material_override = ExtResource("5_y5hd3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
 shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="DeadSnoodDestroyer" type="Area2D" parent="."]
+position = Vector2(960, 1380)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("8_cbr5d")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeadSnoodDestroyer"]
+shape = SubResource("RectangleShape2D_yr5r7")
 
 [node name="Launcher" type="Node2D" parent="."]
 unique_name_in_owner = true

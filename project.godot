@@ -34,6 +34,12 @@ shoot={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Main"
+2d_physics/layer_2="DeadSnood"
+2d_physics/layer_3="DeadSnoodDestroyer"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

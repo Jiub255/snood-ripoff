@@ -14,7 +14,7 @@ public partial class GameScreen : TextureRect
 		GameHolder = GetNode<PanelContainer>("%GameHolder");
 
 		// TESTING
-		SetupBoard(17);
+		SetupBoard(19);
 	}
 	
 	private void SetupBoard(int columns)

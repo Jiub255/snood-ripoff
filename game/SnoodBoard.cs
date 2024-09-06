@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,6 +10,7 @@ public partial class SnoodBoard : TileMapLayer
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallLeft { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
+	private Random RNG { get; } = new();
 
 	public override void _Ready()
 	{
@@ -93,6 +95,7 @@ public partial class SnoodBoard : TileMapLayer
 				//GD.Print($"Deleting cell: {cell}");
 				DeleteCell(cell);
 			}
+			CheckForHangingChunks();
 		}
 	}
 	
@@ -112,9 +115,73 @@ public partial class SnoodBoard : TileMapLayer
 			}
 		}
 		SetCell(cell, -1);
+		// TODO: Instantiate snood with no collider active, set gravity, and give it a little random nudge.
+		Snood deadSnood = (Snood)Launcher.Snoods[index].Instantiate();
+		CallDeferred(MethodName.AddChild, deadSnood);
+		
+		// TODO: Why is changing position not working? 
+		GD.Print($"Cell: {cell}, dead snood position before: {deadSnood.Position}");
+		deadSnood.Position = MapToLocal(cell);
+		//CallDeferred(MethodName.PositionCell, deadSnood, cell);
+		GD.Print($"Cell: {cell}, dead snood position after: {deadSnood.Position}");
+
+		deadSnood.SetCollisionLayerValue(1, false);
+		deadSnood.SetCollisionLayerValue(2, true);
+		deadSnood.SetCollisionMaskValue(1, false);
+		deadSnood.SetCollisionMaskValue(3, true);
+		deadSnood.GravityScale = 1;
+		float randomAngle = (float)RNG.NextDouble() * Mathf.Pi;
+		Vector2 randomDirection = Vector2.FromAngle(randomAngle);
+		deadSnood.ApplyImpulse(randomDirection * 200);
+		// TODO: Delete falling snood after a certain distance/time/border.
 	}
 	
-	private IEnumerable<Vector2I> GetSimilarTouchingCells(Vector2I centerCell, List<Vector2I> checkedCells = null)
+/* 	private void PositionCell(Snood snood, Vector2 position)
+	{
+		snood.Position = position;
+	} */
+	
+	private void CheckForHangingChunks()
+	{
+		List<List<Vector2I>> chunks = new();
+		List<Vector2I> checkedCells = new();
+		foreach (Vector2I cell in GetUsedCells())
+		{
+			if (checkedCells.Contains(cell))
+			{
+				continue;
+			}
+			IEnumerable<Vector2I> chunk = GetSimilarTouchingCells(cell, new List<Vector2I>(), true);
+			checkedCells.AddRange(chunk);
+			chunks.Add(chunk.ToList());
+		}
+		foreach (List<Vector2I> chunk in chunks)
+		{
+			bool isOnCeiling = false;
+			foreach (Vector2I cell in chunk)
+			{
+				// If it's a ceiling tile,
+				if (GetCellAlternativeTile(cell) == 0)
+				{
+					isOnCeiling = true;
+				}
+			}
+			if (!isOnCeiling)
+			{
+				DropChunk(chunk);
+			}
+		}
+	}
+
+	private void DropChunk(List<Vector2I> chunk)
+	{
+		foreach (Vector2I cell in chunk)
+		{
+			DeleteCell(cell);
+		}
+	}
+
+	private IEnumerable<Vector2I> GetSimilarTouchingCells(Vector2I centerCell, List<Vector2I> checkedCells = null, bool allCells = false)
 	{
 		// Workaround to have non-compile-time-constant default variable lists.
 		checkedCells ??= new List<Vector2I>();
@@ -134,7 +201,11 @@ public partial class SnoodBoard : TileMapLayer
 			if (!checkedCells.Contains(surroundingCell))
 			{
 				newlyCheckedCells.Add(surroundingCell);
-				if (GetCellAlternativeTile(surroundingCell) == GetCellAlternativeTile(centerCell))
+				
+				int surroundingCellIndex = GetCellAlternativeTile(surroundingCell);
+				int centerCellIndex = GetCellAlternativeTile(centerCell);
+				bool condition = allCells ? surroundingCellIndex >= 0 : surroundingCellIndex == centerCellIndex;
+				if (condition)
 				{
 					similarCells.Add(surroundingCell);
 				}
@@ -150,7 +221,7 @@ public partial class SnoodBoard : TileMapLayer
 		{
 			if (newlyCheckedCells.Contains(similarCell))
 			{
-				cellsToAdd.AddRange(GetSimilarTouchingCells(similarCell, checkedCells));
+				cellsToAdd.AddRange(GetSimilarTouchingCells(similarCell, checkedCells, allCells));
 			}
 		}
 		
