@@ -7,7 +7,6 @@ public partial class Launcher : Node2D
 {
 	private const float MIN_ANGLE = 15;
 	
-	// TODO: Pass int id to know which snood to instantiate on the tilemap.
 	public event Action<Vector2, int> OnSnoodHit;
 	
 	public Dictionary<int, PackedScene> Snoods { get; } = new()
@@ -16,31 +15,26 @@ public partial class Launcher : Node2D
 		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
 		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") }
 	};
-	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new()
-	{
-		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
-		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
-		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") }
-	};
+	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new();
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
 	public Node Parent { get; set; }
 	
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
 	private float Speed { get; set; } = 1500f;
-	private bool Reloading { get; set; }
 	private float ReloadTimer { get; set; }
+	private bool Reloading { get; set; }
 	private bool SnoodLanded { get; set; } = true;
 	private AnimatedSprite2D Sprite { get; set; }
 	private Random RNG { get; } = new();
 	private float ReloadDuration { get; } = 1f;
+
 
 	public override void _Ready()
 	{
 		base._Ready();
 
 		ReloadTimer = ReloadDuration;
-		CallDeferred(MethodName.LoadSnood);
 		Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 	}
 
@@ -77,10 +71,11 @@ public partial class Launcher : Node2D
 		}
 	}
 
-	private void LoadSnood()
+	public void LoadSnood()
 	{
 		if (SnoodsInUse.Count == 0)
 		{
+			GD.PushWarning("No SnoodsInUse to load.");
 			return;
 		}
 		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
@@ -115,10 +110,8 @@ public partial class Launcher : Node2D
 			(-Mathf.Pi / 2) + Mathf.DegToRad(MIN_ANGLE),
 			(Mathf.Pi / 2) - Mathf.DegToRad(MIN_ANGLE));
 		AimDirection = Vector2.FromAngle(Sprite.Rotation - (Mathf.Pi / 2));
-		//Sprite.Rotation = angle;
-		//GD.Print($"Rotation: {Sprite.Rotation}");
 	}
-	
+
 	private void NotifyTilesetAboutSnoodHit(Vector2 cooordinates, int altTileIndex)
 	{
 		FlyingSnood.OnHitStickyThing -= NotifyTilesetAboutSnoodHit;
@@ -129,6 +122,5 @@ public partial class Launcher : Node2D
 		{
 			LoadSnood();
 		}
-		//GD.Print("Notify tileset");
 	}
 }

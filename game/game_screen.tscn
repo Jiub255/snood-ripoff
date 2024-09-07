@@ -45,7 +45,7 @@ size_flags_horizontal = 3
 
 [node name="GameHolder" type="PanelContainer" parent="HBoxContainer/GameControl"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(800, 1000)
+custom_minimum_size = Vector2(448, 1000)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -107,7 +107,7 @@ mouse_filter = 2
 texture = ExtResource("2_s1hki")
 stretch_mode = 3
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="HBoxContainer/DangerBarControl/VBoxContainer/TextureRect"]
+[node name="DangerBar" type="TextureProgressBar" parent="HBoxContainer/DangerBarControl/VBoxContainer/TextureRect"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

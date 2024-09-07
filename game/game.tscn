@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgtuld6jiuxqs"]
+
+[ext_resource type="Script" path="res://game/Game.cs" id="1_4hmqy"]
+[ext_resource type="PackedScene" uid="uid://bkmv4fysiwn2o" path="res://game/game_screen.tscn" id="2_csmg2"]
+[ext_resource type="PackedScene" uid="uid://dmdnywb2jouyu" path="res://ui/ui.tscn" id="3_g2m8p"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_4hmqy")
+
+[node name="GameScreen" parent="." instance=ExtResource("2_csmg2")]
+unique_name_in_owner = true
+
+[node name="UI" parent="." instance=ExtResource("3_g2m8p")]
+unique_name_in_owner = true

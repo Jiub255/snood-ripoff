@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmdnywb2jouyu"]
+
+[ext_resource type="Script" path="res://ui/UI.cs" id="1_dalvr"]
+[ext_resource type="PackedScene" uid="uid://dsdjv6yinknbs" path="res://ui/main_menu.tscn" id="2_v2hh7"]
+[ext_resource type="PackedScene" uid="uid://bis4jhafmow76" path="res://ui/options_menu.tscn" id="3_3ubsd"]
+[ext_resource type="PackedScene" uid="uid://cefghmt4e2cuw" path="res://ui/credits_menu.tscn" id="4_pg6de"]
+
+[node name="Ui" type="CanvasLayer"]
+script = ExtResource("1_dalvr")
+
+[node name="MainMenu" parent="." instance=ExtResource("2_v2hh7")]
+unique_name_in_owner = true
+
+[node name="OptionsMenu" parent="." instance=ExtResource("3_3ubsd")]
+unique_name_in_owner = true
+visible = false
+
+[node name="CreditsMenu" parent="." instance=ExtResource("4_pg6de")]
+unique_name_in_owner = true
+visible = false

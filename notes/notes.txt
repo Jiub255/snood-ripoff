@@ -1,0 +1,68 @@
+TODO:
+
+	SFX/Music!!!!!!
+
+	Decide on a name
+		And theme? Cat faces or something?
+
+	Set up preloaded snood
+		And robot helper animation
+
+	Better art/animations in general
+		Make own or use assets?
+		At least do little robot reloader thing.
+
+	Random levels (with seed)
+		Show seed on board/let users choose seed.
+		Separate High scores for random?
+		Have difficulties?
+			Separate high scores for them too?
+			Difficulty affects:
+				Width of board
+				Rate of fill for danger bar?
+				Frequency of powerups/bad snoods?
+
+	Danger bar
+		Lowering screen
+
+	Death menu
+
+	Unbreakable pieces
+		Do rocks or something instead of skulls so the bad snoods can use that.
+
+	Make guide-line for aiming
+		Have option to turn it on/off in options menu.
+
+	Win level screen
+
+	Win game screen
+
+	High scores
+		Leaderboard online
+
+	Snoods used
+
+	Score
+		What formula/system?
+
+	NECESSARY FOR JAM:
+		NEW THING:
+			Powerup snoods - Hit them and they give you some powerup.
+				- Knock down surrounding snoods
+				- Give you a bomb to shoot
+				- Give you a guideline for rest of level (or a few shots?)
+				- ???
+			Bad snoods - Opposite of powerups.
+				- Instantly drop the wall down a notch
+				- Pop up random new snoods around the board
+				- Fuck up your aim for the next shot
+					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
+
+
+Probably not enough time:
+
+	Do interactive soundtrack.
+		Have song separated out into different tracks.
+		Start with just light sounds, like flutes or whatever.
+		As the board gets closer to the bottom, add more intense tracks, like drums and bass and scary sounds.
+		Maybe even have a beat switch from a cute little nintendoey swing bop to a doomy thumping beat.

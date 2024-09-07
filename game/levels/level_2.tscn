@@ -1,0 +1,90 @@
+[gd_scene load_steps=17 format=4 uid="uid://bhxfrb8t6jkgi"]
+
+[ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://tiles/ceiling_tile.tscn" id="1_b4ylv"]
+[ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_u0bhc"]
+[ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://tiles/tile_dark_blue.tscn" id="3_a5qv2"]
+[ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://tiles/tile_yellow.tscn" id="4_g8rlh"]
+[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="5_ugmg0"]
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="6_8psdb"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="7_g7e04"]
+[ext_resource type="Script" path="res://game/DeadSnoodDestroyer.cs" id="8_vyiwv"]
+[ext_resource type="Script" path="res://game/Launcher.cs" id="9_jxef0"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="10_mjn4f"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
+scenes/0/scene = ExtResource("1_b4ylv")
+scenes/1/scene = ExtResource("2_u0bhc")
+scenes/2/scene = ExtResource("3_a5qv2")
+scenes/3/scene = ExtResource("4_g8rlh")
+
+[sub_resource type="TileSet" id="TileSet_8g4ad"]
+tile_shape = 2
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetScenesCollectionSource_mouri")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
+size = Vector2(1920, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
+size = Vector2(1, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
+size = Vector2(4000, 200)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_mjn4f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="SnoodBoard" type="TileMapLayer"]
+tile_map_data = PackedByteArray("AAD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAADAP//AAAAAAAAAAAEAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAFAAAAAAAAAAAAAgAGAAAAAAAAAAAAAgAHAAAAAAAAAAAAAgA=")
+tile_set = SubResource("TileSet_8g4ad")
+script = ExtResource("5_ugmg0")
+Columns = 10.5
+
+[node name="Ceiling" type="StaticBody2D" parent="."]
+position = Vector2(960, 0)
+script = ExtResource("6_8psdb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+shape = SubResource("RectangleShape2D_b888v")
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(0, 540)
+physics_material_override = ExtResource("7_g7e04")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(672, 540)
+physics_material_override = ExtResource("7_g7e04")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="DeadSnoodDestroyer" type="Area2D" parent="."]
+position = Vector2(960, 1380)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("8_vyiwv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeadSnoodDestroyer"]
+shape = SubResource("RectangleShape2D_yr5r7")
+
+[node name="Launcher" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(577, 900)
+script = ExtResource("9_jxef0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
+self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
+sprite_frames = SubResource("SpriteFrames_b6yik")
+offset = Vector2(0, -48)

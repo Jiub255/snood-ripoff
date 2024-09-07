@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bl77ssdu218oj"]
-
-[ext_resource type="PackedScene" uid="uid://duir3xx8lwo33" path="res://game/snood_board.tscn" id="1_lrngu"]
-
-[node name="World" type="Node2D"]
-
-[node name="SnoodBoard" parent="." instance=ExtResource("1_lrngu")]
