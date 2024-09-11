@@ -5,24 +5,41 @@ using System.Linq;
 
 public partial class SnoodBoard : TileMapLayer
 {
-	public event Action OnWinLevel;
+	public event Action OnGoToNextLevel;
 	
 	private const int SPRITE_SIZE = 64;
 
+	private bool _disabled;
+
 	[Export(PropertyHint.Range, "7,20,0.5")]
 	public float Columns { get; set; }
+	public bool LevelWon
+	{
+		get => _disabled;
+		set
+		{
+			if (value == true)
+			{
+				EndLevelTimer = EndLevelDuration;
+			}
+			_disabled = value;
+		}
+	}
+	public Scores Scores { get; set; }
 	
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallRight { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
 	private Random RNG { get; } = new();
-
+	private float EndLevelTimer { get; set; }
+	private float EndLevelDuration { get; } = 1.5f;
+	
 
 	public override void _Ready()
 	{
 		base._Ready();
 		
-		Launcher = GetNode<Launcher>("%Launcher");
+		Launcher ??= GetNode<Launcher>("%Launcher");
 		WallRight = GetNode<StaticBody2D>("%WallRight");
 		
 		Launcher.Parent = this;
@@ -37,14 +54,35 @@ public partial class SnoodBoard : TileMapLayer
 		
 		Launcher.OnSnoodHit -= AddSnoodToBoard;
 	}
-	
-	public void SetupBoard()
+
+	public override void _Process(double delta)
+	{
+		if (LevelWon)
+		{
+			EndLevelTimer -= (float)delta;
+			if (EndLevelTimer < 0)
+			{
+				OnGoToNextLevel?.Invoke();
+				LevelWon = false;
+			}
+		}
+	}
+
+	private void SetupBoard()
 	{
 		float width = Columns * SPRITE_SIZE;
 		WallRight.Position = new Vector2(width, WallRight.Position.Y);
 		Launcher.Position = new Vector2(width / 2, Launcher.Position.Y);
 		CountSnoods();
 		Launcher.LoadSnood();
+		LevelWon = false;
+	}
+	
+	public void SetupScores(Scores scores)
+	{
+		Scores = scores;
+		Launcher ??= GetNode<Launcher>("%Launcher");
+		Launcher.Scores = scores;
 	}
 	
 	private void CountSnoods()
@@ -91,12 +129,18 @@ public partial class SnoodBoard : TileMapLayer
 		IEnumerable<Vector2I> similarCells = GetTouchingCells(mapCoords);
 		if (similarCells.Count() >= 3)
 		{
+			AddSimilarSnoodsScore(similarCells.Count());
 			foreach (Vector2I cell in similarCells)
 			{
 				DeleteCell(cell);
 			}
 			CheckForHangingChunks();
 		}
+	}
+	
+	private void AddSimilarSnoodsScore(int numberOfSnoods)
+	{
+		Scores.Level += numberOfSnoods * numberOfSnoods + 1;
 	}
 	
 	private void DeleteCell(Vector2I cell)
@@ -114,7 +158,9 @@ public partial class SnoodBoard : TileMapLayer
 
 	private void WinLevel()
 	{
-		OnWinLevel?.Invoke();
+		Launcher.Disabled = true;
+		LevelWon = true;
+		Scores.AddCompletionBonus();
 	}
 
 	private void DecrementSnoodsCount(int index)
@@ -192,10 +238,16 @@ public partial class SnoodBoard : TileMapLayer
 
 	private void DropChunk(List<Vector2I> chunk)
 	{
+		AddDroppedChunkScore(chunk.Count);
 		foreach (Vector2I cell in chunk)
 		{
 			DeleteCell(cell);
 		}
+	}
+
+	private void AddDroppedChunkScore(int numberOfSnoods)
+	{
+		Scores.Level += 10 * numberOfSnoods * numberOfSnoods;
 	}
 
 	private IEnumerable<Vector2I> GetTouchingCells(Vector2I centerCell, bool similarCellsOnly = true, List<Vector2I> checkedCells = null)

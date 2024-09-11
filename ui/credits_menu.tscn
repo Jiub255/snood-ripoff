@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://cefghmt4e2cuw"]
 
 [ext_resource type="Script" path="res://ui/CreditsMenu.cs" id="1_4jnht"]
-[ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/menu_background.tres" id="2_80wcy"]
-[ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/title_panel.tres" id="3_q1qly"]
-[ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/button_normal.tres" id="4_y8jvc"]
-[ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/button_pressed.tres" id="5_ych5h"]
-[ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/button_hover.tres" id="6_hl5cn"]
+[ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="2_80wcy"]
+[ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/styleboxes/title_panel.tres" id="3_q1qly"]
+[ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/styleboxes/button_normal.tres" id="4_y8jvc"]
+[ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="5_ych5h"]
+[ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="6_hl5cn"]
 
 [node name="CreditsMenu" type="Control"]
 layout_mode = 3
@@ -14,8 +14,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 script = ExtResource("1_4jnht")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]

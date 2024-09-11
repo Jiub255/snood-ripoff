@@ -4,10 +4,14 @@ using System;
 public partial class UI : CanvasLayer
 {
 	public event Action OnStartPressed;
+	public event Action OnNextLevelPressed;
+	
+	//public Scores Scores { get; set; }
 	
 	private MainMenu MainMenu { get; set; }
 	private OptionsMenu OptionsMenu { get; set; }
 	private CreditsMenu CreditsMenu { get; set; }
+	private EndLevelMenu EndLevelMenu { get; set; }
 
 
 	public override void _Ready()
@@ -17,12 +21,16 @@ public partial class UI : CanvasLayer
 		MainMenu = GetNode<MainMenu>("%MainMenu");
 		OptionsMenu = GetNode<OptionsMenu>("%OptionsMenu");
 		CreditsMenu = GetNode<CreditsMenu>("%CreditsMenu");
+		EndLevelMenu = GetNode<EndLevelMenu>("%EndLevelMenu");
+		
+		//EndLevelMenu.Scores = Scores;
 
 		MainMenu.OnStartPressed += StartGame;
 		MainMenu.OnOptionsPressed += OpenOptions;
 		MainMenu.OnCreditsPressed += OpenCredits;
 		OptionsMenu.OnBackPressed += OpenMainMenu;
 		CreditsMenu.OnBackPressed += OpenMainMenu;
+		EndLevelMenu.OnNextLevelPressed += NextLevel;
 	}
 
 	public override void _ExitTree()
@@ -34,6 +42,28 @@ public partial class UI : CanvasLayer
 		MainMenu.OnCreditsPressed -= OpenCredits;
 		OptionsMenu.OnBackPressed -= OpenMainMenu;
 		CreditsMenu.OnBackPressed -= OpenMainMenu;
+		EndLevelMenu.OnNextLevelPressed += NextLevel;
+	}
+	
+	public void OpenEndLevelMenu()
+	{
+		CloseAllMenus();
+		EndLevelMenu.Show();
+		EndLevelMenu.SetupMenu();
+	}
+	
+	public void CloseAllMenus()
+	{
+		MainMenu.Hide();
+		OptionsMenu.Hide();
+		CreditsMenu.Hide();
+		EndLevelMenu.Hide();
+	}
+	
+	public void SetupScores(Scores scores)
+	{
+		//Scores = scores;
+		EndLevelMenu.Scores = scores;
 	}
 
 	private void StartGame()
@@ -60,10 +90,9 @@ public partial class UI : CanvasLayer
 		CreditsMenu.Show();
 	}
 	
-	public void CloseAllMenus()
+	private void NextLevel()
 	{
-		MainMenu.Hide();
-		OptionsMenu.Hide();
-		CreditsMenu.Hide();
+		CloseAllMenus();
+		OnNextLevelPressed?.Invoke();
 	}
 }

@@ -1,0 +1,94 @@
+[gd_scene load_steps=8 format=3 uid="uid://d227gre42nayi"]
+
+[ext_resource type="Script" path="res://ui/EndLevelMenu.cs" id="1_1785r"]
+[ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="2_22da2"]
+[ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/styleboxes/button_normal.tres" id="3_xod6k"]
+[ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="4_84u2x"]
+[ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="5_qjdxr"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_utwjw"]
+content_margin_top = 60.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qguh6"]
+content_margin_bottom = 60.0
+
+[node name="EndLevelMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1785r")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1294, 800)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("2_22da2")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 20
+
+[node name="CompletionBonus" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
+theme_override_font_sizes/font_size = 42
+theme_override_styles/normal = SubResource("StyleBoxEmpty_utwjw")
+text = "Completion Bonus: 1000"
+
+[node name="SnoodsUsed" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
+theme_override_font_sizes/font_size = 42
+text = "Snoods Used: 234"
+
+[node name="Score" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
+theme_override_font_sizes/font_size = 42
+text = "Score: 12334"
+
+[node name="TotalScore" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
+theme_override_font_sizes/font_size = 42
+theme_override_styles/normal = SubResource("StyleBoxEmpty_qguh6")
+text = "Total Score: 14532334"
+
+[node name="Button" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 28
+theme_override_styles/focus = ExtResource("3_xod6k")
+theme_override_styles/disabled_mirrored = ExtResource("4_84u2x")
+theme_override_styles/disabled = ExtResource("4_84u2x")
+theme_override_styles/hover_pressed_mirrored = ExtResource("4_84u2x")
+theme_override_styles/hover_pressed = ExtResource("4_84u2x")
+theme_override_styles/hover_mirrored = ExtResource("5_qjdxr")
+theme_override_styles/hover = ExtResource("5_qjdxr")
+theme_override_styles/pressed_mirrored = ExtResource("4_84u2x")
+theme_override_styles/pressed = ExtResource("4_84u2x")
+theme_override_styles/normal_mirrored = ExtResource("3_xod6k")
+theme_override_styles/normal = ExtResource("3_xod6k")
+text = "Next Level"

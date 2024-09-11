@@ -19,8 +19,9 @@ TODO:
 			Separate high scores for them too?
 			Difficulty affects:
 				Width of board
-				Rate of fill for danger bar?
-				Frequency of powerups/bad snoods?
+				Rate of fill for danger bar
+				Frequency of powerups/bad snoods
+				Have an auto-shoot timer on hard difficulties.
 
 	Danger bar
 		Lowering screen
@@ -44,6 +45,9 @@ TODO:
 
 	Score
 		What formula/system?
+		Imitate original scoring
+		Snoods used for end level bonus
+		Flat completion bonus
 
 	NECESSARY FOR JAM:
 		NEW THING:

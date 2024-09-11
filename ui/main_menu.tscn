@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=3 uid="uid://dsdjv6yinknbs"]
 
 [ext_resource type="Script" path="res://ui/MainMenu.cs" id="1_tfh8u"]
-[ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/button_normal.tres" id="2_7l3d3"]
+[ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/styleboxes/button_normal.tres" id="2_7l3d3"]
 [ext_resource type="Script" path="res://ui/HighScores.cs" id="2_11sku"]
-[ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/menu_background.tres" id="2_t7c4j"]
-[ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/title_panel.tres" id="3_kkncj"]
-[ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/button_pressed.tres" id="4_6sik2"]
-[ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/button_hover.tres" id="4_oh8qu"]
+[ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="2_t7c4j"]
+[ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/styleboxes/title_panel.tres" id="3_kkncj"]
+[ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="4_6sik2"]
+[ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="4_oh8qu"]
 [ext_resource type="PackedScene" uid="uid://djqsxm03c26gx" path="res://ui/high_score_entry.tscn" id="8_tad5m"]
 
 [node name="MainMenu" type="Control"]

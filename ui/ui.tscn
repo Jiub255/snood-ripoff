@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dmdnywb2jouyu"]
+[gd_scene load_steps=6 format=3 uid="uid://dmdnywb2jouyu"]
 
 [ext_resource type="Script" path="res://ui/UI.cs" id="1_dalvr"]
 [ext_resource type="PackedScene" uid="uid://dsdjv6yinknbs" path="res://ui/main_menu.tscn" id="2_v2hh7"]
 [ext_resource type="PackedScene" uid="uid://bis4jhafmow76" path="res://ui/options_menu.tscn" id="3_3ubsd"]
 [ext_resource type="PackedScene" uid="uid://cefghmt4e2cuw" path="res://ui/credits_menu.tscn" id="4_pg6de"]
+[ext_resource type="PackedScene" uid="uid://d227gre42nayi" path="res://ui/end_level_menu.tscn" id="5_ceg8v"]
 
 [node name="Ui" type="CanvasLayer"]
 script = ExtResource("1_dalvr")
@@ -16,5 +17,9 @@ unique_name_in_owner = true
 visible = false
 
 [node name="CreditsMenu" parent="." instance=ExtResource("4_pg6de")]
+unique_name_in_owner = true
+visible = false
+
+[node name="EndLevelMenu" parent="." instance=ExtResource("5_ceg8v")]
 unique_name_in_owner = true
 visible = false

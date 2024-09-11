@@ -5,6 +5,7 @@ public partial class Game : Node
 {
 	private GameScreen GameScreen { get; set; }
 	private UI UI { get; set; }
+	private Scores Scores { get; set; } = new();
 
 
 	public override void _Ready()
@@ -14,8 +15,13 @@ public partial class Game : Node
 		GameScreen = GetNode<GameScreen>("%GameScreen");
 		UI = GetNode<UI>("%UI");
 
+		GameScreen.SetupScores(Scores);
+		UI.SetupScores(Scores);
+
 		GameScreen.OnWinGame += WinGame;
+		GameScreen.OnEndLevelMenu += OpenEndLevelMenu;
 		UI.OnStartPressed += StartGame;
+		UI.OnNextLevelPressed += NextLevel;
 	}
 
 	public override void _ExitTree()
@@ -23,7 +29,9 @@ public partial class Game : Node
 		base._ExitTree();
 		
 		GameScreen.OnWinGame -= WinGame;
+		GameScreen.OnEndLevelMenu -= OpenEndLevelMenu;
 		UI.OnStartPressed -= StartGame;
+		UI.OnNextLevelPressed -= NextLevel;
 	}
 
 	public override void _Input(InputEvent @event)
@@ -40,6 +48,22 @@ public partial class Game : Node
 	{
 		GameScreen.StartGame();
 	}
+
+	private void OpenEndLevelMenu()
+	{
+		UI.OpenEndLevelMenu();
+	}
+
+	private void NextLevel()
+	{
+		GameScreen.EndLevel();
+	}
+
+	private void WinGame()
+	{
+		GD.Print("You Win!");
+		// TODO: Win menu, add high score if you got one. 
+	}
 	
 	// TODO: Handle this separately for different menus?
 	private void Pause()
@@ -55,10 +79,5 @@ public partial class Game : Node
 			tree.Paused = true;
 			// What to do here?
 		}
-	}
-
-	private void WinGame()
-	{
-		GD.Print("You Win!");
 	}
 }

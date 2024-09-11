@@ -13,11 +13,17 @@ public partial class Launcher : Node2D
 	{
 		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
 		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
-		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") }
+		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") },
+		{ 4, GD.Load<PackedScene>("res://snoods/snood_green.tscn") },
+		{ 5, GD.Load<PackedScene>("res://snoods/snood_purple.tscn") },
+		{ 6, GD.Load<PackedScene>("res://snoods/snood_light_blue.tscn") },
+		{ 7, GD.Load<PackedScene>("res://snoods/snood_gray.tscn") }
 	};
 	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new();
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
 	public Node Parent { get; set; }
+	public bool Disabled { get; set; }
+	public Scores Scores { get; set; }
 	
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
@@ -75,26 +81,38 @@ public partial class Launcher : Node2D
 	{
 		if (SnoodsInUse.Count == 0)
 		{
-			GD.PushWarning("No SnoodsInUse to load.");
+			//GD.PushWarning("No SnoodsInUse to load.");
 			return;
 		}
-		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
-		PackedScene snoodScene = SnoodsInUse.ElementAt(randomIndex).Value;
-		LoadedSnood = (Snood)snoodScene.Instantiate();
-		Parent.CallDeferred(MethodName.AddChild, LoadedSnood);
-		LoadedSnood.Position = Position;
-		LoadedSnood.OnHitStickyThing += NotifyTilesetAboutSnoodHit;
+		PackedScene snoodScene = ChooseRandomSnood();
+		SetupSnood(snoodScene);
 	}
 
 	public void Shoot()
 	{
-		if (!Reloading && SnoodLanded)
+		if (!Reloading && SnoodLanded && !Disabled)
 		{
 			FlyingSnood = LoadedSnood;
 			FlyingSnood.LinearVelocity = AimDirection * Speed;
 			Reloading = true;
 			SnoodLanded = false;
+			Scores.SnoodsUsed++;
 		}
+	}
+	
+	private PackedScene ChooseRandomSnood()
+	{
+		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
+		PackedScene snoodScene = SnoodsInUse.ElementAt(randomIndex).Value;
+		return snoodScene;
+	}
+
+	private void SetupSnood(PackedScene snoodScene)
+	{
+		LoadedSnood = (Snood)snoodScene.Instantiate();
+		Parent.CallDeferred(MethodName.AddChild, LoadedSnood);
+		LoadedSnood.Position = Position;
+		LoadedSnood.OnHitStickyThing += NotifyTilesetAboutSnoodHit;
 	}
 
 	private void Rotate()

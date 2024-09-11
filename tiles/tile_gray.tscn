@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfkk318vpm6hp"]
+
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="1_4cj04"]
+[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://game/snood_sprite_frames.tres" id="2_v4pwj"]
+[ext_resource type="Script" path="res://game/SnoodSprite.cs" id="3_7b1p3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
+radius = 28.0
+
+[node name="SnoodTile" type="StaticBody2D"]
+script = ExtResource("1_4cj04")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+self_modulate = Color(0.403922, 0.403922, 0.403922, 1)
+sprite_frames = ExtResource("2_v4pwj")
+script = ExtResource("3_7b1p3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ya6h5")
+debug_color = Color(0, 0.595, 0.7, 0)
