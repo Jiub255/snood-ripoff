@@ -1,0 +1,89 @@
+[gd_scene load_steps=14 format=4 uid="uid://bbs1chbgmnjwj"]
+
+[ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="1_r4cge"]
+[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="2_5ln5x"]
+[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="3_5qaqo"]
+[ext_resource type="Texture2D" uid="uid://dc883pbachgsy" path="res://assets/snood-wall-placeholder.png" id="4_0kyjg"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="4_k6jv6"]
+[ext_resource type="Script" path="res://game/DeadSnoodDestroyer.cs" id="5_otcq8"]
+[ext_resource type="Script" path="res://game/Launcher.cs" id="6_iodvm"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="7_ghxss"]
+[ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/bottom_limit.tscn" id="7_jt080"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
+size = Vector2(1920, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
+size = Vector2(1, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
+size = Vector2(4000, 200)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_ghxss")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="SnoodBoard" type="Node2D"]
+script = ExtResource("2_5ln5x")
+Columns = 13.5
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+tile_map_data = PackedByteArray("AAADAAAAAAAAAAAABQADAAEAAAAAAAAABQACAAEAAAAAAAAABQADAAIAAAAAAAAABQACAAMAAAAAAAAABQADAAMAAAAAAAAABQADAAQAAAAAAAAABQAEAAQAAAAAAAAABQADAAUAAAAAAAAABQACAAUAAAAAAAAABQADAAYAAAAAAAAABQACAAYAAAAAAAAABQABAAUAAAAAAAAABQAKAAAAAAAAAAAABAAKAAEAAAAAAAAABAAJAAEAAAAAAAAABAAJAAIAAAAAAAAABAAJAAMAAAAAAAAABAAKAAMAAAAAAAAABAAKAAIAAAAAAAAABAALAAIAAAAAAAAABAAKAAQAAAAAAAAABAAKAAUAAAAAAAAABAAJAAUAAAAAAAAABAAKAAYAAAAAAAAABAAJAAcAAAAAAAAABAAGAAAAAAAAAAAABgAFAAEAAAAAAAAABgAFAAIAAAAAAAAABgAGAAEAAAAAAAAABgAHAAIAAAAAAAAABgAGAAMAAAAAAAAABgAFAAMAAAAAAAAABgAGAAQAAAAAAAAABgAHAAQAAAAAAAAABgAGAAUAAAAAAAAABgAMAAAAAAAAAAAABwAMAAEAAAAAAAAABwALAAEAAAAAAAAABwAMAAIAAAAAAAAABwAIAAIAAAAAAAAABwAHAAMAAAAAAAAABwAIAAMAAAAAAAAABwAGAAIAAAAAAAAABwAEAAMAAAAAAAAABwAFAAQAAAAAAAAABwACAAQAAAAAAAAABwABAAMAAAAAAAAABwABAAIAAAAAAAAABwACAAIAAAAAAAAABwABAAEAAAAAAAAABwACAAAAAAAAAAAABwABAAAAAAAAAAAABwAAAAAAAAAAAAAABwD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAAEAP//AAAAAAAAAAADAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAHAAEAAAAAAAAAAQA=")
+tile_set = ExtResource("1_r4cge")
+
+[node name="Ceiling" type="StaticBody2D" parent="TileMapLayer"]
+position = Vector2(960, 0)
+script = ExtResource("3_5qaqo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/Ceiling"]
+shape = SubResource("RectangleShape2D_b888v")
+
+[node name="Sprite2D" type="Sprite2D" parent="TileMapLayer/Ceiling"]
+self_modulate = Color(0.702503, 0.38999, 0.334532, 1)
+texture = ExtResource("4_0kyjg")
+offset = Vector2(0, -540)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(0, 540)
+physics_material_override = ExtResource("4_k6jv6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(864, 540)
+physics_material_override = ExtResource("4_k6jv6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="DeadSnoodDestroyer" type="Area2D" parent="."]
+position = Vector2(960, 1380)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("5_otcq8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeadSnoodDestroyer"]
+shape = SubResource("RectangleShape2D_yr5r7")
+
+[node name="BottomLimit" parent="." instance=ExtResource("7_jt080")]
+unique_name_in_owner = true
+
+[node name="Launcher" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(577, 900)
+script = ExtResource("6_iodvm")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
+self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
+sprite_frames = SubResource("SpriteFrames_b6yik")
+offset = Vector2(0, -48)

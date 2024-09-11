@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=10 format=3 uid="uid://g7rltp52dpnh"]
+[gd_resource type="TileSet" load_steps=11 format=3 uid="uid://g7rltp52dpnh"]
 
 [ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://tiles/ceiling_tile.tscn" id="1_3dqtx"]
 [ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_1v0ps"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://blsytqi3jdqkk" path="res://tiles/tile_purple.tscn" id="6_bnt8n"]
 [ext_resource type="PackedScene" uid="uid://2tkplova7tyv" path="res://tiles/tile_light_blue.tscn" id="7_ycv7t"]
 [ext_resource type="PackedScene" uid="uid://cfkk318vpm6hp" path="res://tiles/tile_gray.tscn" id="8_2jqn3"]
+[ext_resource type="PackedScene" uid="uid://dylomkm2riky2" path="res://tiles/tile_skull.tscn" id="9_hwe8w"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
 scenes/0/scene = ExtResource("1_3dqtx")
@@ -18,6 +19,7 @@ scenes/4/scene = ExtResource("5_k2c8b")
 scenes/5/scene = ExtResource("6_bnt8n")
 scenes/6/scene = ExtResource("7_ycv7t")
 scenes/7/scene = ExtResource("8_2jqn3")
+scenes/8/scene = ExtResource("9_hwe8w")
 
 [resource]
 tile_shape = 2

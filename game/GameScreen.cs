@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class GameScreen : TextureRect
 {
@@ -13,16 +12,17 @@ public partial class GameScreen : TextureRect
 	
 	private PanelContainer GameHolder { get; set; }
 	private SnoodBoard BoardInstance { get; set; }
-	private Dictionary<int, PackedScene> Levels = new()
+	private PackedScene[] Levels =
 	{
-		{ 1, GD.Load<PackedScene>("res://game/levels/level_1.tscn") },
-		{ 2, GD.Load<PackedScene>("res://game/levels/level_2.tscn") },
-		{ 3, GD.Load<PackedScene>("res://game/levels/level_3.tscn") }
+		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
 	private ScoreLabel ScoreLabel { get; set; }
-	private TextureProgressBar DangerBar { get; set; }
+	private DangerBar DangerBar { get; set; }
 
 
 	public override void _Ready()
@@ -30,7 +30,7 @@ public partial class GameScreen : TextureRect
 		base._Ready();
 		
 		GameHolder = GetNode<PanelContainer>("%GameHolder");
-		DangerBar = GetNode<TextureProgressBar>("%DangerBar");
+		DangerBar = GetNode<DangerBar>("%DangerBar");
 		DangerBar.Value = 0;
 	}
 
@@ -44,7 +44,8 @@ public partial class GameScreen : TextureRect
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
 		
 		BoardInstance.QueueFree();
-		if (Levels.ContainsKey(CurrentLevel + 1))
+		// CurrentLevel == [current Levels array index] + 1
+		if (CurrentLevel < Levels.Length)
 		{
 			SetupLevel(CurrentLevel + 1);
 		}
@@ -66,21 +67,34 @@ public partial class GameScreen : TextureRect
 	}
 
 	private void SetupLevel(int level)
-	{
-		CurrentLevel = level;
-		BoardInstance = (SnoodBoard)Levels[level].Instantiate();
-		GameHolder.CallDeferred(MethodName.AddChild, BoardInstance);
-		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
-		
-		Scores.ResetLevel();
-		BoardInstance.SetupScores(Scores);
-		BoardInstance.DangerBar = DangerBar;
-		
-		float width = BoardInstance.Columns * SPRITE_SIZE;
-		GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);
-	}
-	
-	private void OpenEndLevelMenu()
+    {
+        CurrentLevel = level;
+        InstantiateBoard(level);
+        InitializeBoard();
+        ResizeGameHolder();
+    }
+
+    private void InstantiateBoard(int level)
+    {
+        BoardInstance = (SnoodBoard)Levels[level - 1].Instantiate();
+        GameHolder.CallDeferred(MethodName.AddChild, BoardInstance);
+    }
+
+    private void InitializeBoard()
+    {
+        BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
+        Scores.ResetLevel();
+        BoardInstance.SetupScores(Scores);
+        BoardInstance.SetupDangerBar(DangerBar);
+    }
+
+    private void ResizeGameHolder()
+    {
+        float width = BoardInstance.Columns * SPRITE_SIZE;
+        GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);
+    }
+
+    private void OpenEndLevelMenu()
 	{
 		OnEndLevelMenu?.Invoke();
 	}

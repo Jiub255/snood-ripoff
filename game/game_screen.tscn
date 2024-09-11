@@ -1,23 +1,26 @@
-[gd_scene load_steps=8 format=3 uid="uid://bkmv4fysiwn2o"]
+[gd_scene load_steps=10 format=3 uid="uid://bkmv4fysiwn2o"]
 
 [ext_resource type="Texture2D" uid="uid://b6hwtb8ojjl4m" path="res://assets/snood-background.png" id="1_ir8px"]
 [ext_resource type="Script" path="res://game/GameScreen.cs" id="2_dqpq1"]
 [ext_resource type="Texture2D" uid="uid://5tgxlmu2if0o" path="res://assets/danger-bar-background.png" id="2_s1hki"]
 [ext_resource type="Script" path="res://game/SnoodsUsedLabel.cs" id="3_nnxl6"]
 [ext_resource type="Texture2D" uid="uid://bhseo8iog47py" path="res://assets/danger-bar-fill.png" id="3_pmdt8"]
+[ext_resource type="Script" path="res://game/DangerBar.cs" id="6_5pnjo"]
 [ext_resource type="Script" path="res://game/ScoreLabel.cs" id="6_q43js"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v1ah"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
 bg_color = Color(0.76662, 0.76662, 0.766619, 1)
 border_width_left = 12
 border_width_top = 12
 border_width_right = 12
 border_width_bottom = 12
 border_color = Color(0.388837, 0.509837, 0.541077, 1)
-expand_margin_left = 12.0
-expand_margin_top = 12.0
-expand_margin_right = 12.0
-expand_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bl4gu"]
 
 [node name="GameScreen" type="TextureRect"]
 self_modulate = Color(0.662452, 0.662452, 0.662452, 1)
@@ -45,8 +48,7 @@ mouse_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GameHolder" type="PanelContainer" parent="HBoxContainer/GameControl"]
-unique_name_in_owner = true
+[node name="PanelContainer" type="PanelContainer" parent="HBoxContainer/GameControl"]
 custom_minimum_size = Vector2(448, 1000)
 layout_mode = 1
 anchors_preset = 8
@@ -61,6 +63,12 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_2v1ah")
+
+[node name="GameHolder" type="PanelContainer" parent="HBoxContainer/GameControl/PanelContainer"]
+unique_name_in_owner = true
+clip_children = 1
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bl4gu")
 
 [node name="DangerBarControl" type="Control" parent="HBoxContainer"]
 custom_minimum_size = Vector2(400, 0)
@@ -129,8 +137,9 @@ value = 62.0
 fill_mode = 3
 texture_under = ExtResource("3_pmdt8")
 texture_progress = ExtResource("3_pmdt8")
-tint_under = Color(0.725182, 0, 0.0561627, 1)
-tint_progress = Color(0.698105, 0.561006, 0, 1)
+tint_under = Color(0.46108, 0, 0.0216215, 1)
+tint_progress = Color(0.914004, 0.737602, 2.69532e-06, 1)
+script = ExtResource("6_5pnjo")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="HBoxContainer/DangerBarControl/VBoxContainer"]
 layout_mode = 2

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class SnoodBoard : TileMapLayer
+public partial class SnoodBoard : Node2D
 {
 	public event Action OnGoToNextLevel;
 	
@@ -17,6 +17,7 @@ public partial class SnoodBoard : TileMapLayer
 	public int BaseSnoodUseBonus { get; set; } = 10000;
 	[Export]
 	public int PenaltyPerSnood { get; set; } = 100;
+	
 	public bool LevelWon
 	{
 		get => _disabled;
@@ -30,10 +31,12 @@ public partial class SnoodBoard : TileMapLayer
 		}
 	}
 	public Scores Scores { get; set; }
-	public TextureProgressBar DangerBar { get; set; }
+	public DangerBar DangerBar { get; set; }
+	public TileMapLayer Tilemap { get; private set; }
 	
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallRight { get; set; }
+	private Area2D BottomLimit { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
 	private Random RNG { get; } = new();
 	private float EndLevelTimer { get; set; }
@@ -46,6 +49,8 @@ public partial class SnoodBoard : TileMapLayer
 		
 		Launcher ??= GetNode<Launcher>("%Launcher");
 		WallRight = GetNode<StaticBody2D>("%WallRight");
+		Tilemap = GetNode<TileMapLayer>("%TileMapLayer");
+		BottomLimit = GetNode<Area2D>("%BottomLimit");
 		
 		Launcher.Parent = this;
 		Launcher.OnSnoodHit += AddSnoodToBoard;
@@ -58,6 +63,7 @@ public partial class SnoodBoard : TileMapLayer
 		base._ExitTree();
 		
 		Launcher.OnSnoodHit -= AddSnoodToBoard;
+		DangerBar.OnDangerBarFull -= LowerBoard;
 	}
 
 	public override void _Process(double delta)
@@ -72,6 +78,21 @@ public partial class SnoodBoard : TileMapLayer
 			}
 		}
 	}
+	
+	public void SetupScores(Scores scores)
+	{
+		Scores = scores;
+		Scores.BaseSnoodUseBonus = BaseSnoodUseBonus;
+		Scores.PenaltyPerSnood = PenaltyPerSnood;
+		Launcher ??= GetNode<Launcher>("%Launcher");
+		Launcher.Scores = scores;
+	}
+	
+	public void SetupDangerBar(DangerBar dangerBar)
+	{
+		DangerBar = dangerBar;
+		DangerBar.OnDangerBarFull += LowerBoard;
+	}
 
 	private void SetupBoard()
 	{
@@ -83,20 +104,11 @@ public partial class SnoodBoard : TileMapLayer
 		LevelWon = false;
 	}
 	
-	public void SetupScores(Scores scores)
-	{
-		Scores = scores;
-		Scores.BaseSnoodUseBonus = BaseSnoodUseBonus;
-		Scores.PenaltyPerSnood = PenaltyPerSnood;
-		Launcher ??= GetNode<Launcher>("%Launcher");
-		Launcher.Scores = scores;
-	}
-	
 	private void CountSnoods()
 	{
-		foreach (Vector2I cell in GetUsedCells())
+		foreach (Vector2I cell in Tilemap.GetUsedCells())
 		{
-			int altTileIndex = GetCellAlternativeTile(cell);
+			int altTileIndex = Tilemap.GetCellAlternativeTile(cell);
 			if (altTileIndex > 0)
 			{
 				if (SnoodsByIndex.ContainsKey(altTileIndex))
@@ -107,34 +119,18 @@ public partial class SnoodBoard : TileMapLayer
 				{
 					SnoodsByIndex[altTileIndex] = 1;
 				}
-				
-				if (!Launcher.SnoodsInUse.ContainsKey(altTileIndex))
-				{
-					Launcher.SnoodsInUse.Add(altTileIndex, Launcher.Snoods[altTileIndex]);
-				}
+
+				Launcher.UpdateDictionary(altTileIndex);
 			}
 		}
 	}
 	
 	private void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
 	{
-		Vector2I mapCoords = LocalToMap(coordinates);
-		//GD.Print($"Map Coordinates: {mapCoords}");
-		// Second parameter is the source index (probably just using one so always 0).
-		// Third parameter always needs to be (0,0) to work with scene tiles,
-		// Last parameter is the scene tile index, get from flying snood.
-		mapCoords = CorrectForSides(mapCoords);
-		SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
-		if (SnoodsByIndex.ContainsKey(altTileIndex))
-		{
-			SnoodsByIndex[altTileIndex]++;
-		}
-		else
-		{
-			SnoodsByIndex[altTileIndex] = 1;
-			Launcher.SnoodsInUse.Add(altTileIndex, Launcher.Snoods[altTileIndex]);
-		}
-		
+		Vector2I mapCoords = Tilemap.LocalToMap(coordinates);
+		SetSnood(mapCoords, altTileIndex);
+		UpdateDictionary(altTileIndex);
+
 		IEnumerable<Vector2I> similarCells = GetTouchingCells(mapCoords);
 		if (similarCells.Count() >= 3)
 		{
@@ -144,22 +140,67 @@ public partial class SnoodBoard : TileMapLayer
 				DeleteCell(cell);
 			}
 			CheckForHangingChunks();
-			ChangeDangerBar(-10);
+			DangerBar.ChangeValue(-10);
 		}
 		else
 		{
-			ChangeDangerBar(10);
+			DangerBar.ChangeValue(30);
 		}
 	}
 	
+	private void LowerBoard()
+	{
+		// TODO: Lower board.
+		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
+		
+		if (BottomLimit.HasOverlappingBodies())
+		{
+			Die();
+		}
+	}
+
+	private Vector2I SetSnood(Vector2I mapCoords, int altTileIndex)
+	{
+		// Second parameter is the source index (probably just using one index so it should always be 0).
+		// Third parameter always needs to be (0,0) to work with scene tiles,
+		// Last parameter is the scene tile index, get from flying snood.
+		mapCoords = CorrectForSides(mapCoords);
+		Tilemap.SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
+		if (BottomLimit.HasOverlappingBodies())
+		{
+			Die();
+		}
+		return mapCoords;
+	}
+	
+	// TODO: Die.
+	private void Die()
+	{
+		GD.Print("Bottom limit detected body");
+		// Turn all snoods to skulls.
+		// Wait 1.5 seconds or so.
+		// Show death menu? Back to main?
+	}
+
+	private void UpdateDictionary(int altTileIndex)
+	{
+		if (SnoodsByIndex.ContainsKey(altTileIndex))
+		{
+			SnoodsByIndex[altTileIndex]++;
+		}
+		else
+		{
+			SnoodsByIndex[altTileIndex] = 1;
+			Launcher.UpdateDictionary(altTileIndex);
+		}
+	}
+
 	private Vector2I CorrectForSides(Vector2I mapCoords)
 	{
 		// Left wall
-		GD.Print($"Before: {mapCoords}");
 		if (mapCoords.X < 0)
 		{
 			Vector2I newCoords = new Vector2I(0, mapCoords.Y);
-			GD.Print($"After: {newCoords}");
 			return newCoords;
 		}
 		// Right wall
@@ -169,7 +210,6 @@ public partial class SnoodBoard : TileMapLayer
 			if (mapCoords.X > Columns - 1.5f)
 			{
 				Vector2I newCoords = new Vector2I(Mathf.FloorToInt(Columns - 1.5f), mapCoords.Y);
-				GD.Print($"After: {newCoords}");
 				return newCoords;
 			}
 		}
@@ -177,27 +217,9 @@ public partial class SnoodBoard : TileMapLayer
 		else if (mapCoords.X > Columns - 1)
 		{
 			Vector2I newCoords = new Vector2I((int)(Columns - 1), mapCoords.Y);
-			GD.Print($"After: {newCoords}");
 			return newCoords;
 		}
-		GD.Print($"After: {mapCoords}");
 		return mapCoords;
-	}
-	
-	private void ChangeDangerBar(int amount)
-	{
-		DangerBar.Value += amount;
-		//GD.Print($"Max: {DangerBar.MaxValue}, Value: {DangerBar.Value}");
-		if (DangerBar.Value < 0)
-		{
-			DangerBar.Value = 0;
-		}
-		if (DangerBar.Value >= DangerBar.MaxValue)
-		{
-			// TODO: Drop level down one block.
-			//GD.Print("Danger Bar reached the top.");
-			DangerBar.Value = 0;
-		}
 	}
 	
 	private void AddSimilarSnoodsScore(int numberOfSnoods)
@@ -207,10 +229,10 @@ public partial class SnoodBoard : TileMapLayer
 	
 	private void DeleteCell(Vector2I cell)
 	{
-		int index = GetCellAlternativeTile(cell);
+		int index = Tilemap.GetCellAlternativeTile(cell);
 		DecrementSnoodsCount(index);
 		// Deletes cell from TileMapLayer
-		SetCell(cell, -1);
+		Tilemap.SetCell(cell, -1);
 		InstantiateAndDropDeadSnood(cell, index);
 		if (SnoodsByIndex.Count == 0)
 		{
@@ -243,13 +265,29 @@ public partial class SnoodBoard : TileMapLayer
 
 	private void InstantiateAndDropDeadSnood(Vector2I cell, int index)
 	{
+		Snood deadSnood = InstantiateDeadSnood(cell, index);
+		DisableCollisions(deadSnood);
+		DropSnood(deadSnood);
+	}
+
+	private Snood InstantiateDeadSnood(Vector2I cell, int index)
+	{
 		Snood deadSnood = (Snood)Launcher.Snoods[index].Instantiate();
 		CallDeferred(MethodName.AddChild, deadSnood);
-		deadSnood.Position = MapToLocal(cell);
+		deadSnood.Position = Tilemap.MapToLocal(cell) + Tilemap.Position;
+		return deadSnood;
+	}
+
+	private static void DisableCollisions(Snood deadSnood)
+	{
 		deadSnood.SetCollisionLayerValue(1, false);
 		deadSnood.SetCollisionLayerValue(2, true);
 		deadSnood.SetCollisionMaskValue(1, false);
 		deadSnood.SetCollisionMaskValue(3, true);
+	}
+
+	private void DropSnood(Snood deadSnood)
+	{
 		deadSnood.GravityScale = 1;
 		float randomAngle = (float)RNG.NextDouble() * Mathf.Pi;
 		Vector2 randomDirection = Vector2.FromAngle(randomAngle);
@@ -266,7 +304,7 @@ public partial class SnoodBoard : TileMapLayer
 
 	private void GatherChunks(List<List<Vector2I>> chunks, List<Vector2I> checkedCells)
 	{
-		foreach (Vector2I cell in GetUsedCells())
+		foreach (Vector2I cell in Tilemap.GetUsedCells())
 		{
 			if (checkedCells.Contains(cell))
 			{
@@ -286,7 +324,7 @@ public partial class SnoodBoard : TileMapLayer
 			foreach (Vector2I cell in chunk)
 			{
 				// If it's a ceiling tile,
-				if (GetCellAlternativeTile(cell) == 0)
+				if (Tilemap.GetCellAlternativeTile(cell) == 0)
 				{
 					isOnCeiling = true;
 				}
@@ -316,27 +354,37 @@ public partial class SnoodBoard : TileMapLayer
 	{
 		// Workaround to have non-compile-time-constant default variable list.
 		checkedCells ??= new List<Vector2I>();
-		
-		List<Vector2I> surroundingCells = GetSurroundingCells(centerCell).ToList();
-		List<Vector2I> newlyCheckedCells = new();
+
 		List<Vector2I> similarCells = new();
-		surroundingCells.Add(centerCell);
+		List<Vector2I> newlyCheckedCells = CheckSurroundingCellsForMatches(centerCell, similarCellsOnly, checkedCells, similarCells);
+
+		RecursivelyCheckMatchingCells(similarCellsOnly, checkedCells, newlyCheckedCells, similarCells);
+
+		return similarCells;
+	}
+
+	private List<Vector2I> CheckSurroundingCellsForMatches(Vector2I centerCell, bool similarCellsOnly, List<Vector2I> checkedCells, List<Vector2I> similarCells)
+	{
+		List<Vector2I> newlyCheckedCells = new();
 		
-		// Check surrounding cells for matches
+		List<Vector2I> surroundingCells = Tilemap.GetSurroundingCells(centerCell).ToList();
+		surroundingCells.Add(centerCell);
 		foreach (Vector2I surroundingCell in surroundingCells)
 		{
-			int surroundingCellIndex = GetCellAlternativeTile(surroundingCell);
+			int surroundingCellIndex = Tilemap.GetCellAlternativeTile(surroundingCell);
+			
 			// Don't check blank cells.
 			if (surroundingCellIndex == -1)
 			{
 				continue;
 			}
+			
 			if (!checkedCells.Contains(surroundingCell))
 			{
 				newlyCheckedCells.Add(surroundingCell);
-				
-				int centerCellIndex = GetCellAlternativeTile(centerCell);
-				// If !similarCellsOnly, any touching cells count, and we've already counted out the blank cells. 
+
+				int centerCellIndex = Tilemap.GetCellAlternativeTile(centerCell);
+				// If similarCellsOnly is false, then any touching cells are counted, and we've already counted out the blank cells. 
 				if (!similarCellsOnly || surroundingCellIndex == centerCellIndex)
 				{
 					similarCells.Add(surroundingCell);
@@ -344,8 +392,11 @@ public partial class SnoodBoard : TileMapLayer
 			}
 		}
 		checkedCells.AddRange(newlyCheckedCells);
-		
-		// Recursively check newly-checked matching cells' surrounding cells. 
+		return newlyCheckedCells;
+	}
+
+	private void RecursivelyCheckMatchingCells(bool similarCellsOnly, List<Vector2I> checkedCells, List<Vector2I> newlyCheckedCells, List<Vector2I> similarCells)
+	{
 		List<Vector2I> cellsToAdd = new();
 		foreach (Vector2I similarCell in similarCells)
 		{
@@ -355,7 +406,5 @@ public partial class SnoodBoard : TileMapLayer
 			}
 		}
 		similarCells.AddRange(cellsToAdd);
-		
-		return similarCells;
 	}
 }

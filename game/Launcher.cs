@@ -17,11 +17,12 @@ public partial class Launcher : Node2D
 		{ 4, GD.Load<PackedScene>("res://snoods/snood_green.tscn") },
 		{ 5, GD.Load<PackedScene>("res://snoods/snood_purple.tscn") },
 		{ 6, GD.Load<PackedScene>("res://snoods/snood_light_blue.tscn") },
-		{ 7, GD.Load<PackedScene>("res://snoods/snood_gray.tscn") }
+		{ 7, GD.Load<PackedScene>("res://snoods/snood_gray.tscn") },
+		{ 8, GD.Load<PackedScene>("res://snoods/snood_skull.tscn") }
 	};
 	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new();
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
-	public Node Parent { get; set; }
+	public SnoodBoard Parent { get; set; }
 	public bool Disabled { get; set; }
 	public Scores Scores { get; set; }
 	
@@ -81,7 +82,6 @@ public partial class Launcher : Node2D
 	{
 		if (SnoodsInUse.Count == 0)
 		{
-			//GD.PushWarning("No SnoodsInUse to load.");
 			return;
 		}
 		PackedScene snoodScene = ChooseRandomSnood();
@@ -100,6 +100,15 @@ public partial class Launcher : Node2D
 		}
 	}
 	
+	public void UpdateDictionary(int altTileIndex)
+	{
+		if (altTileIndex == 8) return;
+		if (!SnoodsInUse.ContainsKey(altTileIndex) && Snoods.ContainsKey(altTileIndex))
+		{
+			SnoodsInUse.Add(altTileIndex, Snoods[altTileIndex]);
+		}
+	}
+	
 	private PackedScene ChooseRandomSnood()
 	{
 		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
@@ -110,9 +119,9 @@ public partial class Launcher : Node2D
 	private void SetupSnood(PackedScene snoodScene)
 	{
 		LoadedSnood = (Snood)snoodScene.Instantiate();
-		Parent.CallDeferred(MethodName.AddChild, LoadedSnood);
-		LoadedSnood.Position = Position;
-		LoadedSnood.OnHitStickyThing += NotifyTilesetAboutSnoodHit;
+		Parent.Tilemap.CallDeferred(MethodName.AddChild, LoadedSnood);
+		LoadedSnood.Position = Position - Parent.Tilemap.Position;
+		LoadedSnood.OnHitStickyThing += HandleSnoodHit;
 	}
 
 	private void Rotate()
@@ -130,9 +139,9 @@ public partial class Launcher : Node2D
 		AimDirection = Vector2.FromAngle(Sprite.Rotation - (Mathf.Pi / 2));
 	}
 
-	private void NotifyTilesetAboutSnoodHit(Vector2 cooordinates, int altTileIndex)
+	private void HandleSnoodHit(Vector2 cooordinates, int altTileIndex)
 	{
-		FlyingSnood.OnHitStickyThing -= NotifyTilesetAboutSnoodHit;
+		FlyingSnood.OnHitStickyThing -= HandleSnoodHit;
 		FlyingSnood.QueueFree();
 		OnSnoodHit?.Invoke(cooordinates, altTileIndex);
 		SnoodLanded = true;

@@ -34,7 +34,7 @@ public partial class Game : Node
 		UI.OnNextLevelPressed -= NextLevel;
 	}
 
-	public override void _Input(InputEvent @event)
+/* 	public override void _Input(InputEvent @event)
 	{
 		base._Input(@event);
 
@@ -42,7 +42,7 @@ public partial class Game : Node
 		{
 			Pause();
 		}
-	}
+	} */
 
 	private void StartGame()
 	{
@@ -66,7 +66,7 @@ public partial class Game : Node
 	}
 	
 	// TODO: Handle this separately for different menus?
-	private void Pause()
+/* 	private void Pause()
 	{
 		SceneTree tree = GetTree();
 		if (tree.Paused)
@@ -79,5 +79,5 @@ public partial class Game : Node
 			tree.Paused = true;
 			// What to do here?
 		}
-	}
+	} */
 }
