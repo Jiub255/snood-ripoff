@@ -13,6 +13,10 @@ public partial class SnoodBoard : TileMapLayer
 
 	[Export(PropertyHint.Range, "7,20,0.5")]
 	public float Columns { get; set; }
+	[Export]
+	public int BaseSnoodUseBonus { get; set; } = 10000;
+	[Export]
+	public int PenaltyPerSnood { get; set; } = 100;
 	public bool LevelWon
 	{
 		get => _disabled;
@@ -26,6 +30,7 @@ public partial class SnoodBoard : TileMapLayer
 		}
 	}
 	public Scores Scores { get; set; }
+	public TextureProgressBar DangerBar { get; set; }
 	
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallRight { get; set; }
@@ -81,6 +86,8 @@ public partial class SnoodBoard : TileMapLayer
 	public void SetupScores(Scores scores)
 	{
 		Scores = scores;
+		Scores.BaseSnoodUseBonus = BaseSnoodUseBonus;
+		Scores.PenaltyPerSnood = PenaltyPerSnood;
 		Launcher ??= GetNode<Launcher>("%Launcher");
 		Launcher.Scores = scores;
 	}
@@ -112,9 +119,11 @@ public partial class SnoodBoard : TileMapLayer
 	private void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
 	{
 		Vector2I mapCoords = LocalToMap(coordinates);
+		//GD.Print($"Map Coordinates: {mapCoords}");
 		// Second parameter is the source index (probably just using one so always 0).
 		// Third parameter always needs to be (0,0) to work with scene tiles,
 		// Last parameter is the scene tile index, get from flying snood.
+		mapCoords = CorrectForSides(mapCoords);
 		SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
 		if (SnoodsByIndex.ContainsKey(altTileIndex))
 		{
@@ -135,6 +144,59 @@ public partial class SnoodBoard : TileMapLayer
 				DeleteCell(cell);
 			}
 			CheckForHangingChunks();
+			ChangeDangerBar(-10);
+		}
+		else
+		{
+			ChangeDangerBar(10);
+		}
+	}
+	
+	private Vector2I CorrectForSides(Vector2I mapCoords)
+	{
+		// Left wall
+		GD.Print($"Before: {mapCoords}");
+		if (mapCoords.X < 0)
+		{
+			Vector2I newCoords = new Vector2I(0, mapCoords.Y);
+			GD.Print($"After: {newCoords}");
+			return newCoords;
+		}
+		// Right wall
+		// Odd rows
+		if (mapCoords.Y % 2 == 1)
+		{
+			if (mapCoords.X > Columns - 1.5f)
+			{
+				Vector2I newCoords = new Vector2I(Mathf.FloorToInt(Columns - 1.5f), mapCoords.Y);
+				GD.Print($"After: {newCoords}");
+				return newCoords;
+			}
+		}
+		// Even rows
+		else if (mapCoords.X > Columns - 1)
+		{
+			Vector2I newCoords = new Vector2I((int)(Columns - 1), mapCoords.Y);
+			GD.Print($"After: {newCoords}");
+			return newCoords;
+		}
+		GD.Print($"After: {mapCoords}");
+		return mapCoords;
+	}
+	
+	private void ChangeDangerBar(int amount)
+	{
+		DangerBar.Value += amount;
+		//GD.Print($"Max: {DangerBar.MaxValue}, Value: {DangerBar.Value}");
+		if (DangerBar.Value < 0)
+		{
+			DangerBar.Value = 0;
+		}
+		if (DangerBar.Value >= DangerBar.MaxValue)
+		{
+			// TODO: Drop level down one block.
+			//GD.Print("Danger Bar reached the top.");
+			DangerBar.Value = 0;
 		}
 	}
 	
@@ -160,7 +222,7 @@ public partial class SnoodBoard : TileMapLayer
 	{
 		Launcher.Disabled = true;
 		LevelWon = true;
-		Scores.AddCompletionBonus();
+		Scores.ApplyBonuses();
 	}
 
 	private void DecrementSnoodsCount(int index)

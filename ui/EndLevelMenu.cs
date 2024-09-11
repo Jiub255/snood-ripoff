@@ -8,6 +8,7 @@ public partial class EndLevelMenu : Control
 	public Scores Scores { get; set; }
 	
 	private Label SnoodsUsed { get; set; }
+	private Label SnoodUseBonus { get; set; }
 	private Label Score { get; set; }
 	private Label TotalScore { get; set; }
 	private Button NextLevelButton { get; set; }
@@ -17,6 +18,7 @@ public partial class EndLevelMenu : Control
 		base._Ready();
 		
 		SnoodsUsed = GetNode<Label>("%SnoodsUsed");
+		SnoodUseBonus = GetNode<Label>("%SnoodUseBonus");
 		Score = GetNode<Label>("%Score");
 		TotalScore = GetNode<Label>("%TotalScore");
 		NextLevelButton = GetNode<Button>("%Button");
@@ -34,6 +36,7 @@ public partial class EndLevelMenu : Control
 	public void SetupMenu()
 	{
 		SnoodsUsed.Text = $"Snoods Used: {Scores.SnoodsUsed}";
+		SnoodUseBonus.Text = $"Snood Use Bonus: {Scores.SnoodUseBonus}";
 		Score.Text = $"Score: {Scores.Level}";
 		TotalScore.Text = $"Total Score: {Scores.Total}";
 	}

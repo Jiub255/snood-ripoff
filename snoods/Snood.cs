@@ -24,11 +24,9 @@ public partial class Snood : RigidBody2D
 
 	private void HandleCollision(Node body)
 	{
-		//GD.Print("Hit ANY thing");
 		if (body is StickyStaticBody)
 		{
 			OnHitStickyThing?.Invoke(Position, altTileIndex);
-			//GD.Print("Hit sticky thing");
 		}
 	}
 }

@@ -6,8 +6,6 @@ public partial class UI : CanvasLayer
 	public event Action OnStartPressed;
 	public event Action OnNextLevelPressed;
 	
-	//public Scores Scores { get; set; }
-	
 	private MainMenu MainMenu { get; set; }
 	private OptionsMenu OptionsMenu { get; set; }
 	private CreditsMenu CreditsMenu { get; set; }
@@ -22,8 +20,6 @@ public partial class UI : CanvasLayer
 		OptionsMenu = GetNode<OptionsMenu>("%OptionsMenu");
 		CreditsMenu = GetNode<CreditsMenu>("%CreditsMenu");
 		EndLevelMenu = GetNode<EndLevelMenu>("%EndLevelMenu");
-		
-		//EndLevelMenu.Scores = Scores;
 
 		MainMenu.OnStartPressed += StartGame;
 		MainMenu.OnOptionsPressed += OpenOptions;
@@ -62,7 +58,6 @@ public partial class UI : CanvasLayer
 	
 	public void SetupScores(Scores scores)
 	{
-		//Scores = scores;
 		EndLevelMenu.Scores = scores;
 	}
 

@@ -4,12 +4,13 @@ using System;
 public class Scores
 {
 	public event Action OnChanged;
-	
+
 	private const int COMPLETION_BONUS = 1000;
+	private const int MIN_SNOOD_USE_BONUS = 100;
 
 	private int _snoodsUsed;
 	private int _level;
-	
+
 	public int SnoodsUsed
 	{
 		get => _snoodsUsed;
@@ -33,16 +34,23 @@ public class Scores
 		}
 	}
 	public int Total { get; private set; }
+	public int BaseSnoodUseBonus { get; set; }
+	public int PenaltyPerSnood { get; set; }
+	public int SnoodUseBonus { get; set; }
 	
-	public void ResetLevelScore()
+	
+	public void ResetLevel()
 	{
 		_level = 0;
-		OnChanged?.Invoke();
+		SnoodsUsed = 0;
 	}
 	
-	public void AddCompletionBonus()
+	public void ApplyBonuses()
 	{
 		Total += COMPLETION_BONUS;
+		SnoodUseBonus = BaseSnoodUseBonus - (SnoodsUsed * PenaltyPerSnood);
+		SnoodUseBonus = Mathf.Max(SnoodUseBonus, MIN_SNOOD_USE_BONUS);
+		Total += SnoodUseBonus;
 		OnChanged?.Invoke();
 	}
 }

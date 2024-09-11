@@ -31,6 +31,7 @@ public partial class GameScreen : TextureRect
 		
 		GameHolder = GetNode<PanelContainer>("%GameHolder");
 		DangerBar = GetNode<TextureProgressBar>("%DangerBar");
+		DangerBar.Value = 0;
 	}
 
 	public void StartGame()
@@ -71,8 +72,9 @@ public partial class GameScreen : TextureRect
 		GameHolder.CallDeferred(MethodName.AddChild, BoardInstance);
 		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
 		
-		Scores.ResetLevelScore();
+		Scores.ResetLevel();
 		BoardInstance.SetupScores(Scores);
+		BoardInstance.DangerBar = DangerBar;
 		
 		float width = BoardInstance.Columns * SPRITE_SIZE;
 		GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);

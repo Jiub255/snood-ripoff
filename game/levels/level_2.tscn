@@ -1,26 +1,12 @@
-[gd_scene load_steps=17 format=4 uid="uid://bhxfrb8t6jkgi"]
+[gd_scene load_steps=12 format=4 uid="uid://bhxfrb8t6jkgi"]
 
-[ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://tiles/ceiling_tile.tscn" id="1_b4ylv"]
-[ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_u0bhc"]
-[ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://tiles/tile_dark_blue.tscn" id="3_a5qv2"]
-[ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://tiles/tile_yellow.tscn" id="4_g8rlh"]
+[ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="1_1185e"]
 [ext_resource type="Script" path="res://game/SnoodBoard.cs" id="5_ugmg0"]
 [ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="6_8psdb"]
 [ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="7_g7e04"]
 [ext_resource type="Script" path="res://game/DeadSnoodDestroyer.cs" id="8_vyiwv"]
 [ext_resource type="Script" path="res://game/Launcher.cs" id="9_jxef0"]
 [ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="10_mjn4f"]
-
-[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
-scenes/0/scene = ExtResource("1_b4ylv")
-scenes/1/scene = ExtResource("2_u0bhc")
-scenes/2/scene = ExtResource("3_a5qv2")
-scenes/3/scene = ExtResource("4_g8rlh")
-
-[sub_resource type="TileSet" id="TileSet_8g4ad"]
-tile_shape = 2
-tile_size = Vector2i(64, 64)
-sources/0 = SubResource("TileSetScenesCollectionSource_mouri")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
 size = Vector2(1920, 1)
@@ -43,8 +29,8 @@ animations = [{
 }]
 
 [node name="SnoodBoard" type="TileMapLayer"]
-tile_map_data = PackedByteArray("AAD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAADAP//AAAAAAAAAAAEAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAFAAAAAAAAAAAAAgAGAAAAAAAAAAAAAgAHAAAAAAAAAAAAAgA=")
-tile_set = SubResource("TileSet_8g4ad")
+tile_map_data = PackedByteArray("AAD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAADAP//AAAAAAAAAAAEAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAFAAAAAAAAAAAAAgAGAAAAAAAAAAAAAgAHAAAAAAAAAAAAAgAEAAAAAAAAAAAAAQADAAEAAAAAAAAAAQACAAEAAAAAAAAAAQADAAAAAAAAAAAAAQADAAIAAAAAAAAABAACAAIAAAAAAAAABAACAAMAAAAAAAAAAwADAAQAAAAAAAAABQAEAAQAAAAAAAAABwAEAAUAAAAAAAAAAwAFAAYAAAAAAAAAAwAGAAIAAAAAAAAABQAFAAMAAAAAAAAABAAEAAMAAAAAAAAABQACAAQAAAAAAAAABQACAAUAAAAAAAAABQAJAAQAAAAAAAAABAAIAAQAAAAAAAAABAAHAAMAAAAAAAAABAAGAAMAAAAAAAAABAAFAAIAAAAAAAAABQAEAAIAAAAAAAAABAABAAEAAAAAAAAABAAAAAEAAAAAAAAABAAAAAAAAAAAAAAABgABAAAAAAAAAAAABgACAAAAAAAAAAAABgAIAAAAAAAAAAAABgAJAAAAAAAAAAAABgAHAAEAAAAAAAAABgAHAAIAAAAAAAAABgAEAAEAAAAAAAAABwAFAAEAAAAAAAAABwAGAAEAAAAAAAAABwADAAMAAAAAAAAABQAFAAQAAAAAAAAABwAAAAIAAAAAAAAAAwABAAIAAAAAAAAAAwABAAMAAAAAAAAAAwADAAUAAAAAAAAAAwAIAAEAAAAAAAAAAgAIAAIAAAAAAAAAAgAJAAIAAAAAAAAAAgAIAAMAAAAAAAAAAgAJAAEAAAAAAAAAAgAJAAMAAAAAAAAAAgAHAAQAAAAAAAAAAgAGAAQAAAAAAAAAAgAFAAUAAAAAAAAAAgA=")
+tile_set = ExtResource("1_1185e")
 script = ExtResource("5_ugmg0")
 Columns = 10.5
 

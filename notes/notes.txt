@@ -34,7 +34,6 @@ TODO:
 	Make guide-line for aiming
 		Have option to turn it on/off in options menu.
 
-	Win level screen
 
 	Win game screen
 
@@ -44,10 +43,7 @@ TODO:
 	Snoods used
 
 	Score
-		What formula/system?
-		Imitate original scoring
-		Snoods used for end level bonus
-		Flat completion bonus
+		Snoods used for end level bonus?
 
 	NECESSARY FOR JAM:
 		NEW THING:
@@ -61,6 +57,14 @@ TODO:
 				- Pop up random new snoods around the board
 				- Fuck up your aim for the next shot
 					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
+
+
+BUGS:
+	Snoods occasionally take an already taken spot after getting CorrectForSides()ed.
+		Possibly fix by speeding up physics tick rate?
+		Or could code a fix but that might be sloppy and difficult.
+	Physics tick rate at 120 seems to fix it.
+
 
 
 Probably not enough time:
