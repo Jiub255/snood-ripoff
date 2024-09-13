@@ -18,7 +18,7 @@ text = "1"
 [node name="NameLabel" type="Label" parent="HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "James"
+text = "Jame 2ame 3ame 4ame 5ame 6ame."
 
 [node name="ScoreLabel" type="Label" parent="HBoxContainer"]
 layout_mode = 2

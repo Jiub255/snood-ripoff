@@ -3,8 +3,9 @@ using System;
 
 public partial class GameScreen : TextureRect
 {
-	public event Action OnEndLevelMenu;
+	public event Action OnEndLevel;
 	public event Action OnWinGame;
+	public event Action OnLoseGame;
 	
 	private const int SPRITE_SIZE = 64;
 
@@ -16,8 +17,8 @@ public partial class GameScreen : TextureRect
 	{
 		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
+		//GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
+		//GD.Load<PackedScene>("res://game/levels/level_4.tscn")
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
@@ -34,14 +35,16 @@ public partial class GameScreen : TextureRect
 		DangerBar.Value = 0;
 	}
 
-	public void StartGame()
+	public void StartGame(Scores scores)
 	{
+		SetupScores(scores);
 		SetupLevel(1);
 	}
 	
 	public void EndLevel()
 	{
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
+		BoardInstance.OnDead -= Die;
 		
 		BoardInstance.QueueFree();
 		// CurrentLevel == [current Levels array index] + 1
@@ -55,48 +58,59 @@ public partial class GameScreen : TextureRect
 		}
 	}
 	
-	public void SetupScores(Scores scores)
+	private void SetupScores(Scores scores)
 	{
 		Scores = scores;
 		
-		SnoodsUsedLabel = GetNode<SnoodsUsedLabel>("%SnoodsUsedLabel");
-		ScoreLabel = GetNode<ScoreLabel>("%ScoreLabel");
+		SnoodsUsedLabel ??= GetNode<SnoodsUsedLabel>("%SnoodsUsedLabel");
+		ScoreLabel ??= GetNode<ScoreLabel>("%ScoreLabel");
 		
 		SnoodsUsedLabel.Scores = scores;
 		ScoreLabel.Scores = scores;
 	}
 
 	private void SetupLevel(int level)
-    {
-        CurrentLevel = level;
-        InstantiateBoard(level);
-        InitializeBoard();
-        ResizeGameHolder();
-    }
-
-    private void InstantiateBoard(int level)
-    {
-        BoardInstance = (SnoodBoard)Levels[level - 1].Instantiate();
-        GameHolder.CallDeferred(MethodName.AddChild, BoardInstance);
-    }
-
-    private void InitializeBoard()
-    {
-        BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
-        Scores.ResetLevel();
-        BoardInstance.SetupScores(Scores);
-        BoardInstance.SetupDangerBar(DangerBar);
-    }
-
-    private void ResizeGameHolder()
-    {
-        float width = BoardInstance.Columns * SPRITE_SIZE;
-        GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);
-    }
-
-    private void OpenEndLevelMenu()
 	{
-		OnEndLevelMenu?.Invoke();
+		CurrentLevel = level;
+		InstantiateBoard(level);
+		InitializeBoard();
+		ResizeGameHolder();
+	}
+
+	private void InstantiateBoard(int level)
+	{
+		BoardInstance = (SnoodBoard)Levels[level - 1].Instantiate();
+		GameHolder.CallDeferred(MethodName.AddChild, BoardInstance);
+	}
+
+	private void InitializeBoard()
+	{
+		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
+		BoardInstance.OnDead += Die;
+		
+		Scores.ResetLevel();
+		BoardInstance.SetupScores(Scores);
+		BoardInstance.SetupDangerBar(DangerBar);
+	}
+
+	private void Die()
+	{
+		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
+		BoardInstance.OnDead -= Die;
+
+		BoardInstance.QueueFree();
+		OnLoseGame?.Invoke();
+	}
+
+	private void ResizeGameHolder()
+	{
+		float width = BoardInstance.Columns * SPRITE_SIZE;
+		GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);
+	}
+
+	private void OpenEndLevelMenu()
+	{
+		OnEndLevel?.Invoke();
 	}
 
 	private void WinGame()

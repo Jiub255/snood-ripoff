@@ -80,7 +80,7 @@ public partial class Launcher : Node2D
 
 	public void LoadSnood()
 	{
-		if (SnoodsInUse.Count == 0)
+		if (SnoodsInUse.Count == 0 || Disabled)
 		{
 			return;
 		}
@@ -90,7 +90,7 @@ public partial class Launcher : Node2D
 
 	public void Shoot()
 	{
-		if (!Reloading && SnoodLanded && !Disabled)
+		if (!Reloading && SnoodLanded && !Disabled && LoadedSnood != null)
 		{
 			FlyingSnood = LoadedSnood;
 			FlyingSnood.LinearVelocity = AimDirection * Speed;

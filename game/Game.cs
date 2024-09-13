@@ -5,7 +5,7 @@ public partial class Game : Node
 {
 	private GameScreen GameScreen { get; set; }
 	private UI UI { get; set; }
-	private Scores Scores { get; set; } = new();
+	private Scores Scores { get; set; }
 
 
 	public override void _Ready()
@@ -15,11 +15,11 @@ public partial class Game : Node
 		GameScreen = GetNode<GameScreen>("%GameScreen");
 		UI = GetNode<UI>("%UI");
 
-		GameScreen.SetupScores(Scores);
-		UI.SetupScores(Scores);
+		//GameScreen.SetupScores(Scores);
 
 		GameScreen.OnWinGame += WinGame;
-		GameScreen.OnEndLevelMenu += OpenEndLevelMenu;
+		GameScreen.OnLoseGame += LoseGame;
+		GameScreen.OnEndLevel += OpenEndLevelMenu;
 		UI.OnStartPressed += StartGame;
 		UI.OnNextLevelPressed += NextLevel;
 	}
@@ -29,7 +29,8 @@ public partial class Game : Node
 		base._ExitTree();
 		
 		GameScreen.OnWinGame -= WinGame;
-		GameScreen.OnEndLevelMenu -= OpenEndLevelMenu;
+		GameScreen.OnLoseGame -= LoseGame;
+		GameScreen.OnEndLevel -= OpenEndLevelMenu;
 		UI.OnStartPressed -= StartGame;
 		UI.OnNextLevelPressed -= NextLevel;
 	}
@@ -46,12 +47,13 @@ public partial class Game : Node
 
 	private void StartGame()
 	{
-		GameScreen.StartGame();
+		Scores = new Scores();
+		GameScreen.StartGame(Scores);
 	}
 
 	private void OpenEndLevelMenu()
 	{
-		UI.OpenEndLevelMenu();
+		UI.OpenEndLevelMenu(Scores);
 	}
 
 	private void NextLevel()
@@ -63,6 +65,16 @@ public partial class Game : Node
 	{
 		GD.Print("You Win!");
 		// TODO: Win menu, add high score if you got one. 
+		UI.OpenGameOverMenu(Scores);
+	}
+	
+	private void LoseGame()
+	{
+		GD.Print("You Lose!");
+		// TODO: Lose/Dead menu, high score if you got one.
+		// Use same menu for win and lose? Just different message?
+		// Could have Won bool in Scores to keep track. 
+		UI.OpenGameOverMenu(Scores);
 	}
 	
 	// TODO: Handle this separately for different menus?

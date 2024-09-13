@@ -6,10 +6,9 @@ using System.Linq;
 public partial class SnoodBoard : Node2D
 {
 	public event Action OnGoToNextLevel;
+	public event Action OnDead;
 	
 	private const int SPRITE_SIZE = 64;
-
-	private bool _disabled;
 
 	[Export(PropertyHint.Range, "7,20,0.5")]
 	public float Columns { get; set; }
@@ -18,18 +17,6 @@ public partial class SnoodBoard : Node2D
 	[Export]
 	public int PenaltyPerSnood { get; set; } = 100;
 	
-	public bool LevelWon
-	{
-		get => _disabled;
-		set
-		{
-			if (value == true)
-			{
-				EndLevelTimer = EndLevelDuration;
-			}
-			_disabled = value;
-		}
-	}
 	public Scores Scores { get; set; }
 	public DangerBar DangerBar { get; set; }
 	public TileMapLayer Tilemap { get; private set; }
@@ -39,8 +26,10 @@ public partial class SnoodBoard : Node2D
 	private Area2D BottomLimit { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
 	private Random RNG { get; } = new();
-	private float EndLevelTimer { get; set; }
-	private float EndLevelDuration { get; } = 1.5f;
+	private bool LevelWon { get; set; }
+	private float LevelWonTimer { get; set; } = 1.5f;
+	private bool Dead { get; set; }
+	private float DeadTimer { get; set; } = 1.5f;
 	
 
 	public override void _Ready()
@@ -70,11 +59,21 @@ public partial class SnoodBoard : Node2D
 	{
 		if (LevelWon)
 		{
-			EndLevelTimer -= (float)delta;
-			if (EndLevelTimer < 0)
+			LevelWonTimer -= (float)delta;
+			if (LevelWonTimer < 0)
 			{
 				OnGoToNextLevel?.Invoke();
 				LevelWon = false;
+			}
+		}
+		
+		if (Dead)
+		{
+			DeadTimer -= (float)delta;
+			if (DeadTimer < 0)
+			{
+				OnDead?.Invoke();
+				Dead = false;
 			}
 		}
 	}
@@ -101,7 +100,6 @@ public partial class SnoodBoard : Node2D
 		Launcher.Position = new Vector2(width / 2, Launcher.Position.Y);
 		CountSnoods();
 		Launcher.LoadSnood();
-		LevelWon = false;
 	}
 	
 	private void CountSnoods()
@@ -128,10 +126,11 @@ public partial class SnoodBoard : Node2D
 	private void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
 	{
 		Vector2I mapCoords = Tilemap.LocalToMap(coordinates);
-		SetSnood(mapCoords, altTileIndex);
-		UpdateDictionary(altTileIndex);
+		Vector2I correctedMapCoords = CorrectForSides(mapCoords);
+		SetSnood(correctedMapCoords, altTileIndex);
+		UpdateSnoodCountDictionary(altTileIndex);
 
-		IEnumerable<Vector2I> similarCells = GetTouchingCells(mapCoords);
+		IEnumerable<Vector2I> similarCells = GetTouchingCells(correctedMapCoords);
 		if (similarCells.Count() >= 3)
 		{
 			AddSimilarSnoodsScore(similarCells.Count());
@@ -139,7 +138,7 @@ public partial class SnoodBoard : Node2D
 			{
 				DeleteCell(cell);
 			}
-			CheckForHangingChunks();
+			CheckForAndDropHangingChunks();
 			DangerBar.ChangeValue(-10);
 		}
 		else
@@ -150,39 +149,49 @@ public partial class SnoodBoard : Node2D
 	
 	private void LowerBoard()
 	{
-		// TODO: Lower board.
 		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
 		
 		if (BottomLimit.HasOverlappingBodies())
 		{
-			Die();
+			Lose();
 		}
 	}
 
-	private Vector2I SetSnood(Vector2I mapCoords, int altTileIndex)
+	private void SetSnood(Vector2I mapCoords, int altTileIndex)
 	{
 		// Second parameter is the source index (probably just using one index so it should always be 0).
 		// Third parameter always needs to be (0,0) to work with scene tiles,
 		// Last parameter is the scene tile index, get from flying snood.
-		mapCoords = CorrectForSides(mapCoords);
 		Tilemap.SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
 		if (BottomLimit.HasOverlappingBodies())
 		{
-			Die();
+			Lose();
 		}
-		return mapCoords;
 	}
 	
-	// TODO: Die.
-	private void Die()
+	private void Lose()
 	{
 		GD.Print("Bottom limit detected body");
+		Launcher.Disabled = true;
 		// Turn all snoods to skulls.
-		// Wait 1.5 seconds or so.
-		// Show death menu? Back to main?
+		// TODO: Put this in Process under "if (dead)" part, to change them one by one.
+		foreach (Vector2I cell in Tilemap.GetUsedCells())
+		{
+			int altTileIndex = Tilemap.GetCellAlternativeTile(cell);
+			if (altTileIndex >= 1 || altTileIndex <= 7)
+			{
+				Tilemap.SetCell(cell, 0, new Vector2I(0, 0), 8);
+			}
+		}
+		
+		Scores.Won = false;
+		Scores.AddUpScore();
+		
+		// Starts countdown in _Process.
+		Dead = true;
 	}
 
-	private void UpdateDictionary(int altTileIndex)
+	private void UpdateSnoodCountDictionary(int altTileIndex)
 	{
 		if (SnoodsByIndex.ContainsKey(altTileIndex))
 		{
@@ -243,8 +252,10 @@ public partial class SnoodBoard : Node2D
 	private void WinLevel()
 	{
 		Launcher.Disabled = true;
+		Scores.Won = true;
+		Scores.AddUpScore();
+		// Starts countdown in _Process.
 		LevelWon = true;
-		Scores.ApplyBonuses();
 	}
 
 	private void DecrementSnoodsCount(int index)
@@ -294,12 +305,12 @@ public partial class SnoodBoard : Node2D
 		deadSnood.ApplyImpulse(randomDirection * 300);
 	}
 
-	private void CheckForHangingChunks()
+	private void CheckForAndDropHangingChunks()
 	{
 		List<List<Vector2I>> chunks = new();
 		List<Vector2I> checkedCells = new();
 		GatherChunks(chunks, checkedCells);
-		CheckChunks(chunks);
+		CheckAndDropChunks(chunks);
 	}
 
 	private void GatherChunks(List<List<Vector2I>> chunks, List<Vector2I> checkedCells)
@@ -316,7 +327,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
-	private void CheckChunks(List<List<Vector2I>> chunks)
+	private void CheckAndDropChunks(List<List<Vector2I>> chunks)
 	{
 		foreach (List<Vector2I> chunk in chunks)
 		{
@@ -349,62 +360,44 @@ public partial class SnoodBoard : Node2D
 	{
 		Scores.Level += 10 * numberOfSnoods * numberOfSnoods;
 	}
-
-	private IEnumerable<Vector2I> GetTouchingCells(Vector2I centerCell, bool similarCellsOnly = true, List<Vector2I> checkedCells = null)
+	
+	private IEnumerable<Vector2I> GetTouchingCells(Vector2I startCell, bool similarCellsOnly = true)
 	{
-		// Workaround to have non-compile-time-constant default variable list.
-		checkedCells ??= new List<Vector2I>();
+		List<Vector2I> connectedCells = new();
+		HashSet<Vector2I> visitedCells = new(); // Use a HashSet for faster lookups
 
-		List<Vector2I> similarCells = new();
-		List<Vector2I> newlyCheckedCells = CheckSurroundingCellsForMatches(centerCell, similarCellsOnly, checkedCells, similarCells);
-
-		RecursivelyCheckMatchingCells(similarCellsOnly, checkedCells, newlyCheckedCells, similarCells);
-
-		return similarCells;
-	}
-
-	private List<Vector2I> CheckSurroundingCellsForMatches(Vector2I centerCell, bool similarCellsOnly, List<Vector2I> checkedCells, List<Vector2I> similarCells)
-	{
-		List<Vector2I> newlyCheckedCells = new();
-		
-		List<Vector2I> surroundingCells = Tilemap.GetSurroundingCells(centerCell).ToList();
-		surroundingCells.Add(centerCell);
-		foreach (Vector2I surroundingCell in surroundingCells)
+		// Helper function to perform the flood fill
+		void FloodFill(Vector2I cell)
 		{
-			int surroundingCellIndex = Tilemap.GetCellAlternativeTile(surroundingCell);
-			
-			// Don't check blank cells.
-			if (surroundingCellIndex == -1)
+			// If the cell has already been checked, skip it
+			if (visitedCells.Contains(cell))
 			{
-				continue;
+				return;
 			}
-			
-			if (!checkedCells.Contains(surroundingCell))
-			{
-				newlyCheckedCells.Add(surroundingCell);
+			visitedCells.Add(cell);
 
-				int centerCellIndex = Tilemap.GetCellAlternativeTile(centerCell);
-				// If similarCellsOnly is false, then any touching cells are counted, and we've already counted out the blank cells. 
-				if (!similarCellsOnly || surroundingCellIndex == centerCellIndex)
+			// Add the cell if it matches the criteria
+			int cellIndex = Tilemap.GetCellAlternativeTile(cell);
+			int startCellIndex = Tilemap.GetCellAlternativeTile(startCell);
+			if (!similarCellsOnly || cellIndex == startCellIndex)
+			{
+				connectedCells.Add(cell);
+
+				// Get all surrounding cells and recursively check them
+				foreach (Vector2I neighbor in Tilemap.GetSurroundingCells(cell))
 				{
-					similarCells.Add(surroundingCell);
+					// Ensure the neighbor is not a blank cell
+					if (Tilemap.GetCellAlternativeTile(neighbor) != -1)
+					{
+						FloodFill(neighbor);
+					}
 				}
 			}
 		}
-		checkedCells.AddRange(newlyCheckedCells);
-		return newlyCheckedCells;
-	}
 
-	private void RecursivelyCheckMatchingCells(bool similarCellsOnly, List<Vector2I> checkedCells, List<Vector2I> newlyCheckedCells, List<Vector2I> similarCells)
-	{
-		List<Vector2I> cellsToAdd = new();
-		foreach (Vector2I similarCell in similarCells)
-		{
-			if (newlyCheckedCells.Contains(similarCell))
-			{
-				cellsToAdd.AddRange(GetTouchingCells(similarCell, similarCellsOnly, checkedCells));
-			}
-		}
-		similarCells.AddRange(cellsToAdd);
+		// Start the flood fill from the initial cell
+		FloodFill(startCell);
+
+		return connectedCells;
 	}
 }

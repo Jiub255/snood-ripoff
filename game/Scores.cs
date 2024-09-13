@@ -25,11 +25,7 @@ public class Scores
 		get => _level;
 		set
 		{
-			int before = _level;
 			_level = value;
-			int after = _level;
-			int pointsAdded = after - before;
-			Total += pointsAdded;
 			OnChanged?.Invoke();
 		}
 	}
@@ -37,6 +33,7 @@ public class Scores
 	public int BaseSnoodUseBonus { get; set; }
 	public int PenaltyPerSnood { get; set; }
 	public int SnoodUseBonus { get; set; }
+	public bool Won { get; set; }
 	
 	
 	public void ResetLevel()
@@ -45,12 +42,15 @@ public class Scores
 		SnoodsUsed = 0;
 	}
 	
-	public void ApplyBonuses()
+	public void AddUpScore()
 	{
-		Total += COMPLETION_BONUS;
-		SnoodUseBonus = BaseSnoodUseBonus - (SnoodsUsed * PenaltyPerSnood);
-		SnoodUseBonus = Mathf.Max(SnoodUseBonus, MIN_SNOOD_USE_BONUS);
-		Total += SnoodUseBonus;
-		OnChanged?.Invoke();
+		if (Won)
+		{
+			Total += COMPLETION_BONUS;
+			SnoodUseBonus = BaseSnoodUseBonus - (SnoodsUsed * PenaltyPerSnood);
+			SnoodUseBonus = Mathf.Max(SnoodUseBonus, MIN_SNOOD_USE_BONUS);
+			Total += SnoodUseBonus;
+		}
+		Total += Level;
 	}
 }

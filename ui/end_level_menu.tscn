@@ -6,8 +6,8 @@
 [ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="4_84u2x"]
 [ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="5_qjdxr"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_utwjw"]
-content_margin_top = 60.0
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dopqu"]
+content_margin_top = 30.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qguh6"]
 content_margin_bottom = 60.0
@@ -46,11 +46,18 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 20
 
+[node name="Score" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
+theme_override_font_sizes/font_size = 42
+theme_override_styles/normal = SubResource("StyleBoxEmpty_dopqu")
+text = "Level Score: 12334"
+
 [node name="CompletionBonus" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
 theme_override_font_sizes/font_size = 42
-theme_override_styles/normal = SubResource("StyleBoxEmpty_utwjw")
 text = "Completion Bonus: 1000"
 
 [node name="SnoodsUsed" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
@@ -66,13 +73,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
 theme_override_font_sizes/font_size = 42
 text = "Snood Use Bonus: 3434"
-
-[node name="Score" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.252389, 0.230538, 0.202604, 1)
-theme_override_font_sizes/font_size = 42
-text = "Score: 12334"
 
 [node name="TotalScore" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true

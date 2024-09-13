@@ -23,27 +23,11 @@ TODO:
 				Frequency of powerups/bad snoods
 				Have an auto-shoot timer on hard difficulties.
 
-	Danger bar
-		Lowering screen
-
-	Death menu
-
-	Unbreakable pieces
-		Do rocks or something instead of skulls so the bad snoods can use that.
-
 	Make guide-line for aiming
 		Have option to turn it on/off in options menu.
 
-
-	Win game screen
-
 	High scores
 		Leaderboard online
-
-	Snoods used
-
-	Score
-		Snoods used for end level bonus?
 
 	NECESSARY FOR JAM:
 		NEW THING:

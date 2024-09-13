@@ -10,42 +10,36 @@ public partial class UI : CanvasLayer
 	private OptionsMenu OptionsMenu { get; set; }
 	private CreditsMenu CreditsMenu { get; set; }
 	private EndLevelMenu EndLevelMenu { get; set; }
+	private GameOverMenu GameOverMenu { get; set; }
 
 
 	public override void _Ready()
 	{
 		base._Ready();
 		
-		MainMenu = GetNode<MainMenu>("%MainMenu");
-		OptionsMenu = GetNode<OptionsMenu>("%OptionsMenu");
-		CreditsMenu = GetNode<CreditsMenu>("%CreditsMenu");
-		EndLevelMenu = GetNode<EndLevelMenu>("%EndLevelMenu");
-
-		MainMenu.OnStartPressed += StartGame;
-		MainMenu.OnOptionsPressed += OpenOptions;
-		MainMenu.OnCreditsPressed += OpenCredits;
-		OptionsMenu.OnBackPressed += OpenMainMenu;
-		CreditsMenu.OnBackPressed += OpenMainMenu;
-		EndLevelMenu.OnNextLevelPressed += NextLevel;
+		GetMenuReferences();
+		SubscribeToEvents();
 	}
 
 	public override void _ExitTree()
 	{
 		base._ExitTree();
 		
-		MainMenu.OnStartPressed -= StartGame;
-		MainMenu.OnOptionsPressed -= OpenOptions;
-		MainMenu.OnCreditsPressed -= OpenCredits;
-		OptionsMenu.OnBackPressed -= OpenMainMenu;
-		CreditsMenu.OnBackPressed -= OpenMainMenu;
-		EndLevelMenu.OnNextLevelPressed += NextLevel;
+		UnsubscribeFromEvents();
 	}
-	
-	public void OpenEndLevelMenu()
+
+	public void OpenEndLevelMenu(Scores scores)
 	{
 		CloseAllMenus();
 		EndLevelMenu.Show();
-		EndLevelMenu.SetupMenu();
+		EndLevelMenu.SetupMenu(scores);
+	}
+	
+	public void OpenGameOverMenu(Scores scores)
+	{
+		CloseAllMenus();
+		GameOverMenu.Show();
+		GameOverMenu.SetupMenu(scores);
 	}
 	
 	public void CloseAllMenus()
@@ -54,11 +48,6 @@ public partial class UI : CanvasLayer
 		OptionsMenu.Hide();
 		CreditsMenu.Hide();
 		EndLevelMenu.Hide();
-	}
-	
-	public void SetupScores(Scores scores)
-	{
-		EndLevelMenu.Scores = scores;
 	}
 
 	private void StartGame()
@@ -89,5 +78,36 @@ public partial class UI : CanvasLayer
 	{
 		CloseAllMenus();
 		OnNextLevelPressed?.Invoke();
+	}
+
+	private void GetMenuReferences()
+	{
+		MainMenu = GetNode<MainMenu>("%MainMenu");
+		OptionsMenu = GetNode<OptionsMenu>("%OptionsMenu");
+		CreditsMenu = GetNode<CreditsMenu>("%CreditsMenu");
+		EndLevelMenu = GetNode<EndLevelMenu>("%EndLevelMenu");
+		GameOverMenu = GetNode<GameOverMenu>("%GameOverMenu");
+	}
+
+	private void SubscribeToEvents()
+	{
+		MainMenu.OnStartPressed += StartGame;
+		MainMenu.OnOptionsPressed += OpenOptions;
+		MainMenu.OnCreditsPressed += OpenCredits;
+		OptionsMenu.OnBackPressed += OpenMainMenu;
+		CreditsMenu.OnBackPressed += OpenMainMenu;
+		EndLevelMenu.OnNextLevelPressed += NextLevel;
+		GameOverMenu.OnDonePressed += OpenMainMenu;
+	}
+
+	private void UnsubscribeFromEvents()
+	{
+		MainMenu.OnStartPressed -= StartGame;
+		MainMenu.OnOptionsPressed -= OpenOptions;
+		MainMenu.OnCreditsPressed -= OpenCredits;
+		OptionsMenu.OnBackPressed -= OpenMainMenu;
+		CreditsMenu.OnBackPressed -= OpenMainMenu;
+		EndLevelMenu.OnNextLevelPressed -= NextLevel;
+		GameOverMenu.OnDonePressed -= OpenMainMenu;
 	}
 }
