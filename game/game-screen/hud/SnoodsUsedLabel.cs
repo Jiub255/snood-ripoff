@@ -2,9 +2,9 @@ using Godot;
 
 public partial class SnoodsUsedLabel : Label
 {
-	private Scores _scores;
+	private Score _scores;
 	
-	public Scores Scores
+	public Score Scores
 	{
 		get => _scores;
 		set

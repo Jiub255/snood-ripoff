@@ -6,7 +6,7 @@ using System.Linq;
 public partial class SnoodBoard : Node2D
 {
 	public event Action OnGoToNextLevel;
-	public event Action OnDead;
+	public event Action OnLost;
 	
 	private const int SPRITE_SIZE = 64;
 
@@ -17,7 +17,7 @@ public partial class SnoodBoard : Node2D
 	[Export]
 	public int PenaltyPerSnood { get; set; } = 100;
 	
-	public Scores Scores { get; set; }
+	public Score Scores { get; set; }
 	public DangerBar DangerBar { get; set; }
 	public TileMapLayer Tilemap { get; private set; }
 	
@@ -28,8 +28,8 @@ public partial class SnoodBoard : Node2D
 	private Random RNG { get; } = new();
 	private bool LevelWon { get; set; }
 	private float LevelWonTimer { get; set; } = 1.5f;
-	private bool Dead { get; set; }
-	private float DeadTimer { get; set; } = 1.5f;
+	private bool LevelLost { get; set; }
+	private float LevelLostTimer { get; set; } = 1.5f;
 	
 
 	public override void _Ready()
@@ -67,18 +67,18 @@ public partial class SnoodBoard : Node2D
 			}
 		}
 		
-		if (Dead)
+		if (LevelLost)
 		{
-			DeadTimer -= (float)delta;
-			if (DeadTimer < 0)
+			LevelLostTimer -= (float)delta;
+			if (LevelLostTimer < 0)
 			{
-				OnDead?.Invoke();
-				Dead = false;
+				OnLost?.Invoke();
+				LevelLost = false;
 			}
 		}
 	}
 	
-	public void SetupScores(Scores scores)
+	public void SetupScores(Score scores)
 	{
 		Scores = scores;
 		Scores.BaseSnoodUseBonus = BaseSnoodUseBonus;
@@ -150,6 +150,8 @@ public partial class SnoodBoard : Node2D
 	private void LowerBoard()
 	{
 		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
+		Snood preloaded = Launcher.PreloadedSnood;
+		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y - SPRITE_SIZE);
 		
 		if (BottomLimit.HasOverlappingBodies())
 		{
@@ -171,7 +173,6 @@ public partial class SnoodBoard : Node2D
 	
 	private void Lose()
 	{
-		GD.Print("Bottom limit detected body");
 		Launcher.Disabled = true;
 		// Turn all snoods to skulls.
 		// TODO: Put this in Process under "if (dead)" part, to change them one by one.
@@ -188,7 +189,7 @@ public partial class SnoodBoard : Node2D
 		Scores.AddUpScore();
 		
 		// Starts countdown in _Process.
-		Dead = true;
+		LevelLost = true;
 	}
 
 	private void UpdateSnoodCountDictionary(int altTileIndex)
@@ -286,6 +287,7 @@ public partial class SnoodBoard : Node2D
 		Snood deadSnood = (Snood)Launcher.Snoods[index].Instantiate();
 		CallDeferred(MethodName.AddChild, deadSnood);
 		deadSnood.Position = Tilemap.MapToLocal(cell) + Tilemap.Position;
+		deadSnood.Freeze = false;
 		return deadSnood;
 	}
 

@@ -1,26 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://djqsxm03c26gx"]
+[gd_scene load_steps=3 format=3 uid="uid://djqsxm03c26gx"]
 
 [ext_resource type="StyleBox" uid="uid://cxtqjb5y8ugc3" path="res://ui/styleboxes/high_score_entry.tres" id="1_y43yk"]
+[ext_resource type="Script" path="res://ui/HighScoreEntry.cs" id="2_2nx11"]
 
 [node name="HighScoreEntry" type="PanelContainer"]
 theme_override_styles/panel = ExtResource("1_y43yk")
+script = ExtResource("2_2nx11")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="PlaceLabel" type="Label" parent="HBoxContainer"]
+[node name="Place" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 36
 text = "1"
 
-[node name="NameLabel" type="Label" parent="HBoxContainer"]
+[node name="Name" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "Jame 2ame 3ame 4ame 5ame 6ame."
 
-[node name="ScoreLabel" type="Label" parent="HBoxContainer"]
+[node name="Score" type="Label" parent="HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 36

@@ -1,14 +1,29 @@
 TODO:
 
+	NECESSARY FOR JAM!!!!!!!:
+		NEW THING:
+			Powerup snoods - Hit them directly and they give you some powerup. (not if they get knocked down in a hanging chunk though)
+				- Knock down surrounding snoods
+					and connected snoods to each of the six. Gives points too obviously.
+				- Give you a bomb to shoot
+				- Give you a guideline for rest of level (or a few shots?)
+				- ???
+			Bad snoods - Opposite of powerups.
+				- Instantly drop the wall down a notch
+				- Pop up random new snoods around the board
+				- Fuck up your aim for the next shot
+					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
+
 	SFX/Music!!!!!!
+		Make own? Use assets?
 
 	Decide on a name
-		And theme? Cat faces or something?
+		Use the word "Snood"? Is that legal?
 
-	Set up preloaded snood
-		And robot helper animation
+	Put high score leaderboard online
 
 	Better art/animations in general
+		Theme? Cat faces or something?
 		Make own or use assets?
 		At least do little robot reloader thing.
 
@@ -26,29 +41,12 @@ TODO:
 	Make guide-line for aiming
 		Have option to turn it on/off in options menu.
 
-	High scores
-		Leaderboard online
-
-	NECESSARY FOR JAM:
-		NEW THING:
-			Powerup snoods - Hit them and they give you some powerup.
-				- Knock down surrounding snoods
-				- Give you a bomb to shoot
-				- Give you a guideline for rest of level (or a few shots?)
-				- ???
-			Bad snoods - Opposite of powerups.
-				- Instantly drop the wall down a notch
-				- Pop up random new snoods around the board
-				- Fuck up your aim for the next shot
-					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
-
 
 BUGS:
-	Snoods occasionally take an already taken spot after getting CorrectForSides()ed.
+	FIXED - Snoods occasionally take an already taken spot after getting CorrectForSides()ed.
 		Possibly fix by speeding up physics tick rate?
 		Or could code a fix but that might be sloppy and difficult.
-	Physics tick rate at 120 seems to fix it.
-
+		Physics tick rate at 120 seems to fix it.
 
 
 Probably not enough time:

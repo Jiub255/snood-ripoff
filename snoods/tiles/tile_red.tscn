@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dp76hi4dkhmhw"]
 
-[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="1_q1xy7"]
-[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://game/snood_sprite_frames.tres" id="2_bsjoj"]
-[ext_resource type="Script" path="res://game/SnoodSprite.cs" id="3_lu6g4"]
+[ext_resource type="Script" path="res://snoods/tiles/StickyStaticBody.cs" id="1_q1xy7"]
+[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_bsjoj"]
+[ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_lu6g4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
 radius = 28.0

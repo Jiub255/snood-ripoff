@@ -9,7 +9,7 @@ public partial class GameScreen : TextureRect
 	
 	private const int SPRITE_SIZE = 64;
 
-	public Scores Scores { get; set; }
+	public Score Scores { get; set; }
 	
 	private PanelContainer GameHolder { get; set; }
 	private SnoodBoard BoardInstance { get; set; }
@@ -17,8 +17,8 @@ public partial class GameScreen : TextureRect
 	{
 		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
-		//GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
-		//GD.Load<PackedScene>("res://game/levels/level_4.tscn")
+		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
@@ -35,7 +35,7 @@ public partial class GameScreen : TextureRect
 		DangerBar.Value = 0;
 	}
 
-	public void StartGame(Scores scores)
+	public void StartGame(Score scores)
 	{
 		SetupScores(scores);
 		SetupLevel(1);
@@ -44,10 +44,9 @@ public partial class GameScreen : TextureRect
 	public void EndLevel()
 	{
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
-		BoardInstance.OnDead -= Die;
+		BoardInstance.OnLost -= Die;
 		
 		BoardInstance.QueueFree();
-		// CurrentLevel == [current Levels array index] + 1
 		if (CurrentLevel < Levels.Length)
 		{
 			SetupLevel(CurrentLevel + 1);
@@ -58,7 +57,7 @@ public partial class GameScreen : TextureRect
 		}
 	}
 	
-	private void SetupScores(Scores scores)
+	private void SetupScores(Score scores)
 	{
 		Scores = scores;
 		
@@ -86,7 +85,7 @@ public partial class GameScreen : TextureRect
 	private void InitializeBoard()
 	{
 		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
-		BoardInstance.OnDead += Die;
+		BoardInstance.OnLost += Die;
 		
 		Scores.ResetLevel();
 		BoardInstance.SetupScores(Scores);
@@ -96,7 +95,7 @@ public partial class GameScreen : TextureRect
 	private void Die()
 	{
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
-		BoardInstance.OnDead -= Die;
+		BoardInstance.OnLost -= Die;
 
 		BoardInstance.QueueFree();
 		OnLoseGame?.Invoke();

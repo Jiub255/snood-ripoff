@@ -2,12 +2,12 @@
 
 [ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="1_1185e"]
 [ext_resource type="Texture2D" uid="uid://dc883pbachgsy" path="res://assets/snood-wall-placeholder.png" id="4_ko2br"]
-[ext_resource type="Script" path="res://game/SnoodBoard.cs" id="5_ugmg0"]
-[ext_resource type="Script" path="res://game/StickyStaticBody.cs" id="6_8psdb"]
-[ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/bottom_limit.tscn" id="7_a8swf"]
-[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/bouncy.tres" id="7_g7e04"]
-[ext_resource type="Script" path="res://game/DeadSnoodDestroyer.cs" id="8_vyiwv"]
-[ext_resource type="Script" path="res://game/Launcher.cs" id="9_jxef0"]
+[ext_resource type="Script" path="res://game/game-screen/SnoodBoard.cs" id="5_ugmg0"]
+[ext_resource type="Script" path="res://snoods/tiles/StickyStaticBody.cs" id="6_8psdb"]
+[ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/game-screen/bottom_limit.tscn" id="7_a8swf"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/game-screen/bouncy.tres" id="7_g7e04"]
+[ext_resource type="Script" path="res://game/game-screen/DeadSnoodDestroyer.cs" id="8_vyiwv"]
+[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="9_jxef0"]
 [ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="10_mjn4f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]

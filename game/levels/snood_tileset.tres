@@ -1,14 +1,14 @@
 [gd_resource type="TileSet" load_steps=11 format=3 uid="uid://g7rltp52dpnh"]
 
-[ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://tiles/ceiling_tile.tscn" id="1_3dqtx"]
-[ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://tiles/tile_red.tscn" id="2_1v0ps"]
-[ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://tiles/tile_dark_blue.tscn" id="3_1ywe8"]
-[ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://tiles/tile_yellow.tscn" id="4_i7711"]
-[ext_resource type="PackedScene" uid="uid://dai6cqm5hcrm7" path="res://tiles/tile_green.tscn" id="5_k2c8b"]
-[ext_resource type="PackedScene" uid="uid://blsytqi3jdqkk" path="res://tiles/tile_purple.tscn" id="6_bnt8n"]
-[ext_resource type="PackedScene" uid="uid://2tkplova7tyv" path="res://tiles/tile_light_blue.tscn" id="7_ycv7t"]
-[ext_resource type="PackedScene" uid="uid://cfkk318vpm6hp" path="res://tiles/tile_gray.tscn" id="8_2jqn3"]
-[ext_resource type="PackedScene" uid="uid://dylomkm2riky2" path="res://tiles/tile_skull.tscn" id="9_hwe8w"]
+[ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://snoods/tiles/ceiling_tile.tscn" id="1_3dqtx"]
+[ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://snoods/tiles/tile_red.tscn" id="2_1v0ps"]
+[ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://snoods/tiles/tile_dark_blue.tscn" id="3_1ywe8"]
+[ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://snoods/tiles/tile_yellow.tscn" id="4_i7711"]
+[ext_resource type="PackedScene" uid="uid://dai6cqm5hcrm7" path="res://snoods/tiles/tile_green.tscn" id="5_k2c8b"]
+[ext_resource type="PackedScene" uid="uid://blsytqi3jdqkk" path="res://snoods/tiles/tile_purple.tscn" id="6_bnt8n"]
+[ext_resource type="PackedScene" uid="uid://2tkplova7tyv" path="res://snoods/tiles/tile_light_blue.tscn" id="7_ycv7t"]
+[ext_resource type="PackedScene" uid="uid://cfkk318vpm6hp" path="res://snoods/tiles/tile_gray.tscn" id="8_2jqn3"]
+[ext_resource type="PackedScene" uid="uid://dylomkm2riky2" path="res://snoods/tiles/tile_skull.tscn" id="9_hwe8w"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_mouri"]
 scenes/0/scene = ExtResource("1_3dqtx")

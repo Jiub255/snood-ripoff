@@ -1,12 +1,12 @@
 [gd_scene load_steps=10 format=3 uid="uid://bkmv4fysiwn2o"]
 
 [ext_resource type="Texture2D" uid="uid://b6hwtb8ojjl4m" path="res://assets/snood-background.png" id="1_ir8px"]
-[ext_resource type="Script" path="res://game/GameScreen.cs" id="2_dqpq1"]
+[ext_resource type="Script" path="res://game/game-screen/GameScreen.cs" id="2_dqpq1"]
 [ext_resource type="Texture2D" uid="uid://5tgxlmu2if0o" path="res://assets/danger-bar-background.png" id="2_s1hki"]
-[ext_resource type="Script" path="res://game/SnoodsUsedLabel.cs" id="3_nnxl6"]
+[ext_resource type="Script" path="res://game/game-screen/hud/SnoodsUsedLabel.cs" id="3_nnxl6"]
 [ext_resource type="Texture2D" uid="uid://bhseo8iog47py" path="res://assets/danger-bar-fill.png" id="3_pmdt8"]
-[ext_resource type="Script" path="res://game/DangerBar.cs" id="6_5pnjo"]
-[ext_resource type="Script" path="res://game/ScoreLabel.cs" id="6_q43js"]
+[ext_resource type="Script" path="res://game/game-screen/DangerBar.cs" id="6_5pnjo"]
+[ext_resource type="Script" path="res://game/game-screen/hud/ScoreLabel.cs" id="6_q43js"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2v1ah"]
 content_margin_left = 12.0

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dctax0cdei2m4"]
+[gd_scene load_steps=8 format=3 uid="uid://dctax0cdei2m4"]
 
 [ext_resource type="Script" path="res://ui/GameOverMenu.cs" id="1_ktuny"]
 [ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="2_cjh6b"]
 [ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/styleboxes/button_normal.tres" id="3_lju7w"]
+[ext_resource type="Script" path="res://ui/HighScoreSubmit.cs" id="3_q76cc"]
 [ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="4_0twa8"]
 [ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="5_284hr"]
 
@@ -65,9 +66,9 @@ horizontal_alignment = 1
 
 [node name="HighScoreSubmit" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 110)
 layout_mode = 2
+script = ExtResource("3_q76cc")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/HighScoreSubmit"]
 layout_mode = 1
@@ -84,7 +85,8 @@ theme_override_font_sizes/font_size = 36
 text = "New High Score! "
 horizontal_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/HighScoreSubmit/VBoxContainer"]
+[node name="NameEntry" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer/HighScoreSubmit/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 placeholder_text = "Enter name here"

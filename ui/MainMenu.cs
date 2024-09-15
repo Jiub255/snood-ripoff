@@ -6,23 +6,23 @@ public partial class MainMenu : Control
 	public event Action OnStartPressed;
 	public event Action OnOptionsPressed;
 	public event Action OnCreditsPressed;
-	
+
+	public Scoreboard Scoreboard { get; private set; }
 	private Button StartButton { get; set; }
 	private Button OptionsButton { get; set; }
 	private Button CreditsButton { get; set; }
 	private Button QuitButton { get; set; }
-	private HighScores HighScores { get; set; }
 
 
 	public override void _Ready()
 	{
 		base._Ready();
-		
+
 		StartButton = GetNode<Button>("%StartButton");
 		OptionsButton = GetNode<Button>("%OptionsButton");
 		CreditsButton = GetNode<Button>("%CreditsButton");
 		QuitButton = GetNode<Button>("%QuitButton");
-		HighScores = GetNode<HighScores>("%HighScores");
+		Scoreboard = GetNode<Scoreboard>("%Scoreboard");
 		
 		StartButton.Pressed += StartGame;
 		OptionsButton.Pressed += OpenOptions;
@@ -57,6 +57,6 @@ public partial class MainMenu : Control
 
 	private void QuitGame()
 	{
-		throw new NotImplementedException();
+		GD.Print("Quit button pressed");
 	}
 }

@@ -33,7 +33,7 @@ public partial class EndLevelMenu : Control
 		NextLevelButton.Pressed -= NextLevel;
 	}
 
-	public void SetupMenu(Scores scores)
+	public void SetupMenu(Score scores)
 	{
 		Score.Text = $"Level Score: {scores.Level}";
 		SnoodsUsed.Text = $"Snoods Used: {scores.SnoodsUsed}";

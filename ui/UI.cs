@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class UI : CanvasLayer
 {
@@ -19,6 +20,7 @@ public partial class UI : CanvasLayer
 		
 		GetMenuReferences();
 		SubscribeToEvents();
+		SetupHighScores();
 	}
 
 	public override void _ExitTree()
@@ -28,18 +30,18 @@ public partial class UI : CanvasLayer
 		UnsubscribeFromEvents();
 	}
 
-	public void OpenEndLevelMenu(Scores scores)
+	public void OpenEndLevelMenu(Score scores)
 	{
 		CloseAllMenus();
 		EndLevelMenu.Show();
 		EndLevelMenu.SetupMenu(scores);
 	}
 	
-	public void OpenGameOverMenu(Scores scores)
+	public void OpenGameOverMenu(Score score)
 	{
 		CloseAllMenus();
 		GameOverMenu.Show();
-		GameOverMenu.SetupMenu(scores);
+		GameOverMenu.SetupMenu(score);
 	}
 	
 	public void CloseAllMenus()
@@ -48,6 +50,14 @@ public partial class UI : CanvasLayer
 		OptionsMenu.Hide();
 		CreditsMenu.Hide();
 		EndLevelMenu.Hide();
+	}
+	
+	// TODO: Send LeaderboardHandler instead
+	private void SetupHighScores()
+	{
+		List<HighScore> highScores = new();
+		MainMenu.Scoreboard.InitializeHighScores(highScores);
+		GameOverMenu.HighScores = highScores;
 	}
 
 	private void StartGame()
@@ -59,6 +69,7 @@ public partial class UI : CanvasLayer
 	private void OpenMainMenu()
 	{
 		CloseAllMenus();
+		MainMenu.Scoreboard.SetupScores();
 		MainMenu.Show();
 	}
 

@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://blvnctkm2pn2p"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_i4fu7"]
-[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://game/snood_sprite_frames.tres" id="2_lbs02"]
-[ext_resource type="Script" path="res://game/SnoodSprite.cs" id="3_2fdra"]
+[ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_lbs02"]
+[ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_2fdra"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
 radius = 28.0
@@ -10,6 +10,7 @@ radius = 28.0
 [node name="Snood" type="RigidBody2D"]
 gravity_scale = 0.0
 lock_rotation = true
+freeze = true
 contact_monitor = true
 max_contacts_reported = 6
 script = ExtResource("1_i4fu7")

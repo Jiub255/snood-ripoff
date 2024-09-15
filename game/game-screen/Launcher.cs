@@ -6,9 +6,9 @@ using System.Linq;
 public partial class Launcher : Node2D
 {
 	private const float MIN_ANGLE = 15;
-	
+
 	public event Action<Vector2, int> OnSnoodHit;
-	
+
 	public Dictionary<int, PackedScene> Snoods { get; } = new()
 	{
 		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
@@ -24,8 +24,9 @@ public partial class Launcher : Node2D
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
 	public SnoodBoard Parent { get; set; }
 	public bool Disabled { get; set; }
-	public Scores Scores { get; set; }
-	
+	public Score Scores { get; set; }
+
+	public Snood PreloadedSnood { get; private set; }
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
 	private float Speed { get; set; } = 1500f;
@@ -33,8 +34,10 @@ public partial class Launcher : Node2D
 	private bool Reloading { get; set; }
 	private bool SnoodLanded { get; set; } = true;
 	private AnimatedSprite2D Sprite { get; set; }
-	private Random RNG { get; } = new();
+	private Random RNG { get; } = new(69420);
 	private float ReloadDuration { get; } = 1f;
+	// FOR TESTING
+	private Vector2 _offset = new(128, 0);
 
 
 	public override void _Ready()
@@ -84,6 +87,7 @@ public partial class Launcher : Node2D
 		{
 			return;
 		}
+		
 		PackedScene snoodScene = ChooseRandomSnood();
 		SetupSnood(snoodScene);
 	}
@@ -93,13 +97,14 @@ public partial class Launcher : Node2D
 		if (!Reloading && SnoodLanded && !Disabled && LoadedSnood != null)
 		{
 			FlyingSnood = LoadedSnood;
+			FlyingSnood.Freeze = false;
 			FlyingSnood.LinearVelocity = AimDirection * Speed;
 			Reloading = true;
 			SnoodLanded = false;
 			Scores.SnoodsUsed++;
 		}
 	}
-	
+
 	public void UpdateDictionary(int altTileIndex)
 	{
 		if (altTileIndex == 8) return;
@@ -108,7 +113,7 @@ public partial class Launcher : Node2D
 			SnoodsInUse.Add(altTileIndex, Snoods[altTileIndex]);
 		}
 	}
-	
+
 	private PackedScene ChooseRandomSnood()
 	{
 		int randomIndex = RNG.Next(0, SnoodsInUse.Count);
@@ -118,10 +123,23 @@ public partial class Launcher : Node2D
 
 	private void SetupSnood(PackedScene snoodScene)
 	{
-		LoadedSnood = (Snood)snoodScene.Instantiate();
-		Parent.Tilemap.CallDeferred(MethodName.AddChild, LoadedSnood);
-		LoadedSnood.Position = Position - Parent.Tilemap.Position;
-		LoadedSnood.OnHitStickyThing += HandleSnoodHit;
+		if (PreloadedSnood == null)
+		{
+			PreloadSnood(ChooseRandomSnood());
+		}
+		
+		LoadedSnood = PreloadedSnood;
+		LoadedSnood.Position -= _offset;
+
+		PreloadSnood(snoodScene);
+	}
+
+	private void PreloadSnood(PackedScene snoodScene)
+	{
+		PreloadedSnood = (Snood)snoodScene.Instantiate();
+		Parent.Tilemap.CallDeferred(MethodName.AddChild, PreloadedSnood);
+		PreloadedSnood.Position = Position + _offset - Parent.Tilemap.Position;
+		PreloadedSnood.OnHitStickyThing += HandleSnoodHit;
 	}
 
 	private void Rotate()
