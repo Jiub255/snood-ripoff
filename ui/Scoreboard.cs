@@ -3,21 +3,7 @@ using System.Collections.Generic;
 
 public partial class Scoreboard : VBoxContainer
 {
-	public List<HighScore> HighScores { get; set; }
-	
-	private HighScore[] DefaultHighScores { get; } = new HighScore[10]
-	{
-		new HighScore("James", 500000),
-		new HighScore("James", 300000),
-		new HighScore("James", 200000),
-		new HighScore("James", 100000),
-		new HighScore("James", 50000),
-		new HighScore("James", 40000),
-		new HighScore("James", 30000),
-		new HighScore("James", 20000),
-		new HighScore("James", 10000),
-		new HighScore("James", 5000)
-	};
+	private LeaderboardHandler LeaderboardHandler { get; set; }
 	private List<HighScoreEntry> Entries { get; set; } = new();
 
 	public override void _Ready()
@@ -32,26 +18,33 @@ public partial class Scoreboard : VBoxContainer
 			}
 		}
 	}
-	
-	public void InitializeHighScores(List<HighScore> highScores)
+
+	public override void _ExitTree()
 	{
-		HighScores = highScores;
-		HighScores.AddRange(DefaultHighScores);
-		SetupScores();
+		base._ExitTree();
+		
+		LeaderboardHandler.OnHighScoresRecieved -= SetupScores;
+	}
+
+	public void InitializeHighScores(LeaderboardHandler leaderboardHandler)
+	{
+		LeaderboardHandler = leaderboardHandler;
+		LeaderboardHandler.OnHighScoresRecieved += SetupScores;
+		LeaderboardHandler.RequestHighScores();
 	}
 	
-	public void SetupScores()
+	public void SetupScores(List<HighScore> highScores)
 	{
 		int place = 1;
-		int previousScore = -1;
-		for (int index = 0; index < HighScores.Count; index++)
+		int previousScore = 0;
+		for (int index = 0; index < highScores.Count; index++)
 		{
-			if (HighScores[index].Score < previousScore)
+			if (highScores[index].Score < previousScore)
 			{
 				place++;
 			}
-			previousScore = HighScores[index].Score;
-			Entries[index].SetupEntry(place, HighScores[index]);
+			previousScore = highScores[index].Score;
+			Entries[index].SetupEntry(place, highScores[index]);
 		}
 	}
 }

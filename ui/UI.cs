@@ -55,9 +55,10 @@ public partial class UI : CanvasLayer
 	// TODO: Send LeaderboardHandler instead
 	private void SetupHighScores()
 	{
-		List<HighScore> highScores = new();
-		MainMenu.Scoreboard.InitializeHighScores(highScores);
-		GameOverMenu.HighScores = highScores;
+		LeaderboardHandler leaderboardHandler = new(this);
+		//List<HighScore> highScores = new();
+		MainMenu.Scoreboard.InitializeHighScores(leaderboardHandler);
+		GameOverMenu.LeaderboardHandler = leaderboardHandler;
 	}
 
 	private void StartGame()
@@ -69,7 +70,7 @@ public partial class UI : CanvasLayer
 	private void OpenMainMenu()
 	{
 		CloseAllMenus();
-		MainMenu.Scoreboard.SetupScores();
+		//MainMenu.Scoreboard.SetupScores();
 		MainMenu.Show();
 	}
 

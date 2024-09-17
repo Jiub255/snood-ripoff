@@ -1,12 +1,12 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class GameOverMenu : Control
 {
 	public event Action OnDonePressed;
+	
+	public LeaderboardHandler LeaderboardHandler { get; set; }
 
-	public List<HighScore> HighScores { get; set; }
 	private Label Message { get; set; }
 	private Label TotalScore { get; set; }
 	private HighScoreSubmit HighScoreSubmit { get; set; }
@@ -45,11 +45,12 @@ public partial class GameOverMenu : Control
 		}
 	}
 
-    public bool IsHighScore(Score score)
+	public bool IsHighScore(Score score)
 	{
-		for (int index = 0; index < HighScores.Count; index++)
+		// TODO: Only check top ten. Or less if there aren't ten scores yet. 
+		for (int index = 0; index < LeaderboardHandler.HighScores.Count; index++)
 		{
-			if (score.Total >= HighScores[index].Score)
+			if (score.Total >= LeaderboardHandler.HighScores[index].Score)
 			{
 				Place = index;
 				return true;
@@ -63,17 +64,16 @@ public partial class GameOverMenu : Control
 	private void NextLevel()
 	{
 		if (Place > 0)
-        {
-            AddHighScore();
-        }
-        OnDonePressed?.Invoke();
+		{
+			AddHighScore();
+		}
+		OnDonePressed?.Invoke();
 		Hide();
 	}
 
-    private void AddHighScore()
-    {
-        HighScore newHighScore = new(HighScoreSubmit.NameEntry.Text, HighScore);
-        HighScores.Insert(Place, newHighScore);
-        HighScores.RemoveAt(HighScores.Count - 1);
-    }
+	private void AddHighScore()
+	{
+		HighScore newHighScore = new(HighScoreSubmit.NameEntry.Text, HighScore);
+		LeaderboardHandler.UploadScore(newHighScore);
+	}
 }
