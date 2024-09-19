@@ -18,7 +18,8 @@ public partial class Launcher : Node2D
 		{ 5, GD.Load<PackedScene>("res://snoods/snood_purple.tscn") },
 		{ 6, GD.Load<PackedScene>("res://snoods/snood_light_blue.tscn") },
 		{ 7, GD.Load<PackedScene>("res://snoods/snood_gray.tscn") },
-		{ 8, GD.Load<PackedScene>("res://snoods/snood_skull.tscn") }
+		{ 8, GD.Load<PackedScene>("res://snoods/snood_skull.tscn") },
+		{ 9, GD.Load<PackedScene>("res://snoods/bad_snood_drop_wall.tscn") },
 	};
 	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new();
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
@@ -108,7 +109,7 @@ public partial class Launcher : Node2D
 	public void UpdateDictionary(int altTileIndex)
 	{
 		if (altTileIndex == 8) return;
-		if (!SnoodsInUse.ContainsKey(altTileIndex) && Snoods.ContainsKey(altTileIndex))
+		if (!SnoodsInUse.ContainsKey(altTileIndex) && Snoods.ContainsKey(altTileIndex) && altTileIndex < 9)
 		{
 			SnoodsInUse.Add(altTileIndex, Snoods[altTileIndex]);
 		}

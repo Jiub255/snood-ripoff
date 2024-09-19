@@ -4,6 +4,9 @@ using System;
 public partial class GameOverMenu : Control
 {
 	public event Action OnDonePressed;
+
+	private const string WIN_MESSAGE = "Congratulations! You Won!";
+	private const string LOSE_MESSAGE = "You lost. No one likes you.";
 	
 	public LeaderboardHandler LeaderboardHandler { get; set; }
 
@@ -35,7 +38,7 @@ public partial class GameOverMenu : Control
 
 	public void SetupMenu(Score score)
 	{
-		Message.Text = score.Won ? "Congratulations! You Won!" : "You lost. No one likes you.";
+		Message.Text = score.Won ? WIN_MESSAGE : LOSE_MESSAGE;
 		TotalScore.Text = $"Total Score: {score.Total}";
 		HighScoreSubmit.Hide();
 		if (IsHighScore(score))
@@ -47,8 +50,8 @@ public partial class GameOverMenu : Control
 
 	public bool IsHighScore(Score score)
 	{
-		// TODO: Only check top ten. Or less if there aren't ten scores yet. 
-		for (int index = 0; index < LeaderboardHandler.HighScores.Count; index++)
+		// Only check top ten. Or less if there aren't ten scores yet. 
+		for (int index = 0; index < Mathf.Min(10, LeaderboardHandler.HighScores.Count); index++)
 		{
 			if (score.Total >= LeaderboardHandler.HighScores[index].Score)
 			{
@@ -57,13 +60,13 @@ public partial class GameOverMenu : Control
 			}
 		}
 
-		Place = 0;
+		Place = -1;
 		return false;
 	}
 	
 	private void NextLevel()
 	{
-		if (Place > 0)
+		if (Place > -1)
 		{
 			AddHighScore();
 		}

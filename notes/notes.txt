@@ -11,6 +11,7 @@ TODO:
 			Bad snoods - Opposite of powerups.
 				- Instantly drop the wall down a notch
 				- Pop up random new snoods around the board
+					or, randomize board, possibly with no similar snoods touching?
 				- Fuck up your aim for the next shot
 					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
 

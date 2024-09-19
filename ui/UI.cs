@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class UI : CanvasLayer
 {
@@ -52,11 +51,9 @@ public partial class UI : CanvasLayer
 		EndLevelMenu.Hide();
 	}
 	
-	// TODO: Send LeaderboardHandler instead
 	private void SetupHighScores()
 	{
 		LeaderboardHandler leaderboardHandler = new(this);
-		//List<HighScore> highScores = new();
 		MainMenu.Scoreboard.InitializeHighScores(leaderboardHandler);
 		GameOverMenu.LeaderboardHandler = leaderboardHandler;
 	}
@@ -70,7 +67,6 @@ public partial class UI : CanvasLayer
 	private void OpenMainMenu()
 	{
 		CloseAllMenus();
-		//MainMenu.Scoreboard.SetupScores();
 		MainMenu.Show();
 	}
 

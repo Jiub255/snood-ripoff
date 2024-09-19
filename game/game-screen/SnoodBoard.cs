@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO: Move a lot of this to TileMapLayer extension class. 
+// Might be more work than it's worth. Could get ugly. But could be good practice too.
 public partial class SnoodBoard : Node2D
 {
 	public event Action OnGoToNextLevel;
@@ -31,6 +33,11 @@ public partial class SnoodBoard : Node2D
 	private bool LevelLost { get; set; }
 	private float LevelLostTimer { get; set; } = 1.5f;
 	
+	private enum SpecialSnoods
+	{
+		DropWallSnood = 9,
+		
+	}
 
 	public override void _Ready()
 	{
@@ -99,9 +106,24 @@ public partial class SnoodBoard : Node2D
 		WallRight.Position = new Vector2(width, WallRight.Position.Y);
 		Launcher.Position = new Vector2(width / 2, Launcher.Position.Y);
 		CountSnoods();
+		//CallDeferred(MethodName.ConnectToSnoodSignals);
 		Launcher.LoadSnood();
 	}
 	
+/* 	private void ConnectToSnoodSignals()
+	{
+		foreach (Node child in Tilemap.GetChildren())
+		{
+			if (child is BadTileDropWall dropWall)
+			{
+				// TODO: Are these the same? Do I need to unsubscribe from the top one?
+				dropWall.OnHitTile += LowerBoard;
+				//dropWall.Connect(BadTileDropWall.SignalName.OnHitTile, new Callable(this, MethodName.LowerBoard));
+			}
+		}
+	} */
+	
+	// TODO: Move to TileMapLayer extension class.
 	private void CountSnoods()
 	{
 		foreach (Vector2I cell in Tilemap.GetUsedCells())
@@ -123,12 +145,16 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 	
+	// TODO: Move to TileMapLayer extension class.
 	private void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
 	{
-		Vector2I mapCoords = Tilemap.LocalToMap(coordinates);
-		Vector2I correctedMapCoords = CorrectForSides(mapCoords);
+		Vector2I mapCoordinates = Tilemap.LocalToMap(coordinates);
+		Vector2I correctedMapCoords = CorrectForSides(mapCoordinates);
 		SetSnood(correctedMapCoords, altTileIndex);
 		UpdateSnoodCountDictionary(altTileIndex);
+
+		// TODO: Handle touching special snoods here.
+		HandleSpecialSnoods(mapCoordinates);
 
 		IEnumerable<Vector2I> similarCells = GetTouchingCells(correctedMapCoords);
 		if (similarCells.Count() >= 3)
@@ -145,11 +171,35 @@ public partial class SnoodBoard : Node2D
 		{
 			DangerBar.ChangeValue(30);
 		}
+		
+		if (Tilemap.GetSurroundingCells(mapCoordinates).Where(x => Tilemap.GetCellAlternativeTile(x) > -1).Count() == 0)
+		{
+			DeleteCell(mapCoordinates);
+		}
 	}
 	
+	// TODO: Move to TileMapLayer extension class.
+	private void HandleSpecialSnoods(Vector2I mapCoordinates)
+	{
+		foreach (Vector2I cell in Tilemap.GetSurroundingCells(mapCoordinates))
+		{
+			int tileIndex = Tilemap.GetCellAlternativeTile(cell);
+			switch (tileIndex)
+			{
+				case (int)SpecialSnoods.DropWallSnood:
+					LowerBoard();
+					DeleteCell(cell);
+					break;
+			}
+		}
+		
+	}
+	
+	// TODO: Move to TileMapLayer extension class? Probably not, using Launcher and Tilemap.
 	private void LowerBoard()
 	{
 		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
+		
 		Snood preloaded = Launcher.PreloadedSnood;
 		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y - SPRITE_SIZE);
 		
@@ -159,6 +209,8 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class? Maybe not, has BottomLimit. Or take out the set snood part, then have 
+	// this class check bottom limit. 
 	private void SetSnood(Vector2I mapCoords, int altTileIndex)
 	{
 		// Second parameter is the source index (probably just using one index so it should always be 0).
@@ -277,9 +329,12 @@ public partial class SnoodBoard : Node2D
 
 	private void InstantiateAndDropDeadSnood(Vector2I cell, int index)
 	{
-		Snood deadSnood = InstantiateDeadSnood(cell, index);
-		DisableCollisions(deadSnood);
-		DropSnood(deadSnood);
+		if (index > -1)
+		{
+			Snood deadSnood = InstantiateDeadSnood(cell, index);
+			DisableCollisions(deadSnood);
+			DropSnood(deadSnood);
+		}
 	}
 
 	private Snood InstantiateDeadSnood(Vector2I cell, int index)

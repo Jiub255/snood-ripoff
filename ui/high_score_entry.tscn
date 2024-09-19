@@ -16,17 +16,14 @@ custom_minimum_size = Vector2(75, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 36
-text = "1"
 
 [node name="Name" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
-text = "Jame 2ame 3ame 4ame 5ame 6ame."
 
 [node name="Score" type="Label" parent="HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_font_sizes/font_size = 36
-text = "982398"

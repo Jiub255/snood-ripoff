@@ -15,10 +15,10 @@ public partial class GameScreen : TextureRect
 	private SnoodBoard BoardInstance { get; set; }
 	private PackedScene[] Levels =
 	{
-		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
+		//GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
+		//GD.Load<PackedScene>("res://game/levels/level_4.tscn")
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
