@@ -1,8 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://bhaj4cm2yrdnq"]
+[gd_scene load_steps=10 format=3 uid="uid://bhaj4cm2yrdnq"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_nbw0u"]
+[ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_45l0q"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_ujtir"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_hicut"]
+[ext_resource type="Texture2D" uid="uid://kb6tfi0stxhd" path="res://assets/snood-acc-devil-horns.png" id="4_ti86n"]
+
+[sub_resource type="Curve" id="Curve_d0xsa"]
+_data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_t0mtu"]
+curve = SubResource("Curve_d0xsa")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_63cpu"]
+lifetime_randomness = 0.3
+particle_flag_align_y = true
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 28.0
+emission_ring_inner_radius = 0.0
+direction = Vector3(2, 0, 0)
+initial_velocity_min = 34.83
+initial_velocity_max = 91.03
+gravity = Vector3(0, 98, 0)
+scale_max = 2.0
+alpha_curve = SubResource("CurveTexture_t0mtu")
+hue_variation_min = -0.1
+hue_variation_max = 0.1
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
 radius = 28.0
@@ -16,10 +43,21 @@ max_contacts_reported = 6
 script = ExtResource("1_nbw0u")
 altTileIndex = 1
 
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+self_modulate = Color(0.904902, 0.273117, 0.440163, 1)
+rotation = 1.5708
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_63cpu")
+texture = ExtResource("2_45l0q")
+lifetime = 2.0
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 self_modulate = Color(0.611765, 0.129412, 0.0941176, 1)
 sprite_frames = ExtResource("2_ujtir")
 script = ExtResource("3_hicut")
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D"]
+texture = ExtResource("4_ti86n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_snlac")

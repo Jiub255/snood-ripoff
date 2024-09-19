@@ -5,15 +5,16 @@ TODO:
 			Powerup snoods - Hit them directly and they give you some powerup. (not if they get knocked down in a hanging chunk though)
 				- Knock down surrounding snoods
 					and connected snoods to each of the six. Gives points too obviously.
-				- Give you a bomb to shoot
+				- Give you a bomb to shoot (or just is a bomb and blows up surrounding snoods?)
 				- Give you a guideline for rest of level (or a few shots?)
 				- ???
+				- DONE - Instantly raise the wall up a notch (unless at top already)
 			Bad snoods - Opposite of powerups.
-				- Instantly drop the wall down a notch
 				- Pop up random new snoods around the board
 					or, randomize board, possibly with no similar snoods touching?
 				- Fuck up your aim for the next shot
 					Random direction instead of where you point. Could have the gun start randomly wobbling back and forth at random speed so it's hard to shoot.
+				- DONE - Instantly drop the wall down a notch
 
 	SFX/Music!!!!!!
 		Make own? Use assets?

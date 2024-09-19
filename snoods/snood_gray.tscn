@@ -1,8 +1,33 @@
-[gd_scene load_steps=5 format=3 uid="uid://bumcmyehq87ll"]
+[gd_scene load_steps=10 format=3 uid="uid://bumcmyehq87ll"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_6oa04"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_5v2n2"]
+[ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_fbb1c"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_hc8p4"]
+[ext_resource type="Texture2D" uid="uid://cas344uas7ore" path="res://assets/snood-acc-alien.png" id="4_e1nda"]
+
+[sub_resource type="Curve" id="Curve_p13l0"]
+_data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_6eeso"]
+curve = SubResource("Curve_p13l0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8vhys"]
+lifetime_randomness = 0.3
+particle_flag_align_y = true
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 28.0
+emission_ring_inner_radius = 0.0
+direction = Vector3(2, 0, 0)
+initial_velocity_min = 34.83
+initial_velocity_max = 91.03
+gravity = Vector3(0, 98, 0)
+scale_max = 2.0
+alpha_curve = SubResource("CurveTexture_6eeso")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
 radius = 28.0
@@ -16,10 +41,21 @@ max_contacts_reported = 6
 script = ExtResource("1_6oa04")
 altTileIndex = 7
 
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+self_modulate = Color(0.0885599, 0.0885599, 0.0885599, 1)
+rotation = 1.5708
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_8vhys")
+texture = ExtResource("2_fbb1c")
+lifetime = 2.0
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 self_modulate = Color(0.404511, 0.404511, 0.404511, 1)
 sprite_frames = ExtResource("2_5v2n2")
 script = ExtResource("3_hc8p4")
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D"]
+texture = ExtResource("4_e1nda")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_snlac")

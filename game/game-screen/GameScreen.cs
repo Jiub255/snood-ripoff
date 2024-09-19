@@ -15,7 +15,7 @@ public partial class GameScreen : TextureRect
 	private SnoodBoard BoardInstance { get; set; }
 	private PackedScene[] Levels =
 	{
-		//GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
 		//GD.Load<PackedScene>("res://game/levels/level_4.tscn")
@@ -44,7 +44,7 @@ public partial class GameScreen : TextureRect
 	public void EndLevel()
 	{
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
-		BoardInstance.OnLost -= Die;
+		BoardInstance.OnLost -= Lose;
 		
 		BoardInstance.QueueFree();
 		if (CurrentLevel < Levels.Length)
@@ -70,6 +70,7 @@ public partial class GameScreen : TextureRect
 
 	private void SetupLevel(int level)
 	{
+		Input.MouseMode = Input.MouseModeEnum.Hidden;
 		CurrentLevel = level;
 		InstantiateBoard(level);
 		InitializeBoard();
@@ -85,17 +86,18 @@ public partial class GameScreen : TextureRect
 	private void InitializeBoard()
 	{
 		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
-		BoardInstance.OnLost += Die;
+		BoardInstance.OnLost += Lose;
 		
 		Scores.ResetLevel();
 		BoardInstance.SetupScores(Scores);
 		BoardInstance.SetupDangerBar(DangerBar);
 	}
 
-	private void Die()
+	private void Lose()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
-		BoardInstance.OnLost -= Die;
+		BoardInstance.OnLost -= Lose;
 
 		BoardInstance.QueueFree();
 		OnLoseGame?.Invoke();
@@ -109,11 +111,13 @@ public partial class GameScreen : TextureRect
 
 	private void OpenEndLevelMenu()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 		OnEndLevel?.Invoke();
 	}
 
 	private void WinGame()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 		OnWinGame?.Invoke();
 	}
 }

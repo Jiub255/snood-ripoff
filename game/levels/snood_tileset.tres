@@ -1,8 +1,10 @@
-[gd_resource type="TileSet" load_steps=12 format=3 uid="uid://g7rltp52dpnh"]
+[gd_resource type="TileSet" load_steps=14 format=3 uid="uid://g7rltp52dpnh"]
 
 [ext_resource type="PackedScene" uid="uid://23gyvv57r4ph" path="res://snoods/tiles/ceiling_tile.tscn" id="1_3dqtx"]
 [ext_resource type="PackedScene" uid="uid://dp76hi4dkhmhw" path="res://snoods/tiles/tile_red.tscn" id="2_1v0ps"]
 [ext_resource type="PackedScene" uid="uid://0qm2rfd1xmr3" path="res://snoods/tiles/tile_dark_blue.tscn" id="3_1ywe8"]
+[ext_resource type="PackedScene" uid="uid://d4l5jsrgb33ow" path="res://snoods/tiles/good_tile_raise_wall.tscn" id="3_4766n"]
+[ext_resource type="PackedScene" uid="uid://dl23ivvgres67" path="res://snoods/tiles/bad_tile_lose_control.tscn" id="4_dk070"]
 [ext_resource type="PackedScene" uid="uid://dfsei03d68dhf" path="res://snoods/tiles/tile_yellow.tscn" id="4_i7711"]
 [ext_resource type="PackedScene" uid="uid://dai6cqm5hcrm7" path="res://snoods/tiles/tile_green.tscn" id="5_k2c8b"]
 [ext_resource type="PackedScene" uid="uid://blsytqi3jdqkk" path="res://snoods/tiles/tile_purple.tscn" id="6_bnt8n"]
@@ -22,6 +24,8 @@ scenes/6/scene = ExtResource("7_ycv7t")
 scenes/7/scene = ExtResource("8_2jqn3")
 scenes/8/scene = ExtResource("9_hwe8w")
 scenes/9/scene = ExtResource("10_ra3mr")
+scenes/10/scene = ExtResource("3_4766n")
+scenes/11/scene = ExtResource("4_dk070")
 
 [resource]
 tile_shape = 2

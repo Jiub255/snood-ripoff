@@ -35,8 +35,9 @@ public partial class SnoodBoard : Node2D
 	
 	private enum SpecialSnoods
 	{
-		DropWallSnood = 9,
-		
+		DropWall = 9,
+		RaiseWall = 10,
+		LoseControl = 11,
 	}
 
 	public override void _Ready()
@@ -186,13 +187,31 @@ public partial class SnoodBoard : Node2D
 			int tileIndex = Tilemap.GetCellAlternativeTile(cell);
 			switch (tileIndex)
 			{
-				case (int)SpecialSnoods.DropWallSnood:
+				case (int)SpecialSnoods.DropWall:
 					LowerBoard();
+					DeleteCell(cell);
+					break;
+				
+				case (int)SpecialSnoods.RaiseWall:
+					RaiseBoard();
+					DeleteCell(cell);
+					break;
+				
+				case (int)SpecialSnoods.LoseControl:
+					Launcher.OutOfControl = true;
 					DeleteCell(cell);
 					break;
 			}
 		}
+	}
+	
+	private void RaiseBoard()
+	{
+		if (Tilemap.Position.Y == 0) return;
+		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y - SPRITE_SIZE);
 		
+		Snood preloaded = Launcher.PreloadedSnood;
+		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y + SPRITE_SIZE);
 	}
 	
 	// TODO: Move to TileMapLayer extension class? Probably not, using Launcher and Tilemap.

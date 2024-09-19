@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://d4l5jsrgb33ow"]
+
+[ext_resource type="Script" path="res://snoods/tiles/StickyStaticBody.cs" id="1_brxwp"]
+[ext_resource type="Texture2D" uid="uid://cal6avgos4e0c" path="res://assets/snood-down-arrow.png" id="2_228p4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
+radius = 28.0
+
+[node name="SnoodTile" type="StaticBody2D"]
+script = ExtResource("1_brxwp")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0, 0.710102, 0.0706831, 1)
+rotation = 3.14159
+texture = ExtResource("2_228p4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ya6h5")
+debug_color = Color(0, 0.595, 0.7, 0)

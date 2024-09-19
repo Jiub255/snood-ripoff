@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://2tkplova7tyv"]
+[gd_scene load_steps=6 format=3 uid="uid://2tkplova7tyv"]
 
 [ext_resource type="Script" path="res://snoods/tiles/StickyStaticBody.cs" id="1_ns08u"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_kunqb"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_1b7gh"]
+[ext_resource type="Texture2D" uid="uid://bcd662y6puyqk" path="res://assets/snood-acc-pirate.png" id="4_uax8c"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
 radius = 28.0
@@ -14,6 +15,10 @@ script = ExtResource("1_ns08u")
 self_modulate = Color(0.168627, 0.733333, 0.839216, 1)
 sprite_frames = ExtResource("2_kunqb")
 script = ExtResource("3_1b7gh")
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D"]
+self_modulate = Color(0.68, 0.0884, 0.0884, 1)
+texture = ExtResource("4_uax8c")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ya6h5")

@@ -68,6 +68,12 @@ public partial class GameOverMenu : Control
 	{
 		if (Place > -1)
 		{
+			HighScoreSubmit.NameEntry.Text = HighScoreSubmit.NameEntry.Text.Trim();
+			if (HighScoreSubmit.NameEntry.Text == "")
+			{
+				HighScoreSubmit.NameEntry.PlaceholderText = "Name must be non-empty";
+				return;
+			}
 			AddHighScore();
 		}
 		OnDonePressed?.Invoke();

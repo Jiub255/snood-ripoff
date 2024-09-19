@@ -1,8 +1,35 @@
-[gd_scene load_steps=5 format=3 uid="uid://8j0the6va8d8"]
+[gd_scene load_steps=10 format=3 uid="uid://8j0the6va8d8"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_peie8"]
+[ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_ok8e8"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_vjic7"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_mh8n3"]
+[ext_resource type="Texture2D" uid="uid://dby77yvj3jw0u" path="res://assets/snood-acc-hair-sidepart.png" id="4_mpni3"]
+
+[sub_resource type="Curve" id="Curve_qqesk"]
+_data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_bqceh"]
+curve = SubResource("Curve_qqesk")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0elxe"]
+lifetime_randomness = 0.3
+particle_flag_align_y = true
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 28.0
+emission_ring_inner_radius = 0.0
+direction = Vector3(2, 0, 0)
+initial_velocity_min = 34.83
+initial_velocity_max = 91.03
+gravity = Vector3(0, 98, 0)
+scale_max = 2.0
+alpha_curve = SubResource("CurveTexture_bqceh")
+hue_variation_min = -0.04
+hue_variation_max = -2.23517e-08
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
 radius = 28.0
@@ -16,10 +43,22 @@ max_contacts_reported = 6
 script = ExtResource("1_peie8")
 altTileIndex = 5
 
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+self_modulate = Color(0.51273, 0.318702, 0.944415, 1)
+rotation = 1.5708
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_0elxe")
+texture = ExtResource("2_ok8e8")
+lifetime = 2.0
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 self_modulate = Color(0.580725, 0.0435, 0.87, 1)
 sprite_frames = ExtResource("2_vjic7")
 script = ExtResource("3_mh8n3")
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatedSprite2D"]
+self_modulate = Color(0.548716, 0.809913, 0, 1)
+texture = ExtResource("4_mpni3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_snlac")

@@ -137,6 +137,9 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="Name" parent="PanelContainer/HBoxContainer/HighScoresMarginContainer/HighScoresPanelContainer/Scoreboard/HighScoreEntry1/HBoxContainer" index="1"]
+text = "                      Loading Scores..."
+
 [node name="HighScoreEntry2" parent="PanelContainer/HBoxContainer/HighScoresMarginContainer/HighScoresPanelContainer/Scoreboard" instance=ExtResource("8_tad5m")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -172,3 +175,6 @@ layout_mode = 2
 [node name="HighScoreEntry10" parent="PanelContainer/HBoxContainer/HighScoresMarginContainer/HighScoresPanelContainer/Scoreboard" instance=ExtResource("8_tad5m")]
 unique_name_in_owner = true
 layout_mode = 2
+
+[editable path="PanelContainer/HBoxContainer/HighScoresMarginContainer/HighScoresPanelContainer/Scoreboard/HighScoreEntry1"]
+[editable path="PanelContainer/HBoxContainer/HighScoresMarginContainer/HighScoresPanelContainer/Scoreboard/HighScoreEntry2"]
