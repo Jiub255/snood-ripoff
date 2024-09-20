@@ -2,7 +2,8 @@ using Godot;
 
 public partial class SnoodSprite : AnimatedSprite2D
 {
-	private const float MAX_DURATION = 5f;
+	private const float MIN_DURATION = 3f;
+	private const float MAX_DURATION = 10f;
 	
 	private int FrameCount { get; set; }
 	private RandomNumberGenerator RNG { get; set; } = new();
@@ -37,7 +38,7 @@ public partial class SnoodSprite : AnimatedSprite2D
 	
 	private void SetRandomTimerDuration()
 	{		
-		float randomDuration = RNG.RandfRange(1f, MAX_DURATION);
+		float randomDuration = RNG.RandfRange(MIN_DURATION, MAX_DURATION);
 		Timer = randomDuration;
 	}
 }

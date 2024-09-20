@@ -1,14 +1,12 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-// TODO: Move a lot of this to TileMapLayer extension class. 
-// Might be more work than it's worth. Could get ugly. But could be good practice too.
 public partial class SnoodBoard : Node2D
 {
-	public event Action OnGoToNextLevel;
+	public event Action OnWonLevel;
 	public event Action OnLost;
+	public event Action<int, int> OnTilemapChanged;
 	
 	private const int SPRITE_SIZE = 64;
 
@@ -19,48 +17,37 @@ public partial class SnoodBoard : Node2D
 	[Export]
 	public int PenaltyPerSnood { get; set; } = 100;
 	
-	public Score Scores { get; set; }
-	public DangerBar DangerBar { get; set; }
-	public TileMapLayer Tilemap { get; private set; }
+	public SnoodTilemap Tilemap { get; private set; }
 	
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallRight { get; set; }
 	private Area2D BottomLimit { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
-	private Random RNG { get; } = new();
 	private bool LevelWon { get; set; }
 	private float LevelWonTimer { get; set; } = 1.5f;
 	private bool LevelLost { get; set; }
 	private float LevelLostTimer { get; set; } = 1.5f;
-	
-	private enum SpecialSnoods
+	private Dictionary<int, PackedScene> Snoods { get; } = new()
 	{
-		DropWall = 9,
-		RaiseWall = 10,
-		LoseControl = 11,
-	}
+		{ 1, GD.Load<PackedScene>("res://snoods/snood_red.tscn") },
+		{ 2, GD.Load<PackedScene>("res://snoods/snood_dark_blue.tscn") },
+		{ 3, GD.Load<PackedScene>("res://snoods/snood_yellow.tscn") },
+		{ 4, GD.Load<PackedScene>("res://snoods/snood_green.tscn") },
+		{ 5, GD.Load<PackedScene>("res://snoods/snood_purple.tscn") },
+		{ 6, GD.Load<PackedScene>("res://snoods/snood_light_blue.tscn") },
+		{ 7, GD.Load<PackedScene>("res://snoods/snood_gray.tscn") },
+		{ 8, GD.Load<PackedScene>("res://snoods/snood_skull.tscn") },
+		{ 9, GD.Load<PackedScene>("res://snoods/bad_snood_drop_wall.tscn") },
+		{ 10, GD.Load<PackedScene>("res://snoods/good_snood_raise_wall.tscn") },
+		{ 11, GD.Load<PackedScene>("res://snoods/bad_snood_lose_control.tscn") },
+	};
 
-	public override void _Ready()
-	{
-		base._Ready();
-		
-		Launcher ??= GetNode<Launcher>("%Launcher");
-		WallRight = GetNode<StaticBody2D>("%WallRight");
-		Tilemap = GetNode<TileMapLayer>("%TileMapLayer");
-		BottomLimit = GetNode<Area2D>("%BottomLimit");
-		
-		Launcher.Parent = this;
-		Launcher.OnSnoodHit += AddSnoodToBoard;
-
-		SetupBoard();
-	}
 
 	public override void _ExitTree()
 	{
 		base._ExitTree();
-		
-		Launcher.OnSnoodHit -= AddSnoodToBoard;
-		DangerBar.OnDangerBarFull -= LowerBoard;
+
+		UnsubscribeFromEvents();
 	}
 
 	public override void _Process(double delta)
@@ -70,7 +57,7 @@ public partial class SnoodBoard : Node2D
 			LevelWonTimer -= (float)delta;
 			if (LevelWonTimer < 0)
 			{
-				OnGoToNextLevel?.Invoke();
+				OnWonLevel?.Invoke();
 				LevelWon = false;
 			}
 		}
@@ -86,31 +73,27 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 	
-	public void SetupScores(Score scores)
+	public void SetupBoard()
 	{
-		Scores = scores;
-		Scores.BaseSnoodUseBonus = BaseSnoodUseBonus;
-		Scores.PenaltyPerSnood = PenaltyPerSnood;
-		Launcher ??= GetNode<Launcher>("%Launcher");
-		Launcher.Scores = scores;
-	}
-	
-	public void SetupDangerBar(DangerBar dangerBar)
-	{
-		DangerBar = dangerBar;
-		DangerBar.OnDangerBarFull += LowerBoard;
+		GetReferences();
+		SubscribeToEvents();
+		SetupLevel();
 	}
 
-	private void SetupBoard()
+	private void SetupLevel()
 	{
 		float width = Columns * SPRITE_SIZE;
 		WallRight.Position = new Vector2(width, WallRight.Position.Y);
-		Launcher.Position = new Vector2(width / 2, Launcher.Position.Y);
+		
+		Launcher.SetupLauncher(Snoods, width);
+		// Must call after Launcher.SetupLauncher(), to have Launcher.Snoods populated.
 		CountSnoods();
+		// Must call after CountSnoods(), to have Launcher.SnoodsInUse populated.
 		Launcher.LoadSnood();
+		
+		Tilemap.SetupTilemap(Snoods, Columns);
 	}
 	
-	// TODO: Move to TileMapLayer extension class.
 	private void CountSnoods()
 	{
 		foreach (Vector2I cell in Tilemap.GetUsedCells())
@@ -132,85 +115,10 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 	
-	// TODO: Move to TileMapLayer extension class.
-	private void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
+	private void HandleTilemapChange(int similarSnoods, int droppedSnoods)
 	{
-		Vector2I mapCoordinates = Tilemap.LocalToMap(coordinates);
-		Vector2I correctedMapCoords = CorrectForSides(mapCoordinates);
-		SetSnood(correctedMapCoords, altTileIndex);
-		UpdateSnoodCountDictionary(altTileIndex);
-
-		// TODO: Handle touching special snoods here.
-		HandleSpecialSnoods(mapCoordinates);
-
-		IEnumerable<Vector2I> similarCells = GetTouchingCells(correctedMapCoords);
-		if (similarCells.Count() >= 3)
-		{
-			AddSimilarSnoodsScore(similarCells.Count());
-			foreach (Vector2I cell in similarCells)
-			{
-				DeleteCell(cell);
-			}
-			CheckForAndDropHangingChunks();
-			DangerBar.ChangeValue(-10);
-		}
-		else
-		{
-			DangerBar.ChangeValue(30);
-		}
-		
-		if (Tilemap.GetSurroundingCells(mapCoordinates).Where(x => Tilemap.GetCellAlternativeTile(x) > -1).Count() == 0)
-		{
-			DeleteCell(mapCoordinates);
-		}
-
+		OnTilemapChanged?.Invoke(similarSnoods, droppedSnoods);
 		CheckBottomLimit();
-		CallDeferred(MethodName.CheckBottomLimit);
-	}
-	
-	// TODO: Move to TileMapLayer extension class.
-	private void HandleSpecialSnoods(Vector2I mapCoordinates)
-	{
-		foreach (Vector2I cell in Tilemap.GetSurroundingCells(mapCoordinates))
-		{
-			int tileIndex = Tilemap.GetCellAlternativeTile(cell);
-			switch (tileIndex)
-			{
-				case (int)SpecialSnoods.DropWall:
-					LowerBoard();
-					DeleteCell(cell);
-					break;
-				
-				case (int)SpecialSnoods.RaiseWall:
-					RaiseBoard();
-					DeleteCell(cell);
-					break;
-				
-				case (int)SpecialSnoods.LoseControl:
-					Launcher.OutOfControl = true;
-					DeleteCell(cell);
-					break;
-			}
-		}
-	}
-	
-	private void RaiseBoard()
-	{
-		if (Tilemap.Position.Y == 0) return;
-		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y - SPRITE_SIZE);
-		
-		Snood preloaded = Launcher.PreloadedSnood;
-		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y + SPRITE_SIZE);
-	}
-	
-	private void LowerBoard()
-	{
-		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
-		
-		Snood preloaded = Launcher.PreloadedSnood;
-		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y - SPRITE_SIZE);
-
-		///CheckBottomLimit();
 	}
 	
 	private void CheckBottomLimit()
@@ -225,38 +133,32 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
-	// TODO: Move to TileMapLayer extension class.
-	private void SetSnood(Vector2I mapCoords, int altTileIndex)
+	private void WinLevel()
 	{
-		// Second parameter is the source index (probably just using one index so it should always be 0).
-		// Third parameter always needs to be (0,0) to work with scene tiles,
-		// Last parameter is the scene tile index, get from flying snood.
-		Tilemap.SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
-		//CheckBottomLimit();
+		Launcher.Disabled = true;
+		// Starts countdown in _Process()
+		LevelWon = true;
 	}
 	
 	private void Lose()
 	{
-		Launcher.Disabled = true;
 		// Turn all snoods to skulls.
-		// TODO: Put this in Process under "if (dead)" part, to change them one by one.
+		// TODO: Put this in Process under "if (LevelLost)" part, to change them one by one.
 		foreach (Vector2I cell in Tilemap.GetUsedCells())
 		{
 			int altTileIndex = Tilemap.GetCellAlternativeTile(cell);
-			if (altTileIndex >= 1 || altTileIndex <= 7)
+			if (altTileIndex >= 1 && altTileIndex != 8)
 			{
 				Tilemap.SetCell(cell, 0, new Vector2I(0, 0), 8);
 			}
 		}
-		
-		Scores.Won = false;
-		Scores.AddUpScore();
-		
-		// Starts countdown in _Process.
+	
+		Launcher.Disabled = true;
+		// Starts countdown in _Process()
 		LevelLost = true;
 	}
 
-	private void UpdateSnoodCountDictionary(int altTileIndex)
+	private void IncrementSnoodCount(int altTileIndex)
 	{
 		if (SnoodsByIndex.ContainsKey(altTileIndex))
 		{
@@ -269,63 +171,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
-	// TODO: Move to TileMapLayer extension class. Pass Columns to it so it can do the calculation itself.
-	private Vector2I CorrectForSides(Vector2I mapCoords)
-	{
-		// Left wall
-		if (mapCoords.X < 0)
-		{
-			Vector2I newCoords = new Vector2I(0, mapCoords.Y);
-			return newCoords;
-		}
-		// Right wall
-		// Odd rows
-		if (mapCoords.Y % 2 == 1)
-		{
-			if (mapCoords.X > Columns - 1.5f)
-			{
-				Vector2I newCoords = new Vector2I(Mathf.FloorToInt(Columns - 1.5f), mapCoords.Y);
-				return newCoords;
-			}
-		}
-		// Even rows
-		else if (mapCoords.X > Columns - 1)
-		{
-			Vector2I newCoords = new Vector2I((int)(Columns - 1), mapCoords.Y);
-			return newCoords;
-		}
-		return mapCoords;
-	}
-	
-	private void AddSimilarSnoodsScore(int numberOfSnoods)
-	{
-		Scores.Level += numberOfSnoods * numberOfSnoods + 1;
-	}
-	
-	// TODO: Move to TileMapLayer extension class.
-	private void DeleteCell(Vector2I cell)
-	{
-		int index = Tilemap.GetCellAlternativeTile(cell);
-		DecrementSnoodsCount(index);
-		// Deletes cell from TileMapLayer
-		Tilemap.SetCell(cell, -1);
-		InstantiateAndDropDeadSnood(cell, index);
-		if (SnoodsByIndex.Count == 0)
-		{
-			WinLevel();
-		}
-	}
-
-	private void WinLevel()
-	{
-		Launcher.Disabled = true;
-		Scores.Won = true;
-		Scores.AddUpScore();
-		// Starts countdown in _Process.
-		LevelWon = true;
-	}
-
-	private void DecrementSnoodsCount(int index)
+	private void DecrementSnoodCount(int index)
 	{
 		if (SnoodsByIndex.ContainsKey(index))
 		{
@@ -339,146 +185,36 @@ public partial class SnoodBoard : Node2D
 				Launcher.SnoodsInUse.Remove(index);
 			}
 		}
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void InstantiateAndDropDeadSnood(Vector2I cell, int index)
-	{
-		if (index > -1)
+		
+		if (SnoodsByIndex.Count == 0)
 		{
-			Snood deadSnood = InstantiateDeadSnood(cell, index);
-			DisableCollisions(deadSnood);
-			DropSnood(deadSnood);
+			WinLevel();
 		}
 	}
 
-	// TODO: Move to TileMapLayer extension class.
-	private Snood InstantiateDeadSnood(Vector2I cell, int index)
+	private void GetReferences()
 	{
-		Snood deadSnood = (Snood)Launcher.Snoods[index].Instantiate();
-		CallDeferred(MethodName.AddChild, deadSnood);
-		deadSnood.Position = Tilemap.MapToLocal(cell) + Tilemap.Position;
-		deadSnood.Freeze = false;
-		return deadSnood;
+		Launcher = GetNode<Launcher>("%Launcher");
+		WallRight = GetNode<StaticBody2D>("%WallRight");
+		Tilemap = GetNode<SnoodTilemap>("%TileMapLayer");
+		BottomLimit = GetNode<Area2D>("%BottomLimit");
 	}
 
-	// TODO: Move to TileMapLayer extension class.
-	private static void DisableCollisions(Snood deadSnood)
+	private void SubscribeToEvents()
 	{
-		deadSnood.SetCollisionLayerValue(1, false);
-		deadSnood.SetCollisionLayerValue(2, true);
-		deadSnood.SetCollisionMaskValue(1, false);
-		deadSnood.SetCollisionMaskValue(3, true);
+		Tilemap.OnHitLoseControlSnood += Launcher.LoseControl;
+		Tilemap.OnSnoodAdded += IncrementSnoodCount;
+		Tilemap.OnSnoodDeleted += DecrementSnoodCount;
+		Tilemap.OnTilemapChanged += HandleTilemapChange;
+		Launcher.OnSnoodHit += Tilemap.AddSnoodToBoard;
 	}
 
-	// TODO: Move to TileMapLayer extension class.
-	private void DropSnood(Snood deadSnood)
+	private void UnsubscribeFromEvents()
 	{
-		deadSnood.GravityScale = 1;
-		float randomAngle = (float)RNG.NextDouble() * Mathf.Pi;
-		Vector2 randomDirection = Vector2.FromAngle(randomAngle);
-		deadSnood.ApplyImpulse(randomDirection * 300);
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void CheckForAndDropHangingChunks()
-	{
-		List<List<Vector2I>> chunks = new();
-		List<Vector2I> checkedCells = new();
-		GatherChunks(chunks, checkedCells);
-		CheckAndDropChunks(chunks);
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void GatherChunks(List<List<Vector2I>> chunks, List<Vector2I> checkedCells)
-	{
-		foreach (Vector2I cell in Tilemap.GetUsedCells())
-		{
-			if (checkedCells.Contains(cell))
-			{
-				continue;
-			}
-			IEnumerable<Vector2I> chunk = GetTouchingCells(cell, false);
-			checkedCells.AddRange(chunk);
-			chunks.Add(chunk.ToList());
-		}
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void CheckAndDropChunks(List<List<Vector2I>> chunks)
-	{
-		foreach (List<Vector2I> chunk in chunks)
-		{
-			bool isOnCeiling = false;
-			foreach (Vector2I cell in chunk)
-			{
-				// If it's a ceiling tile,
-				if (Tilemap.GetCellAlternativeTile(cell) == 0)
-				{
-					isOnCeiling = true;
-				}
-			}
-			if (!isOnCeiling)
-			{
-				DropChunk(chunk);
-			}
-		}
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void DropChunk(List<Vector2I> chunk)
-	{
-		AddDroppedChunkScore(chunk.Count);
-		foreach (Vector2I cell in chunk)
-		{
-			DeleteCell(cell);
-		}
-	}
-
-	// TODO: Move to TileMapLayer extension class.
-	private void AddDroppedChunkScore(int numberOfSnoods)
-	{
-		Scores.Level += 10 * numberOfSnoods * numberOfSnoods;
-	}
-	
-	// TODO: Move to TileMapLayer extension class.
-	private IEnumerable<Vector2I> GetTouchingCells(Vector2I startCell, bool similarCellsOnly = true)
-	{
-		List<Vector2I> connectedCells = new();
-		HashSet<Vector2I> visitedCells = new(); // Use a HashSet for faster lookups
-
-		// Helper function to perform the flood fill
-		void FloodFill(Vector2I cell)
-		{
-			// If the cell has already been checked, skip it
-			if (visitedCells.Contains(cell))
-			{
-				return;
-			}
-			visitedCells.Add(cell);
-
-			// Add the cell if it matches the criteria
-			int cellIndex = Tilemap.GetCellAlternativeTile(cell);
-			int startCellIndex = Tilemap.GetCellAlternativeTile(startCell);
-			if (!similarCellsOnly || cellIndex == startCellIndex)
-			{
-				connectedCells.Add(cell);
-
-				// Get all surrounding cells and recursively check them
-				foreach (Vector2I neighbor in Tilemap.GetSurroundingCells(cell))
-				{
-					// Ensure the neighbor is not a blank cell
-					if (Tilemap.GetCellAlternativeTile(neighbor) != -1)
-					{
-						FloodFill(neighbor);
-					}
-				}
-			}
-		}
-
-		// Start the flood fill from the initial cell
-		FloodFill(startCell);
-
-		return connectedCells;
+		Tilemap.OnHitLoseControlSnood -= Launcher.LoseControl;
+		Tilemap.OnSnoodAdded -= IncrementSnoodCount;
+		Tilemap.OnSnoodDeleted -= DecrementSnoodCount;
+		Tilemap.OnTilemapChanged -= HandleTilemapChange;
+		Launcher.OnSnoodHit -= Tilemap.AddSnoodToBoard;
 	}
 }

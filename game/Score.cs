@@ -20,20 +20,20 @@ public class Score
 			OnChanged?.Invoke();
 		}
 	}
+	public int BaseSnoodUseBonus { get; set; }
+	public int PenaltyPerSnood { get; set; }
+	public bool Won { get; set; }
 	public int Level
 	{
 		get => _level;
-		set
+		private set
 		{
 			_level = value;
 			OnChanged?.Invoke();
 		}
 	}
 	public int Total { get; private set; }
-	public int BaseSnoodUseBonus { get; set; }
-	public int PenaltyPerSnood { get; set; }
-	public int SnoodUseBonus { get; set; }
-	public bool Won { get; set; }
+	public int SnoodUseBonus { get; private set; }
 	
 	
 	public void ResetLevel()
@@ -52,5 +52,15 @@ public class Score
 			Total += SnoodUseBonus;
 		}
 		Total += Level;
+	}
+	
+	public void AddSimilarSnoodsScore(int numberOfSnoods)
+	{
+		Level += numberOfSnoods * numberOfSnoods + 1;
+	}
+	
+	public void AddDroppedChunkScore(int numberOfSnoods)
+	{
+		Level += 10 * numberOfSnoods * numberOfSnoods;
 	}
 }

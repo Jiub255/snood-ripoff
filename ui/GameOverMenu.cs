@@ -51,13 +51,19 @@ public partial class GameOverMenu : Control
 	public bool IsHighScore(Score score)
 	{
 		// Only check top ten. Or less if there aren't ten scores yet. 
-		for (int index = 0; index < Mathf.Min(10, LeaderboardHandler.HighScores.Count); index++)
+		int highScoresCount = LeaderboardHandler.HighScores.Count;
+		for (int index = 0; index < Mathf.Min(10, highScoresCount); index++)
 		{
 			if (score.Total >= LeaderboardHandler.HighScores[index].Score)
 			{
 				Place = index;
 				return true;
 			}
+		}
+		if (highScoresCount < 10)
+		{
+			Place = highScoresCount;
+			return true;
 		}
 
 		Place = -1;

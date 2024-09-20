@@ -5,8 +5,6 @@ public partial class EndLevelMenu : Control
 {
 	public event Action OnNextLevelPressed;
 	
-	//public Scores Scores { get; set; }
-	
 	private Label Score { get; set; }
 	private Label SnoodsUsed { get; set; }
 	private Label SnoodUseBonus { get; set; }

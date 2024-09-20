@@ -61,7 +61,7 @@ public partial class Snood : RigidBody2D
 	{
 		if (body is StickyStaticBody)
 		{
-			OnHitStickyThing?.Invoke(Position, altTileIndex);
+			OnHitStickyThing?.Invoke(GlobalPosition, altTileIndex);
 		}
 	}
 }

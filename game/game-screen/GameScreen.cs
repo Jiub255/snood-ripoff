@@ -9,16 +9,16 @@ public partial class GameScreen : TextureRect
 	
 	private const int SPRITE_SIZE = 64;
 
-	public Score Scores { get; set; }
+	public Score Score { get; set; }
 	
 	private PanelContainer GameHolder { get; set; }
 	private SnoodBoard BoardInstance { get; set; }
 	private PackedScene[] Levels =
 	{
-		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
+		//GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
-		//GD.Load<PackedScene>("res://game/levels/level_4.tscn")
+		//GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
@@ -32,19 +32,22 @@ public partial class GameScreen : TextureRect
 		
 		GameHolder = GetNode<PanelContainer>("%GameHolder");
 		DangerBar = GetNode<DangerBar>("%DangerBar");
-		DangerBar.Value = 0;
+		SnoodsUsedLabel = GetNode<SnoodsUsedLabel>("%SnoodsUsedLabel");
+		ScoreLabel = GetNode<ScoreLabel>("%ScoreLabel");
 	}
 
-	public void StartGame(Score scores)
+	public void StartGame(Score score)
 	{
-		SetupScores(scores);
+		SetupScores(score);
 		SetupLevel(1);
 	}
 	
 	public void EndLevel()
 	{
-		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
+		BoardInstance.OnWonLevel -= OpenEndLevelMenu;
 		BoardInstance.OnLost -= Lose;
+		BoardInstance.OnTilemapChanged -= HandleTilemapChange;
+		DangerBar.OnDangerBarFull -= BoardInstance.Tilemap.LowerBoard;
 		
 		BoardInstance.QueueFree();
 		if (CurrentLevel < Levels.Length)
@@ -59,17 +62,14 @@ public partial class GameScreen : TextureRect
 	
 	private void SetupScores(Score scores)
 	{
-		Scores = scores;
-		
-		SnoodsUsedLabel ??= GetNode<SnoodsUsedLabel>("%SnoodsUsedLabel");
-		ScoreLabel ??= GetNode<ScoreLabel>("%ScoreLabel");
-		
+		Score = scores;
 		SnoodsUsedLabel.Scores = scores;
 		ScoreLabel.Scores = scores;
 	}
 
 	private void SetupLevel(int level)
 	{
+		DangerBar.Value = 0;
 		Input.MouseMode = Input.MouseModeEnum.Hidden;
 		CurrentLevel = level;
 		InstantiateBoard(level);
@@ -85,22 +85,38 @@ public partial class GameScreen : TextureRect
 
 	private void InitializeBoard()
 	{
-		BoardInstance.OnGoToNextLevel += OpenEndLevelMenu;
-		BoardInstance.OnLost += Lose;
+		Score.ResetLevel();
+		Score.BaseSnoodUseBonus = BoardInstance.BaseSnoodUseBonus;
+		Score.PenaltyPerSnood = BoardInstance.PenaltyPerSnood;
+		BoardInstance.SetupBoard();
 		
-		Scores.ResetLevel();
-		BoardInstance.SetupScores(Scores);
-		BoardInstance.SetupDangerBar(DangerBar);
+		BoardInstance.OnWonLevel += OpenEndLevelMenu;
+		BoardInstance.OnLost += Lose;
+		BoardInstance.OnTilemapChanged += HandleTilemapChange;
+		DangerBar.OnDangerBarFull += BoardInstance.Tilemap.LowerBoard;
 	}
 
 	private void Lose()
 	{
+		Score.Won = false;
+		Score.AddUpScore();
+		
 		Input.MouseMode = Input.MouseModeEnum.Visible;
-		BoardInstance.OnGoToNextLevel -= OpenEndLevelMenu;
+		BoardInstance.OnWonLevel -= OpenEndLevelMenu;
 		BoardInstance.OnLost -= Lose;
+		BoardInstance.OnTilemapChanged -= DangerBar.ChangeValue;
+		DangerBar.OnDangerBarFull -= BoardInstance.Tilemap.LowerBoard;
 
 		BoardInstance.QueueFree();
 		OnLoseGame?.Invoke();
+	}
+	
+	private void HandleTilemapChange(int similarSnoods, int droppedSnoods)
+	{
+		DangerBar.ChangeValue(similarSnoods, droppedSnoods);
+		Score.AddSimilarSnoodsScore(similarSnoods);
+		Score.AddDroppedChunkScore(droppedSnoods);
+		Score.SnoodsUsed++;
 	}
 
 	private void ResizeGameHolder()
@@ -111,6 +127,8 @@ public partial class GameScreen : TextureRect
 
 	private void OpenEndLevelMenu()
 	{
+		Score.Won = true;
+		Score.AddUpScore();
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		OnEndLevel?.Invoke();
 	}
