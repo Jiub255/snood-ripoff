@@ -45,6 +45,9 @@ TODO:
 
 
 BUGS:
+	When dropping down the board, BottomLimit doesn't detect the static body snood tiles.
+		Detects the static body walls, and the rigidbody flying snoods.
+
 	FIXED - Snoods occasionally take an already taken spot after getting CorrectForSides()ed.
 		Possibly fix by speeding up physics tick rate?
 		Or could code a fix but that might be sloppy and difficult.

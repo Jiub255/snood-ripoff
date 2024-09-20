@@ -107,22 +107,8 @@ public partial class SnoodBoard : Node2D
 		WallRight.Position = new Vector2(width, WallRight.Position.Y);
 		Launcher.Position = new Vector2(width / 2, Launcher.Position.Y);
 		CountSnoods();
-		//CallDeferred(MethodName.ConnectToSnoodSignals);
 		Launcher.LoadSnood();
 	}
-	
-/* 	private void ConnectToSnoodSignals()
-	{
-		foreach (Node child in Tilemap.GetChildren())
-		{
-			if (child is BadTileDropWall dropWall)
-			{
-				// TODO: Are these the same? Do I need to unsubscribe from the top one?
-				dropWall.OnHitTile += LowerBoard;
-				//dropWall.Connect(BadTileDropWall.SignalName.OnHitTile, new Callable(this, MethodName.LowerBoard));
-			}
-		}
-	} */
 	
 	// TODO: Move to TileMapLayer extension class.
 	private void CountSnoods()
@@ -177,6 +163,9 @@ public partial class SnoodBoard : Node2D
 		{
 			DeleteCell(mapCoordinates);
 		}
+
+		CheckBottomLimit();
+		CallDeferred(MethodName.CheckBottomLimit);
 	}
 	
 	// TODO: Move to TileMapLayer extension class.
@@ -214,32 +203,36 @@ public partial class SnoodBoard : Node2D
 		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y + SPRITE_SIZE);
 	}
 	
-	// TODO: Move to TileMapLayer extension class? Probably not, using Launcher and Tilemap.
 	private void LowerBoard()
 	{
 		Tilemap.Position = new Vector2(Tilemap.Position.X, Tilemap.Position.Y + SPRITE_SIZE);
 		
 		Snood preloaded = Launcher.PreloadedSnood;
 		preloaded.Position = new Vector2(preloaded.Position.X, preloaded.Position.Y - SPRITE_SIZE);
-		
-		if (BottomLimit.HasOverlappingBodies())
+
+		///CheckBottomLimit();
+	}
+	
+	private void CheckBottomLimit()
+	{
+		foreach (var body in BottomLimit.GetOverlappingBodies())
+		{
+			GD.Print($"overlapping body: {body.Name}");
+		}
+		if (BottomLimit.GetOverlappingBodies().Count > 2)
 		{
 			Lose();
 		}
 	}
 
-	// TODO: Move to TileMapLayer extension class? Maybe not, has BottomLimit. Or take out the set snood part, then have 
-	// this class check bottom limit. 
+	// TODO: Move to TileMapLayer extension class.
 	private void SetSnood(Vector2I mapCoords, int altTileIndex)
 	{
 		// Second parameter is the source index (probably just using one index so it should always be 0).
 		// Third parameter always needs to be (0,0) to work with scene tiles,
 		// Last parameter is the scene tile index, get from flying snood.
 		Tilemap.SetCell(mapCoords, 0, new Vector2I(0, 0), altTileIndex);
-		if (BottomLimit.HasOverlappingBodies())
-		{
-			Lose();
-		}
+		//CheckBottomLimit();
 	}
 	
 	private void Lose()
@@ -276,6 +269,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class. Pass Columns to it so it can do the calculation itself.
 	private Vector2I CorrectForSides(Vector2I mapCoords)
 	{
 		// Left wall
@@ -308,6 +302,7 @@ public partial class SnoodBoard : Node2D
 		Scores.Level += numberOfSnoods * numberOfSnoods + 1;
 	}
 	
+	// TODO: Move to TileMapLayer extension class.
 	private void DeleteCell(Vector2I cell)
 	{
 		int index = Tilemap.GetCellAlternativeTile(cell);
@@ -346,6 +341,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void InstantiateAndDropDeadSnood(Vector2I cell, int index)
 	{
 		if (index > -1)
@@ -356,6 +352,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private Snood InstantiateDeadSnood(Vector2I cell, int index)
 	{
 		Snood deadSnood = (Snood)Launcher.Snoods[index].Instantiate();
@@ -365,6 +362,7 @@ public partial class SnoodBoard : Node2D
 		return deadSnood;
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private static void DisableCollisions(Snood deadSnood)
 	{
 		deadSnood.SetCollisionLayerValue(1, false);
@@ -373,6 +371,7 @@ public partial class SnoodBoard : Node2D
 		deadSnood.SetCollisionMaskValue(3, true);
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void DropSnood(Snood deadSnood)
 	{
 		deadSnood.GravityScale = 1;
@@ -381,6 +380,7 @@ public partial class SnoodBoard : Node2D
 		deadSnood.ApplyImpulse(randomDirection * 300);
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void CheckForAndDropHangingChunks()
 	{
 		List<List<Vector2I>> chunks = new();
@@ -389,6 +389,7 @@ public partial class SnoodBoard : Node2D
 		CheckAndDropChunks(chunks);
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void GatherChunks(List<List<Vector2I>> chunks, List<Vector2I> checkedCells)
 	{
 		foreach (Vector2I cell in Tilemap.GetUsedCells())
@@ -403,6 +404,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void CheckAndDropChunks(List<List<Vector2I>> chunks)
 	{
 		foreach (List<Vector2I> chunk in chunks)
@@ -423,6 +425,7 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void DropChunk(List<Vector2I> chunk)
 	{
 		AddDroppedChunkScore(chunk.Count);
@@ -432,11 +435,13 @@ public partial class SnoodBoard : Node2D
 		}
 	}
 
+	// TODO: Move to TileMapLayer extension class.
 	private void AddDroppedChunkScore(int numberOfSnoods)
 	{
 		Scores.Level += 10 * numberOfSnoods * numberOfSnoods;
 	}
 	
+	// TODO: Move to TileMapLayer extension class.
 	private IEnumerable<Vector2I> GetTouchingCells(Vector2I startCell, bool similarCellsOnly = true)
 	{
 		List<Vector2I> connectedCells = new();
