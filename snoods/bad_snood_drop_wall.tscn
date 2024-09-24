@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_kop0u"]
 [ext_resource type="Texture2D" uid="uid://cal6avgos4e0c" path="res://assets/snood-down-arrow.png" id="2_o0rvq"]
 [ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_s85pn"]
+[ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="4_ylx1d"]
 
 [sub_resource type="Curve" id="Curve_ge16w"]
 _data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -29,9 +30,6 @@ alpha_curve = SubResource("CurveTexture_ah3nf")
 hue_variation_min = -0.1
 hue_variation_max = 0.1
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
-radius = 28.0
-
 [node name="Snood" type="RigidBody2D"]
 gravity_scale = 0.0
 lock_rotation = true
@@ -54,5 +52,5 @@ self_modulate = Color(0.588235, 0.0666667, 0.0666667, 1)
 texture = ExtResource("2_o0rvq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_snlac")
+shape = ExtResource("4_ylx1d")
 debug_color = Color(0, 0.595, 0.7, 0)

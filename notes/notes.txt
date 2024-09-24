@@ -30,8 +30,6 @@ TODO:
 	Decide on a name
 		Use the word "Snood"? Is that legal?
 
-	Put high score leaderboard online
-
 	Better art/animations in general
 		Theme? Cat faces or something?
 		Make own or use assets?

@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_fbb1c"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_hc8p4"]
 [ext_resource type="Texture2D" uid="uid://cas344uas7ore" path="res://assets/snood-acc-alien.png" id="4_e1nda"]
+[ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="6_jyx05"]
 
 [sub_resource type="Curve" id="Curve_p13l0"]
 _data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -28,9 +29,6 @@ initial_velocity_max = 91.03
 gravity = Vector3(0, 98, 0)
 scale_max = 2.0
 alpha_curve = SubResource("CurveTexture_6eeso")
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
-radius = 28.0
 
 [node name="Snood" type="RigidBody2D"]
 gravity_scale = 0.0
@@ -58,5 +56,5 @@ script = ExtResource("3_hc8p4")
 texture = ExtResource("4_e1nda")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_snlac")
+shape = ExtResource("6_jyx05")
 debug_color = Color(0, 0.595, 0.7, 0)

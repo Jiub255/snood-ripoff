@@ -4,9 +4,7 @@
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_xjs2e"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_6n4rp"]
 [ext_resource type="Texture2D" uid="uid://cooqqtilcgj4f" path="res://assets/snood-acc-moustache-soulpatch.png" id="4_6xtmg"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ya6h5"]
-radius = 28.0
+[ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="5_ny5b2"]
 
 [node name="SnoodTile" type="StaticBody2D"]
 script = ExtResource("1_kdej8")
@@ -20,5 +18,5 @@ script = ExtResource("3_6n4rp")
 texture = ExtResource("4_6xtmg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_ya6h5")
+shape = ExtResource("5_ny5b2")
 debug_color = Color(0, 0.595, 0.7, 0)

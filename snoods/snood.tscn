@@ -3,9 +3,7 @@
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_r4co2"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_kmnbk"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_qqdni"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_snlac"]
-radius = 28.0
+[ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="4_4sffi"]
 
 [node name="Snood" type="RigidBody2D"]
 gravity_scale = 0.0
@@ -21,4 +19,4 @@ sprite_frames = ExtResource("2_kmnbk")
 script = ExtResource("3_qqdni")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_snlac")
+shape = ExtResource("4_4sffi")
