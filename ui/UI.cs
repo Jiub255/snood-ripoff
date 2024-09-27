@@ -11,13 +11,17 @@ public partial class UI : CanvasLayer
 	private CreditsMenu CreditsMenu { get; set; }
 	private EndLevelMenu EndLevelMenu { get; set; }
 	private GameOverMenu GameOverMenu { get; set; }
+	private AudioStreamPlayer ClickSFX { get; set; }
+	private AudioStreamPlayer Music { get; set; }
+	private AudioStream MenuSong { get; } = GD.Load<AudioStream>("res://assets/music/Menu-2024-04-24_02.ogg");
+	private AudioStream LevelEndSong { get; } = GD.Load<AudioStream>("res://assets/music/Swing-2024-02-21_02.ogg");
 
 
 	public override void _Ready()
 	{
 		base._Ready();
 		
-		GetMenuReferences();
+		GetReferences();
 		SubscribeToEvents();
 		SetupHighScores();
 	}
@@ -34,6 +38,8 @@ public partial class UI : CanvasLayer
 		CloseAllMenus();
 		EndLevelMenu.Show();
 		EndLevelMenu.SetupMenu(scores);
+		Music.Stream = LevelEndSong;
+		Music.Play();
 	}
 	
 	public void OpenGameOverMenu(Score score)
@@ -41,6 +47,7 @@ public partial class UI : CanvasLayer
 		CloseAllMenus();
 		GameOverMenu.Show();
 		GameOverMenu.SetupMenu(score);
+		Music.Stop();
 	}
 	
 	public void CloseAllMenus()
@@ -49,6 +56,7 @@ public partial class UI : CanvasLayer
 		OptionsMenu.Hide();
 		CreditsMenu.Hide();
 		EndLevelMenu.Hide();
+		ClickSFX.Play();
 	}
 	
 	private void SetupHighScores()
@@ -62,12 +70,18 @@ public partial class UI : CanvasLayer
 	{
 		OnStartPressed?.Invoke();
 		CloseAllMenus();
+		Music.Stop();
 	}
 
 	private void OpenMainMenu()
 	{
 		CloseAllMenus();
 		MainMenu.Show();
+		if (Music.Stream != MenuSong)
+		{
+			Music.Stream = MenuSong;
+		}
+		StartMusic();
 	}
 
 	private void OpenOptions()
@@ -86,15 +100,28 @@ public partial class UI : CanvasLayer
 	{
 		CloseAllMenus();
 		OnNextLevelPressed?.Invoke();
+		Music.Stop();
+	}
+	
+	private void StartMusic()
+	{
+		if (!Music.Playing)
+		{
+			Music.Play();
+		}
 	}
 
-	private void GetMenuReferences()
+	private void GetReferences()
 	{
 		MainMenu = GetNode<MainMenu>("%MainMenu");
 		OptionsMenu = GetNode<OptionsMenu>("%OptionsMenu");
 		CreditsMenu = GetNode<CreditsMenu>("%CreditsMenu");
 		EndLevelMenu = GetNode<EndLevelMenu>("%EndLevelMenu");
 		GameOverMenu = GetNode<GameOverMenu>("%GameOverMenu");
+		ClickSFX = GetNode<AudioStreamPlayer>("%SFX");
+		Music = GetNode<AudioStreamPlayer>("%Music");
+		
+		Music.Play();
 	}
 
 	private void SubscribeToEvents()

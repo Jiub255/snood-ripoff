@@ -51,6 +51,9 @@ TODO:
 
 
 BUGS:
+	Sometimes when you hit the very edge with a snood, it disappears but must get stored somewhere because
+		then you can't finish the level even when it looks clear.
+
 	When dropping down the board, BottomLimit doesn't detect the static body snood tiles.
 		Detects the static body walls, and the rigidbody flying snoods.
 		Use raycast from left to right wall instead?

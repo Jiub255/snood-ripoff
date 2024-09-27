@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://tpxk8gnuhimp"]
+[gd_scene load_steps=9 format=3 uid="uid://tpxk8gnuhimp"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_mq7gk"]
 [ext_resource type="Texture2D" uid="uid://sd6ryd3qmr02" path="res://assets/snood-particle-2.png" id="2_lvpr4"]
 [ext_resource type="Texture2D" uid="uid://cal6avgos4e0c" path="res://assets/snood-down-arrow.png" id="2_moybt"]
 [ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="4_ufobo"]
+[ext_resource type="PackedScene" uid="uid://cxvc0ei1hnjve" path="res://snoods/snood_sfx.tscn" id="5_mtao3"]
 
 [sub_resource type="Curve" id="Curve_tqd1k"]
 _data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -55,3 +56,6 @@ texture = ExtResource("2_moybt")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = ExtResource("4_ufobo")
 debug_color = Color(0, 0.595, 0.7, 0)
+
+[node name="SFX" parent="." instance=ExtResource("5_mtao3")]
+unique_name_in_owner = true

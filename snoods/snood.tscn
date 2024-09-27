@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ctq58fpqhban5"]
+[gd_scene load_steps=6 format=3 uid="uid://ctq58fpqhban5"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_r4co2"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_kmnbk"]
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_qqdni"]
 [ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="4_4sffi"]
+[ext_resource type="PackedScene" uid="uid://cxvc0ei1hnjve" path="res://snoods/snood_sfx.tscn" id="5_vuj8g"]
 
 [node name="Snood" type="RigidBody2D"]
 gravity_scale = 0.0
@@ -20,3 +21,6 @@ script = ExtResource("3_qqdni")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = ExtResource("4_4sffi")
+
+[node name="SFX" parent="." instance=ExtResource("5_vuj8g")]
+unique_name_in_owner = true

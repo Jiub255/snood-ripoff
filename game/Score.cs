@@ -56,7 +56,10 @@ public class Score
 	
 	public void AddSimilarSnoodsScore(int numberOfSnoods)
 	{
-		Level += numberOfSnoods * numberOfSnoods + 1;
+		if (numberOfSnoods > 0)
+		{
+			Level += numberOfSnoods * numberOfSnoods + 1;
+		}
 	}
 	
 	public void AddDroppedChunkScore(int numberOfSnoods)

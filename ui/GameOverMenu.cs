@@ -16,6 +16,10 @@ public partial class GameOverMenu : Control
 	private Button DoneButton { get; set; }
 	private int HighScore { get; set; }
 	private int Place { get; set; }
+	private AudioStreamPlayer Music { get; set; }
+	private AudioStream WinSong { get; } = GD.Load<AudioStream>("res://assets/music/Victory-2024-08-01.ogg");
+	private AudioStream LoseSong { get; } = GD.Load<AudioStream>("res://assets/music/Death-2024-06-05_01.ogg");
+
 
 	public override void _Ready()
 	{
@@ -25,6 +29,7 @@ public partial class GameOverMenu : Control
 		TotalScore = GetNode<Label>("%TotalScore");
 		HighScoreSubmit = GetNode<HighScoreSubmit>("%HighScoreSubmit");
 		DoneButton = GetNode<Button>("%Button");
+		Music = GetNode<AudioStreamPlayer>("%Music");
 
 		DoneButton.Pressed += NextLevel;
 	}
@@ -39,6 +44,8 @@ public partial class GameOverMenu : Control
 	public void SetupMenu(Score score)
 	{
 		Message.Text = score.Won ? WIN_MESSAGE : LOSE_MESSAGE;
+		Music.Stream = score.Won ? WinSong : LoseSong;
+		Music.Play();
 		TotalScore.Text = $"Total Score: {score.Total}";
 		HighScoreSubmit.Hide();
 		if (IsHighScore(score))
@@ -84,6 +91,7 @@ public partial class GameOverMenu : Control
 		}
 		OnDonePressed?.Invoke();
 		Hide();
+		Music.Stop();
 	}
 
 	private void AddHighScore()

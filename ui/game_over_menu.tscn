@@ -110,3 +110,7 @@ theme_override_styles/pressed = ExtResource("4_0twa8")
 theme_override_styles/normal_mirrored = ExtResource("3_lju7w")
 theme_override_styles/normal = ExtResource("3_lju7w")
 text = "Done"
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+bus = &"Music"

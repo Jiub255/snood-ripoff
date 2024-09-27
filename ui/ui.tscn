@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmdnywb2jouyu"]
+[gd_scene load_steps=10 format=3 uid="uid://dmdnywb2jouyu"]
 
 [ext_resource type="Script" path="res://ui/UI.cs" id="1_dalvr"]
 [ext_resource type="PackedScene" uid="uid://dsdjv6yinknbs" path="res://ui/main_menu.tscn" id="2_v2hh7"]
@@ -6,6 +6,14 @@
 [ext_resource type="PackedScene" uid="uid://cefghmt4e2cuw" path="res://ui/credits_menu.tscn" id="4_pg6de"]
 [ext_resource type="PackedScene" uid="uid://d227gre42nayi" path="res://ui/end_level_menu.tscn" id="5_ceg8v"]
 [ext_resource type="PackedScene" uid="uid://dctax0cdei2m4" path="res://ui/game_over_menu.tscn" id="6_ypgdf"]
+[ext_resource type="AudioStream" uid="uid://bcxxdey1s35h8" path="res://assets/sfx/click.wav" id="7_01r37"]
+[ext_resource type="AudioStream" uid="uid://dhiif0fjnck4d" path="res://assets/music/Menu-2024-04-24_02.ogg" id="8_p4fem"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ye68a"]
+random_pitch = 1.5
+random_volume_offset_db = 0.5
+streams_count = 1
+stream_0/stream = ExtResource("7_01r37")
 
 [node name="Ui" type="CanvasLayer"]
 script = ExtResource("1_dalvr")
@@ -28,3 +36,15 @@ visible = false
 [node name="GameOverMenu" parent="." instance=ExtResource("6_ypgdf")]
 unique_name_in_owner = true
 visible = false
+
+[node name="SFX" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = SubResource("AudioStreamRandomizer_ye68a")
+volume_db = 5.0
+bus = &"SFX"
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("8_p4fem")
+volume_db = 5.0
+bus = &"Music"

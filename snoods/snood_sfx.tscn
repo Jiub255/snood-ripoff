@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxvc0ei1hnjve"]
+
+[ext_resource type="AudioStream" uid="uid://cl2rvsm4enfu2" path="res://assets/sfx/hit_sound_randomizer.tres" id="1_ejcb3"]
+
+[node name="SFX" type="AudioStreamPlayer"]
+stream = ExtResource("1_ejcb3")
+bus = &"SFX"

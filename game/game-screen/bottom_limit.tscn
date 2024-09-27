@@ -1,27 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://d1ir8u1f1exd0"]
+[gd_scene load_steps=2 format=3 uid="uid://d1ir8u1f1exd0"]
 
 [ext_resource type="Texture2D" uid="uid://dc883pbachgsy" path="res://assets/snood-wall-placeholder.png" id="1_pmsxl"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_g3l4e"]
-size = Vector2(1920, 120)
-
-[node name="BottomLimit" type="Area2D"]
-z_index = -1
-position = Vector2(960, 741)
-input_pickable = false
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-self_modulate = Color(0.481789, 0.481789, 0.481789, 1)
-position = Vector2(0, 254)
+[node name="BottomLimit" type="Sprite2D"]
+self_modulate = Color(0.482353, 0.482353, 0.482353, 1)
+position = Vector2(960, 1025)
 scale = Vector2(1, 0.52963)
 texture = ExtResource("1_pmsxl")
 
-[node name="Floor" type="Sprite2D" parent="Sprite2D"]
-self_modulate = Color(0.190762, 0.190762, 0.190762, 1)
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0.192157, 0.192157, 0.192157, 1)
 position = Vector2(0, 210)
-scale = Vector2(1, 0.54021)
+scale = Vector2(1, 0.54)
 texture = ExtResource("1_pmsxl")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 28)
-shape = SubResource("RectangleShape2D_g3l4e")

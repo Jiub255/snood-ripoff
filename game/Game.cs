@@ -45,7 +45,7 @@ public partial class Game : Node
 
 	private void NextLevel()
 	{
-		GameScreen.EndLevel();
+		GameScreen.BeatLevel();
 	}
 
 	private void WinGame()

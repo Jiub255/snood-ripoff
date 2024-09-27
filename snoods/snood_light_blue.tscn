@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c5axa452pqt0d"]
+[gd_scene load_steps=11 format=3 uid="uid://c5axa452pqt0d"]
 
 [ext_resource type="Script" path="res://snoods/Snood.cs" id="1_a3xx5"]
 [ext_resource type="SpriteFrames" uid="uid://bkjp46mhh1paa" path="res://snoods/snood_sprite_frames.tres" id="2_ppxua"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://snoods/SnoodSprite.cs" id="3_p0cr3"]
 [ext_resource type="Texture2D" uid="uid://bcd662y6puyqk" path="res://assets/snood-acc-pirate.png" id="4_1k1yd"]
 [ext_resource type="Shape2D" uid="uid://dujrua3x52bva" path="res://snoods/snood_coll_shape.tres" id="6_oxkrl"]
+[ext_resource type="PackedScene" uid="uid://cxvc0ei1hnjve" path="res://snoods/snood_sfx.tscn" id="7_vacrx"]
 
 [sub_resource type="Curve" id="Curve_x1o2l"]
 _data = [Vector2(0.00729927, 1), 0.0, 0.0, 0, 0, Vector2(0.805353, 0.373494), -2.38421, -2.38421, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -61,3 +62,6 @@ texture = ExtResource("4_1k1yd")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = ExtResource("6_oxkrl")
 debug_color = Color(0, 0.595, 0.7, 0)
+
+[node name="SFX" parent="." instance=ExtResource("7_vacrx")]
+unique_name_in_owner = true

@@ -9,6 +9,7 @@ public partial class SnoodBoard : Node2D
 	public event Action<int, int> OnTilemapChanged;
 	
 	private const int SPRITE_SIZE = 64;
+	private const float LAUNCHER_TO_TILE_MAX_DIST = 190;
 
 	[Export(PropertyHint.Range, "7,20,0.5")]
 	public float Columns { get; set; }
@@ -21,7 +22,6 @@ public partial class SnoodBoard : Node2D
 	
 	private Launcher Launcher { get; set; }
 	private StaticBody2D WallRight { get; set; }
-	private Area2D BottomLimit { get; set; }
 	private Dictionary<int, int> SnoodsByIndex { get; set; } = new();
 	private bool LevelWon { get; set; }
 	private float LevelWonTimer { get; set; } = 1.5f;
@@ -123,11 +123,18 @@ public partial class SnoodBoard : Node2D
 	
 	private void CheckBottomLimit()
 	{
-		foreach (var body in BottomLimit.GetOverlappingBodies())
+		float launcherHeight = Launcher.GlobalPosition.Y;
+		Vector2I lowestCell = new Vector2I(0, -1000);
+		foreach (Vector2I cell in Tilemap.GetUsedCells())
 		{
-			GD.Print($"overlapping body: {body.Name}");
+			if (cell.Y > lowestCell.Y)
+			{
+				lowestCell = cell;
+			}
 		}
-		if (BottomLimit.GetOverlappingBodies().Count > 2)
+	
+		float tileHeight = Tilemap.ToGlobal(Tilemap.MapToLocal(lowestCell)).Y;
+		if (launcherHeight - tileHeight < LAUNCHER_TO_TILE_MAX_DIST)
 		{
 			Lose();
 		}
@@ -197,11 +204,11 @@ public partial class SnoodBoard : Node2D
 		Launcher = GetNode<Launcher>("%Launcher");
 		WallRight = GetNode<StaticBody2D>("%WallRight");
 		Tilemap = GetNode<SnoodTilemap>("%TileMapLayer");
-		BottomLimit = GetNode<Area2D>("%BottomLimit");
 	}
 
 	private void SubscribeToEvents()
 	{
+		Tilemap.OnBoardLowered += CheckBottomLimit;
 		Tilemap.OnHitLoseControlSnood += Launcher.LoseControl;
 		Tilemap.OnSnoodAdded += IncrementSnoodCount;
 		Tilemap.OnSnoodDeleted += DecrementSnoodCount;
@@ -211,6 +218,7 @@ public partial class SnoodBoard : Node2D
 
 	private void UnsubscribeFromEvents()
 	{
+		Tilemap.OnBoardLowered -= CheckBottomLimit;
 		Tilemap.OnHitLoseControlSnood -= Launcher.LoseControl;
 		Tilemap.OnSnoodAdded -= IncrementSnoodCount;
 		Tilemap.OnSnoodDeleted -= DecrementSnoodCount;

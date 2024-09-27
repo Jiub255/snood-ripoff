@@ -15,15 +15,26 @@ public partial class GameScreen : TextureRect
 	private SnoodBoard BoardInstance { get; set; }
 	private PackedScene[] Levels =
 	{
-		//GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_1.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
-		//GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_4.tscn")
+		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_4.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_5.tscn"),
+		GD.Load<PackedScene>("res://game/levels/test_level.tscn"),
 	};
 	private int CurrentLevel { get; set; }
 	private SnoodsUsedLabel SnoodsUsedLabel { get; set; }
 	private ScoreLabel ScoreLabel { get; set; }
 	private DangerBar DangerBar { get; set; }
+	private AudioStreamPlayer Music { get; set; }
+	private AudioStream[] Songs { get; } =
+	{
+		GD.Load<AudioStream>("res://assets/music/Level1-2024-04-24_01.ogg"),
+		GD.Load<AudioStream>("res://assets/music/Level2-2024-05-08.ogg"),
+		GD.Load<AudioStream>("res://assets/music/Level3-2024-05-29.ogg"),
+		GD.Load<AudioStream>("res://assets/music/Level4-2024-06-12.ogg"),
+		GD.Load<AudioStream>("res://assets/music/Funk-2024-05-22.ogg"),
+	};
 
 
 	public override void _Ready()
@@ -34,6 +45,7 @@ public partial class GameScreen : TextureRect
 		DangerBar = GetNode<DangerBar>("%DangerBar");
 		SnoodsUsedLabel = GetNode<SnoodsUsedLabel>("%SnoodsUsedLabel");
 		ScoreLabel = GetNode<ScoreLabel>("%ScoreLabel");
+		Music = GetNode<AudioStreamPlayer>("%Music");
 	}
 
 	public void StartGame(Score score)
@@ -42,10 +54,10 @@ public partial class GameScreen : TextureRect
 		SetupLevel(1);
 	}
 	
-	public void EndLevel()
+	public void BeatLevel()
 	{
-		BoardInstance.OnWonLevel -= OpenEndLevelMenu;
-		BoardInstance.OnLost -= Lose;
+		BoardInstance.OnWonLevel -= OpenBeatLevelMenu;
+		BoardInstance.OnLost -= OpenLoseMenu;
 		BoardInstance.OnTilemapChanged -= HandleTilemapChange;
 		DangerBar.OnDangerBarFull -= BoardInstance.Tilemap.LowerBoard;
 		
@@ -75,6 +87,8 @@ public partial class GameScreen : TextureRect
 		InstantiateBoard(level);
 		InitializeBoard();
 		ResizeGameHolder();
+		Music.Stream = Songs[level % Songs.Length];
+		Music.Play();
 	}
 
 	private void InstantiateBoard(int level)
@@ -90,25 +104,26 @@ public partial class GameScreen : TextureRect
 		Score.PenaltyPerSnood = BoardInstance.PenaltyPerSnood;
 		BoardInstance.SetupBoard();
 		
-		BoardInstance.OnWonLevel += OpenEndLevelMenu;
-		BoardInstance.OnLost += Lose;
+		BoardInstance.OnWonLevel += OpenBeatLevelMenu;
+		BoardInstance.OnLost += OpenLoseMenu;
 		BoardInstance.OnTilemapChanged += HandleTilemapChange;
 		DangerBar.OnDangerBarFull += BoardInstance.Tilemap.LowerBoard;
 	}
 
-	private void Lose()
+	private void OpenLoseMenu()
 	{
 		Score.Won = false;
 		Score.AddUpScore();
 		
 		Input.MouseMode = Input.MouseModeEnum.Visible;
-		BoardInstance.OnWonLevel -= OpenEndLevelMenu;
-		BoardInstance.OnLost -= Lose;
+		BoardInstance.OnWonLevel -= OpenBeatLevelMenu;
+		BoardInstance.OnLost -= OpenLoseMenu;
 		BoardInstance.OnTilemapChanged -= DangerBar.ChangeValue;
 		DangerBar.OnDangerBarFull -= BoardInstance.Tilemap.LowerBoard;
 
 		BoardInstance.QueueFree();
 		OnLoseGame?.Invoke();
+		Music.Stop();
 	}
 	
 	private void HandleTilemapChange(int similarSnoods, int droppedSnoods)
@@ -125,17 +140,12 @@ public partial class GameScreen : TextureRect
 		GameHolder.CustomMinimumSize = new Vector2(width, GameHolder.CustomMinimumSize.Y);
 	}
 
-	private void OpenEndLevelMenu()
+	private void OpenBeatLevelMenu()
 	{
 		Score.Won = true;
 		Score.AddUpScore();
 		Input.MouseMode = Input.MouseModeEnum.Visible;
 		OnEndLevel?.Invoke();
-	}
-
-	private void WinGame()
-	{
-		Input.MouseMode = Input.MouseModeEnum.Visible;
-		OnWinGame?.Invoke();
+		Music.Stop();
 	}
 }

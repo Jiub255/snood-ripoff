@@ -25,7 +25,7 @@ public partial class Launcher : Node2D
 	private bool Reloading { get; set; }
 	private bool SnoodLanded { get; set; } = true;
 	private AnimatedSprite2D Sprite { get; set; }
-	private Random RNG { get; } = new(69420);
+	private Random RNG { get; } = new();
 	private Vector2 Offset { get; } = new(128, 0);
 	private bool OutOfControl { get; set; }
 	private float TargetAngle { get; set; } = 9f;
@@ -105,8 +105,7 @@ public partial class Launcher : Node2D
 		if (!Reloading && SnoodLanded && !Disabled && LoadedSnood != null)
 		{
 			FlyingSnood = LoadedSnood;
-			FlyingSnood.Freeze = false;
-			FlyingSnood.LinearVelocity = AimDirection * SPEED;
+			FlyingSnood.Launch(AimDirection * SPEED);
 			Reloading = true;
 			SnoodLanded = false;
 		}

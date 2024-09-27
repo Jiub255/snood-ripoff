@@ -5,30 +5,37 @@ using System.Linq;
 
 public partial class SnoodTilemap : TileMapLayer
 {
-	private const int SPRITE_SIZE = 64;
-	
-	public event Action OnHitLoseControlSnood;
-	public event Action<int> OnSnoodAdded;
-	public event Action<int> OnSnoodDeleted;
-	public event Action<int, int> OnTilemapChanged;
-	
-	private Dictionary<int, PackedScene> Snoods { get; set; }
-	private float Columns { get; set; }
-	
-	private Random RNG { get; } = new();
-	
 	private enum SpecialSnoods
 	{
 		DropWall = 9,
 		RaiseWall = 10,
 		LoseControl = 11,
 	}
+	
+	private const int SPRITE_SIZE = 64;
 
+	public event Action OnBoardLowered;
+	public event Action OnHitLoseControlSnood;
+	public event Action<int> OnSnoodAdded;
+	public event Action<int> OnSnoodDeleted;
+	public event Action<int, int> OnTilemapChanged;
+
+	private Dictionary<int, PackedScene> Snoods { get; set; }
+	private float Columns { get; set; }
+
+	private Random RNG { get; } = new();
+	private AudioStreamPlayer KnockdownSFX { get; set; }
+	private AudioStreamPlayer GoodTileSFX { get; set; }
+	private AudioStreamPlayer BadTileSFX { get; set; }
+	
 
 	public void SetupTilemap(Dictionary<int, PackedScene> snoods, float columns)
 	{
 		Snoods = snoods;
 		Columns = columns;
+		KnockdownSFX = GetNode<AudioStreamPlayer>("%KnockdownSFX");
+		GoodTileSFX = GetNode<AudioStreamPlayer>("%GoodTileSFX");
+		BadTileSFX = GetNode<AudioStreamPlayer>("%BadTileSFX");
 	}
 
 	public void AddSnoodToBoard(Vector2 coordinates, int altTileIndex)
@@ -50,6 +57,8 @@ public partial class SnoodTilemap : TileMapLayer
 				DeleteCell(cell);
 			}
 			droppedSnoods = CheckForAndDropHangingChunks();
+
+			KnockdownSFX.Play();
 		}
 		
 		if (GetSurroundingCells(mapCoordinates).Where(x => GetCellAlternativeTile(x) > -1).Count() == 0)
@@ -63,6 +72,8 @@ public partial class SnoodTilemap : TileMapLayer
 	public void LowerBoard()
 	{
 		Position = new Vector2(Position.X, Position.Y + SPRITE_SIZE);
+		ForceUpdateTransform();
+		OnBoardLowered?.Invoke();
 	}
 	
 	private void HandleSpecialSnoods(Vector2I mapCoordinates)
@@ -75,16 +86,19 @@ public partial class SnoodTilemap : TileMapLayer
 				case (int)SpecialSnoods.DropWall:
 					LowerBoard();
 					DeleteCell(cell);
+					BadTileSFX.Play();
 					break;
 				
 				case (int)SpecialSnoods.RaiseWall:
 					RaiseBoard();
 					DeleteCell(cell);
+					GoodTileSFX.Play();
 					break;
 				
 				case (int)SpecialSnoods.LoseControl:
 					OnHitLoseControlSnood?.Invoke();
 					DeleteCell(cell);
+					BadTileSFX.Play();
 					break;
 					
 				default:
@@ -218,6 +232,11 @@ public partial class SnoodTilemap : TileMapLayer
 				droppedSnoods += DropChunk(chunk);
 			}
 		}
+/* 		if (droppedSnoods > 0)
+		{
+			SFX.Stream = KnockdownSound;
+			SFX.Play();
+		} */
 		return droppedSnoods;
 	}
 

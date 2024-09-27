@@ -1,0 +1,106 @@
+[gd_scene load_steps=18 format=4 uid="uid://b5ugcf3hecqjg"]
+
+[ext_resource type="Script" path="res://game/game-screen/SnoodBoard.cs" id="1_3r14k"]
+[ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="2_4u2hc"]
+[ext_resource type="Script" path="res://game/levels/SnoodTilemap.cs" id="3_lxwf4"]
+[ext_resource type="Script" path="res://snoods/tiles/StickyStaticBody.cs" id="4_gvfe3"]
+[ext_resource type="Texture2D" uid="uid://dc883pbachgsy" path="res://assets/snood-wall-placeholder.png" id="5_6m83h"]
+[ext_resource type="PackedScene" uid="uid://dbvcf8njiicp7" path="res://game/levels/tilemap_sfx.tscn" id="6_58lk6"]
+[ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/game-screen/bouncy.tres" id="6_tmekq"]
+[ext_resource type="AudioStream" uid="uid://dnupw10tbpq07" path="res://assets/sfx/pickupCoin.wav" id="7_acfjf"]
+[ext_resource type="Script" path="res://game/game-screen/DeadSnoodDestroyer.cs" id="7_q06tk"]
+[ext_resource type="AudioStream" uid="uid://btejbhxnpit13" path="res://assets/sfx/powerUp.wav" id="8_gcd8u"]
+[ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/game-screen/bottom_limit.tscn" id="8_lxwq4"]
+[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="9_kdfj7"]
+[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="10_brsrf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
+size = Vector2(1920, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4gi8q"]
+size = Vector2(1, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
+size = Vector2(4000, 200)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_brsrf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="SnoodBoard" type="Node2D"]
+script = ExtResource("1_3r14k")
+Columns = 15.0
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+unique_name_in_owner = true
+z_index = 1
+tile_map_data = PackedByteArray("AAD/////AAAAAAAAAAAAAP//AAAAAAAAAAABAP//AAAAAAAAAAACAP//AAAAAAAAAAAEAP//AAAAAAAAAAADAP//AAAAAAAAAAAFAP//AAAAAAAAAAAGAP//AAAAAAAAAAAHAP//AAAAAAAAAAAIAP//AAAAAAAAAAAJAP//AAAAAAAAAAAKAP//AAAAAAAAAAALAP//AAAAAAAAAAAMAP//AAAAAAAAAAANAP//AAAAAAAAAAAOAP//AAAAAAAAAAAPAP//AAAAAAAAAAAQAP//AAAAAAAAAAARAP//AAAAAAAAAAASAP//AAAAAAAAAAATAP//AAAAAAAAAAAUAP//AAAAAAAAAAAVAP//AAAAAAAAAAAWAP//AAAAAAAAAAAXAP//AAAAAAAAAAAYAP//AAAAAAAAAAAZAP//AAAAAAAAAAAaAP//AAAAAAAAAAAbAP//AAAAAAAAAAAcAP//AAAAAAAAAAAdAP//AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAQAEAAIAAAAAAAAAAgAEAAEAAAAAAAAAAgAIAAEAAAAAAAAAAwAJAAEAAAAAAAAAAwANAAAAAAAAAAAABAAOAAAAAAAAAAAABAADAAAAAAAAAAAABQADAAEAAAAAAAAABQAIAAIAAAAAAAAABgAHAAEAAAAAAAAABgALAAEAAAAAAAAABwALAAAAAAAAAAAABwAMAAIAAAAAAAAABQAGAAAAAAAAAAAAAQAFAAEAAAAAAAAAAQADAAIAAAAAAAAAAQACAAIAAAAAAAAAAQAJAAAAAAAAAAAAAgAHAAIAAAAAAAAACwABAAAAAAAAAAAAAgAAAAIAAAAAAAAABgANAAEAAAAAAAAAAgAFAAAAAAAAAAAAAwABAAIAAAAAAAAACQACAAAAAAAAAAAABwAFAAIAAAAAAAAACgALAAIAAAAAAAAAAwAGAAEAAAAAAAAABAACAAEAAAAAAAAABAABAAEAAAAAAAAABAAIAAAAAAAAAAAABAAKAAIAAAAAAAAABAAGAAIAAAAAAAAABQAKAAAAAAAAAAAABQAKAAEAAAAAAAAABQAMAAEAAAAAAAAABQAJAAIAAAAAAAAACgAEAAAAAAAAAAAABQAMAAAAAAAAAAAABgANAAIAAAAAAAAACQAHAAAAAAAAAAAABwAEAAMAAAAAAAAACAAFAAMAAAAAAAAACAAIAAMAAAAAAAAACAAJAAMAAAAAAAAACAAOAAIAAAAAAAAAAgA=")
+tile_set = ExtResource("2_4u2hc")
+script = ExtResource("3_lxwf4")
+
+[node name="Ceiling" type="StaticBody2D" parent="TileMapLayer"]
+position = Vector2(960, 0)
+script = ExtResource("4_gvfe3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMapLayer/Ceiling"]
+shape = SubResource("RectangleShape2D_b888v")
+
+[node name="Sprite2D" type="Sprite2D" parent="TileMapLayer/Ceiling"]
+self_modulate = Color(0.702503, 0.38999, 0.334532, 1)
+texture = ExtResource("5_6m83h")
+offset = Vector2(0, -540)
+
+[node name="KnockdownSFX" parent="TileMapLayer" instance=ExtResource("6_58lk6")]
+unique_name_in_owner = true
+
+[node name="GoodTileSFX" parent="TileMapLayer" instance=ExtResource("6_58lk6")]
+unique_name_in_owner = true
+stream = ExtResource("7_acfjf")
+
+[node name="BadTileSFX" parent="TileMapLayer" instance=ExtResource("6_58lk6")]
+unique_name_in_owner = true
+stream = ExtResource("8_gcd8u")
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(0, 540)
+physics_material_override = ExtResource("6_tmekq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(960, 540)
+physics_material_override = ExtResource("6_tmekq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("RectangleShape2D_4gi8q")
+
+[node name="DeadSnoodDestroyer" type="Area2D" parent="."]
+position = Vector2(960, 1380)
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("7_q06tk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeadSnoodDestroyer"]
+shape = SubResource("RectangleShape2D_yr5r7")
+
+[node name="BottomLimit" parent="." instance=ExtResource("8_lxwq4")]
+unique_name_in_owner = true
+
+[node name="Launcher" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(577, 900)
+script = ExtResource("9_kdfj7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
+self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
+sprite_frames = SubResource("SpriteFrames_b6yik")
+offset = Vector2(0, -48)
