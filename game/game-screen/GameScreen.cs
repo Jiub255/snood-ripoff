@@ -19,7 +19,8 @@ public partial class GameScreen : TextureRect
 		GD.Load<PackedScene>("res://game/levels/level_2.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_3.tscn"),
 		GD.Load<PackedScene>("res://game/levels/level_4.tscn"),
-		GD.Load<PackedScene>("res://game/levels/level_5.tscn"),
+		//GD.Load<PackedScene>("res://game/levels/level_5.tscn"),
+		GD.Load<PackedScene>("res://game/levels/level_6.tscn"),
 		GD.Load<PackedScene>("res://game/levels/test_level.tscn"),
 	};
 	private int CurrentLevel { get; set; }

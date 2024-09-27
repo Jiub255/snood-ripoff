@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://cefghmt4e2cuw"]
+[gd_scene load_steps=8 format=3 uid="uid://cefghmt4e2cuw"]
 
 [ext_resource type="Script" path="res://ui/CreditsMenu.cs" id="1_4jnht"]
 [ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="2_80wcy"]
 [ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/styleboxes/title_panel.tres" id="3_q1qly"]
+[ext_resource type="Script" path="res://ui/CreditsLabel.cs" id="4_rri6x"]
 [ext_resource type="StyleBox" uid="uid://g7lg4roi4ydm" path="res://ui/styleboxes/button_normal.tres" id="4_y8jvc"]
 [ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="5_ych5h"]
 [ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="6_hl5cn"]
@@ -51,18 +52,20 @@ theme_override_styles/normal = ExtResource("3_q1qly")
 text = "Credits"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(800, 350)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
-theme_override_colors/font_color = Color(0.388235, 0.329412, 0.258824, 1)
-theme_override_font_sizes/font_size = 52
+theme_override_colors/default_color = Color(0.388235, 0.329412, 0.258824, 1)
+theme_override_font_sizes/normal_font_size = 48
 theme_override_styles/normal = ExtResource("3_q1qly")
-text = "Game made with Godot
-SFX made with JAMES
-Music made with JAMES2
+bbcode_enabled = true
+text = "Game made with Godot 4.3
+Music by [url={https://tallbeard.itch.io/music-loop-bundle}]Abstraction[/url]
+SFX made with jsfxr
 Visual Assets made with Krita"
-horizontal_alignment = 1
+script = ExtResource("4_rri6x")
 
 [node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2

@@ -16,8 +16,8 @@ public partial class Launcher : Node2D
 	public Dictionary<int, PackedScene> SnoodsInUse { get; } = new();
 	public Vector2 AimDirection { get; set; } = Vector2.Up;
 	public bool Disabled { get; set; }
-	public Snood PreloadedSnood { get; private set; }
 
+	private Snood PreloadedSnood { get; set; }
 	private Snood LoadedSnood { get; set; }
 	private Snood FlyingSnood { get; set; }
 	private Snood WaitingSnood { get; set; }

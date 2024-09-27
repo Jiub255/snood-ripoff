@@ -99,7 +99,8 @@ public partial class SnoodBoard : Node2D
 		foreach (Vector2I cell in Tilemap.GetUsedCells())
 		{
 			int altTileIndex = Tilemap.GetCellAlternativeTile(cell);
-			if (altTileIndex > 0)
+			// Ignores blank, ceiling, and skull tiles.
+			if (altTileIndex > 0 && altTileIndex != 8)
 			{
 				if (SnoodsByIndex.ContainsKey(altTileIndex))
 				{

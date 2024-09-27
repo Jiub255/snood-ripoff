@@ -54,6 +54,7 @@ shape = SubResource("RectangleShape2D_b888v")
 
 [node name="Sprite2D" type="Sprite2D" parent="TileMapLayer/Ceiling"]
 self_modulate = Color(0.702503, 0.38999, 0.334532, 1)
+z_index = -1
 texture = ExtResource("4_0kyjg")
 offset = Vector2(0, -540)
 

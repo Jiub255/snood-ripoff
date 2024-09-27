@@ -24,8 +24,7 @@ TODO:
 		Balance danger bar too.
 			Maybe different fill rates for different levels?
 
-	SFX/Music!!!!!!
-		Make own? Use assets?
+	Instructions menu
 
 	Decide on a name
 		Use the word "Snood"? Is that legal?
@@ -54,9 +53,10 @@ BUGS:
 	Sometimes when you hit the very edge with a snood, it disappears but must get stored somewhere because
 		then you can't finish the level even when it looks clear.
 
-	When dropping down the board, BottomLimit doesn't detect the static body snood tiles.
+	FIXED - When dropping down the board, BottomLimit doesn't detect the static body snood tiles.
 		Detects the static body walls, and the rigidbody flying snoods.
 		Use raycast from left to right wall instead?
+		Used y-distance comparison to launcher instead of colliders/raycasts.
 
 	FIXED - Snoods occasionally take an already taken spot after getting CorrectForSides()ed.
 		Possibly fix by speeding up physics tick rate?

@@ -56,7 +56,7 @@ public partial class SnoodTilemap : TileMapLayer
 			{
 				DeleteCell(cell);
 			}
-			droppedSnoods = CheckForAndDropHangingChunks();
+			droppedSnoods = CheckForAndDropHangingChunks(similarCells);
 
 			KnockdownSFX.Play();
 		}
@@ -191,26 +191,32 @@ public partial class SnoodTilemap : TileMapLayer
 		deadSnood.ApplyImpulse(randomDirection * 300);
 	}
 	
-	private int CheckForAndDropHangingChunks()
+	private int CheckForAndDropHangingChunks(IEnumerable<Vector2I> deletedCells)
 	{
-		List<List<Vector2I>> chunks = new();
-		List<Vector2I> checkedCells = new();
-		GatherChunks(chunks, checkedCells);
+		List<List<Vector2I>> chunks = GatherChunks(deletedCells);
 		return CheckAndDropChunks(chunks);
 	}
 
-	private void GatherChunks(List<List<Vector2I>> chunks, List<Vector2I> checkedCells)
+	private List<List<Vector2I>> GatherChunks(IEnumerable<Vector2I> deletedCells)
 	{
-		foreach (Vector2I cell in GetUsedCells())
+		List<List<Vector2I>> chunks= new();
+		List<Vector2I> checkedCells = new();
+		// TODO: Check cells touching the deleted similar cells, not all used cells.
+		// This way other separate chunks can still hang.
+		foreach (Vector2I deletedCell in deletedCells)
 		{
-			if (checkedCells.Contains(cell))
+			foreach (Vector2I cell in GetSurroundingCells(deletedCell))
 			{
-				continue;
+				if (checkedCells.Contains(cell))
+				{
+					continue;
+				}
+				IEnumerable<Vector2I> chunk = GetTouchingCells(cell, false);
+				checkedCells.AddRange(chunk);
+				chunks.Add(chunk.ToList());
 			}
-			IEnumerable<Vector2I> chunk = GetTouchingCells(cell, false);
-			checkedCells.AddRange(chunk);
-			chunks.Add(chunk.ToList());
 		}
+		return chunks;
 	}
 
 	private int CheckAndDropChunks(List<List<Vector2I>> chunks)
