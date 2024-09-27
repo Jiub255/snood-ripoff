@@ -24,7 +24,7 @@ public partial class Launcher : Node2D
 	private float ReloadTimer { get; set; }
 	private bool Reloading { get; set; }
 	private bool SnoodLanded { get; set; } = true;
-	private AnimatedSprite2D Sprite { get; set; }
+	private Sprite2D Sprite { get; set; }
 	private Random RNG { get; } = new();
 	private Vector2 Offset { get; } = new(128, 0);
 	private bool OutOfControl { get; set; }
@@ -36,7 +36,7 @@ public partial class Launcher : Node2D
 		base._Ready();
 
 		ReloadTimer = RELOAD_DURATION;
-		Sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+		Sprite = GetNode<Sprite2D>("Sprite2D");
 		Rotate();
 	}
 

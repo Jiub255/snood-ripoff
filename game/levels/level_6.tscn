@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://c8mkp0ifgql33"]
+[gd_scene load_steps=16 format=4 uid="uid://c8mkp0ifgql33"]
 
 [ext_resource type="Script" path="res://game/game-screen/SnoodBoard.cs" id="1_snhot"]
 [ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="2_wrmol"]
@@ -11,8 +11,7 @@
 [ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/game-screen/bouncy.tres" id="9_i1kym"]
 [ext_resource type="Script" path="res://game/game-screen/DeadSnoodDestroyer.cs" id="10_0by1d"]
 [ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/game-screen/bottom_limit.tscn" id="11_xspeg"]
-[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="12_4yl0w"]
-[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="13_u2aeh"]
+[ext_resource type="PackedScene" uid="uid://cr8eu2oc4axbc" path="res://game/game-screen/launcher.tscn" id="12_3sw0d"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
 size = Vector2(1920, 1)
@@ -22,17 +21,6 @@ size = Vector2(1, 1080)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
 size = Vector2(4000, 200)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("13_u2aeh")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="SnoodBoard" type="Node2D"]
 script = ExtResource("1_snhot")
@@ -96,12 +84,4 @@ shape = SubResource("RectangleShape2D_yr5r7")
 [node name="BottomLimit" parent="." instance=ExtResource("11_xspeg")]
 unique_name_in_owner = true
 
-[node name="Launcher" type="Node2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(577, 900)
-script = ExtResource("12_4yl0w")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
-self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
-sprite_frames = SubResource("SpriteFrames_b6yik")
-offset = Vector2(0, -48)
+[node name="Launcher" parent="." instance=ExtResource("12_3sw0d")]

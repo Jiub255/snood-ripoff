@@ -58,5 +58,9 @@ public partial class MainMenu : Control
 	private void QuitGame()
 	{
 		GD.Print("Quit button pressed");
+		if (OS.HasFeature("HTML5")) // Ensure it's running on WebGL/HTML5
+   		{
+        	JavaScriptBridge.Eval("location.reload();"); // Reloads the page
+    	}
 	}
 }

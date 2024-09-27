@@ -8,6 +8,7 @@ public partial class OptionsMenu : Control
 	private HSlider SfxSlider { get; set; }
 	private string SfxBusName { get; } = "SFX";
 	private int SfxBusIndex { get; set;}
+	private AudioStreamPlayer SFX { get; set; }
 	
 	private HSlider MusicSlider { get; set; }
 	private string MusicBusName { get; } = "Music";
@@ -21,6 +22,7 @@ public partial class OptionsMenu : Control
 		base._Ready();
 		
 		SfxSlider = GetNode<HSlider>("%SfxSlider");
+		SFX = GetNode<AudioStreamPlayer>("SFX");
 		MusicSlider = GetNode<HSlider>("%MusicSlider");
 		BackButton = GetNode<Button>("%BackButton");
 		
@@ -31,8 +33,8 @@ public partial class OptionsMenu : Control
 		MusicSlider.ValueChanged += ChangeMusicVolume;
 		BackButton.Pressed += Back;
 
-		SfxSlider.Value = 0.5;
-		MusicSlider.Value = 0.5;
+		AudioServer.SetBusVolumeDb(SfxBusIndex, Mathf.LinearToDb((float)0.5));
+		AudioServer.SetBusVolumeDb(MusicBusIndex, Mathf.LinearToDb((float)0.5));
 	}
 
 	public override void _ExitTree()
@@ -41,17 +43,26 @@ public partial class OptionsMenu : Control
 		
 		BackButton.Pressed -= Back;
 	}
-	
+
+	public override void _Process(double delta)
+	{
+		base._Process(delta);
+		
+		
+	}
+
 	private void ChangeSfxVolume(double value)
 	{
 		AudioServer.SetBusVolumeDb(SfxBusIndex, Mathf.LinearToDb((float)value));
-		GD.Print($"Sfx Db: {Mathf.LinearToDb((float)value)}");
+		if (!SFX.Playing)
+		{
+			SFX.Play();
+		}
 	}
 	
 	private void ChangeMusicVolume(double value)
 	{
 		AudioServer.SetBusVolumeDb(MusicBusIndex, Mathf.LinearToDb((float)value));
-		GD.Print($"Music Db: {Mathf.LinearToDb((float)value)}");
 	}
 
 	private void Back()

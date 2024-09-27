@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://b5ugcf3hecqjg"]
+[gd_scene load_steps=16 format=4 uid="uid://b5ugcf3hecqjg"]
 
 [ext_resource type="Script" path="res://game/game-screen/SnoodBoard.cs" id="1_3r14k"]
 [ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="2_4u2hc"]
@@ -11,8 +11,7 @@
 [ext_resource type="Script" path="res://game/game-screen/DeadSnoodDestroyer.cs" id="7_q06tk"]
 [ext_resource type="AudioStream" uid="uid://btejbhxnpit13" path="res://assets/sfx/powerUp.wav" id="8_gcd8u"]
 [ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/game-screen/bottom_limit.tscn" id="8_lxwq4"]
-[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="9_kdfj7"]
-[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="10_brsrf"]
+[ext_resource type="PackedScene" uid="uid://cr8eu2oc4axbc" path="res://game/game-screen/launcher.tscn" id="12_yopgj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
 size = Vector2(1920, 1)
@@ -22,17 +21,6 @@ size = Vector2(1, 1080)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
 size = Vector2(4000, 200)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("10_brsrf")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="SnoodBoard" type="Node2D"]
 script = ExtResource("1_3r14k")
@@ -96,12 +84,4 @@ shape = SubResource("RectangleShape2D_yr5r7")
 [node name="BottomLimit" parent="." instance=ExtResource("8_lxwq4")]
 unique_name_in_owner = true
 
-[node name="Launcher" type="Node2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(577, 900)
-script = ExtResource("9_kdfj7")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
-self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
-sprite_frames = SubResource("SpriteFrames_b6yik")
-offset = Vector2(0, -48)
+[node name="Launcher" parent="." instance=ExtResource("12_yopgj")]

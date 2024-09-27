@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bis4jhafmow76"]
+[gd_scene load_steps=8 format=3 uid="uid://bis4jhafmow76"]
 
 [ext_resource type="Script" path="res://ui/OptionsMenu.cs" id="1_00rqs"]
 [ext_resource type="StyleBox" uid="uid://ct8auf15dnft8" path="res://ui/styleboxes/menu_background.tres" id="1_6sv3a"]
@@ -6,6 +6,7 @@
 [ext_resource type="StyleBox" uid="uid://dolagfhfrmir4" path="res://ui/styleboxes/button_pressed.tres" id="3_6si4x"]
 [ext_resource type="StyleBox" uid="uid://cudjk5satbx2b" path="res://ui/styleboxes/title_panel.tres" id="3_pnrv3"]
 [ext_resource type="StyleBox" uid="uid://cu6a2m5xi5cck" path="res://ui/styleboxes/button_hover.tres" id="4_wynd4"]
+[ext_resource type="PackedScene" uid="uid://dbvcf8njiicp7" path="res://game/levels/tilemap_sfx.tscn" id="7_3lejn"]
 
 [node name="OptionsMenu" type="Control"]
 layout_mode = 3
@@ -67,6 +68,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.01
+value = 0.5
 tick_count = 5
 ticks_on_borders = true
 
@@ -86,6 +88,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 max_value = 1.0
 step = 0.01
+value = 0.5
 tick_count = 5
 ticks_on_borders = true
 
@@ -108,3 +111,5 @@ theme_override_styles/hover = ExtResource("4_wynd4")
 theme_override_styles/pressed = ExtResource("3_6si4x")
 theme_override_styles/normal = ExtResource("2_1m3yd")
 text = "Back"
+
+[node name="SFX" parent="." instance=ExtResource("7_3lejn")]

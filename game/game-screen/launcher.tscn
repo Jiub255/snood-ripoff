@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr8eu2oc4axbc"]
+
+[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="1_b1xld"]
+[ext_resource type="Texture2D" uid="uid://c42r2wxjc4c3h" path="res://assets/snood-launcher.png" id="2_0sqpe"]
+
+[node name="Launcher" type="Node2D"]
+position = Vector2(577, 900)
+script = ExtResource("1_b1xld")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+self_modulate = Color(0.87, 0.87, 0.87, 1)
+texture = ExtResource("2_0sqpe")
+offset = Vector2(0, -48)

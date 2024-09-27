@@ -202,7 +202,7 @@ public partial class SnoodBoard : Node2D
 
 	private void GetReferences()
 	{
-		Launcher = GetNode<Launcher>("%Launcher");
+		Launcher = GetNode<Launcher>("Launcher");
 		WallRight = GetNode<StaticBody2D>("%WallRight");
 		Tilemap = GetNode<SnoodTilemap>("%TileMapLayer");
 	}

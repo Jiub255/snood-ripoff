@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://bbs1chbgmnjwj"]
+[gd_scene load_steps=16 format=4 uid="uid://bbs1chbgmnjwj"]
 
 [ext_resource type="TileSet" uid="uid://g7rltp52dpnh" path="res://game/levels/snood_tileset.tres" id="1_r4cge"]
 [ext_resource type="Script" path="res://game/game-screen/SnoodBoard.cs" id="2_5ln5x"]
@@ -7,12 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://dc883pbachgsy" path="res://assets/snood-wall-placeholder.png" id="4_0kyjg"]
 [ext_resource type="PhysicsMaterial" uid="uid://b4r3uvy67oax5" path="res://game/game-screen/bouncy.tres" id="4_k6jv6"]
 [ext_resource type="Script" path="res://game/game-screen/DeadSnoodDestroyer.cs" id="5_otcq8"]
-[ext_resource type="Script" path="res://game/game-screen/Launcher.cs" id="6_iodvm"]
 [ext_resource type="PackedScene" uid="uid://dbvcf8njiicp7" path="res://game/levels/tilemap_sfx.tscn" id="6_kxhap"]
-[ext_resource type="Texture2D" uid="uid://c5o1e4xlgix88" path="res://assets/snood-gun.png" id="7_ghxss"]
 [ext_resource type="PackedScene" uid="uid://d1ir8u1f1exd0" path="res://game/game-screen/bottom_limit.tscn" id="7_jt080"]
 [ext_resource type="AudioStream" uid="uid://dnupw10tbpq07" path="res://assets/sfx/pickupCoin.wav" id="7_opex6"]
 [ext_resource type="AudioStream" uid="uid://btejbhxnpit13" path="res://assets/sfx/powerUp.wav" id="8_jw7b5"]
+[ext_resource type="PackedScene" uid="uid://cr8eu2oc4axbc" path="res://game/game-screen/launcher.tscn" id="12_vwh8t"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_b888v"]
 size = Vector2(1920, 1)
@@ -22,17 +21,6 @@ size = Vector2(1, 1080)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yr5r7"]
 size = Vector2(4000, 200)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_b6yik"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("7_ghxss")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="SnoodBoard" type="Node2D"]
 script = ExtResource("2_5ln5x")
@@ -96,12 +84,4 @@ shape = SubResource("RectangleShape2D_yr5r7")
 [node name="BottomLimit" parent="." instance=ExtResource("7_jt080")]
 unique_name_in_owner = true
 
-[node name="Launcher" type="Node2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(577, 900)
-script = ExtResource("6_iodvm")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Launcher"]
-self_modulate = Color(0.740351, 0.216296, 0.256113, 1)
-sprite_frames = SubResource("SpriteFrames_b6yik")
-offset = Vector2(0, -48)
+[node name="Launcher" parent="." instance=ExtResource("12_vwh8t")]

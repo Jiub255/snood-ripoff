@@ -62,7 +62,7 @@ theme_override_font_sizes/normal_font_size = 48
 theme_override_styles/normal = ExtResource("3_q1qly")
 bbcode_enabled = true
 text = "Game made with Godot 4.3
-Music by [url={https://tallbeard.itch.io/music-loop-bundle}]Abstraction[/url]
+[url=https://tallbeard.itch.io/music-loop-bundle]Music[/url] by [url=https://abstractionmusic.com/]Abstraction[/url]
 SFX made with jsfxr
 Visual Assets made with Krita"
 script = ExtResource("4_rri6x")

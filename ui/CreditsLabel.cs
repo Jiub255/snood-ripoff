@@ -18,7 +18,6 @@ public partial class CreditsLabel : RichTextLabel
 
 	private void OpenLink(Variant meta)
 	{
-		GD.Print("Open link called");
 		OS.ShellOpen(meta.ToString());
 	}
 }
